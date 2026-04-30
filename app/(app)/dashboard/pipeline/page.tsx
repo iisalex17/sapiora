@@ -32,7 +32,7 @@ export default function PipelinePage() {
 
   return (
     <iframe
-      src="/static/pipeline.html"
+      src="/api/pipeline"
       style={{
         width: '100%',
         height: '100vh',
