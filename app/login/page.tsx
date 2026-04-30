@@ -11,27 +11,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [debug, setDebug] = useState('')
   const router = useRouter()
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-    setDebug('')
 
     try {
-      setDebug('Buscando organización...')
-      
       const routingRes = await fetch(
         `${ADMIN_URL}/rest/v1/user_routing?email=eq.${encodeURIComponent(email)}&select=*`,
-        { headers: {
-          apikey: ADMIN_KEY,
-          Authorization: `Bearer ${ADMIN_KEY}`
-        }}
+        { headers: { apikey: ADMIN_KEY, Authorization: `Bearer ${ADMIN_KEY}` }}
       )
       const routing = await routingRes.json()
-      setDebug('Routing: ' + JSON.stringify(routing))
 
       if (!routing || routing.length === 0) {
         setError('Usuario no encontrado.')
@@ -40,7 +32,6 @@ export default function LoginPage() {
       }
 
       const { org_id, org_name, supabase_url, supabase_key } = routing[0]
-      setDebug('Conectando a: ' + supabase_url)
 
       const loginRes = await fetch(`${supabase_url}/auth/v1/token?grant_type=password`, {
         method: 'POST',
@@ -53,7 +44,6 @@ export default function LoginPage() {
       })
 
       const loginData = await loginRes.json()
-      setDebug('Login status: ' + loginRes.status + ' ' + JSON.stringify(loginData).slice(0,100))
 
       if (!loginRes.ok || loginData.error) {
         setError('Credenciales incorrectas.')
@@ -63,24 +53,20 @@ export default function LoginPage() {
 
       sessionStorage.setItem('sapiora_session', JSON.stringify({
         access_token: loginData.access_token,
-        email,
-        org_id,
-        org_name,
-        supabase_url,
-        supabase_key
+        email, org_id, org_name, supabase_url, supabase_key
       }))
 
       router.push('/dashboard/pipeline')
 
     } catch (err: any) {
-      setError('Error: ' + err.message)
+      setError('Error de conexión. Inténtalo de nuevo.')
       setLoading(false)
     }
   }
 
   return (
     <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#000'}}>
-      <div style={{background:'#141416',border:'1px solid rgba(255,255,255,.1)',borderRadius:'16px',padding:'44px 40px',width:'100%',maxWidth:'420px'}}>
+      <div style={{background:'#141416',border:'1px solid rgba(255,255,255,.1)',borderRadius:'16px',padding:'44px 40px',width:'100%',maxWidth:'380px'}}>
         <div style={{fontSize:'24px',fontWeight:'700',color:'#f0eee9',marginBottom:'4px',letterSpacing:'-.5px',fontFamily:'Montserrat,sans-serif'}}>
           Sapiora<span style={{color:'#6b2737'}}>.</span>
         </div>
@@ -99,7 +85,6 @@ export default function LoginPage() {
               style={{width:'100%',background:'#1a1a1e',border:'1px solid rgba(255,255,255,.12)',borderRadius:'8px',padding:'10px 13px',fontSize:'13px',color:'#f0eee9',outline:'none',fontFamily:'Montserrat,sans-serif',boxSizing:'border-box' as any}}/>
           </div>
           {error && <div style={{fontSize:'11px',color:'#c94040',marginBottom:'12px',textAlign:'center'}}>{error}</div>}
-          {debug && <div style={{fontSize:'10px',color:'#6b6760',marginBottom:'12px',wordBreak:'break-all',background:'#0a0a0a',padding:'8px',borderRadius:'6px'}}>{debug}</div>}
           <button type="submit" disabled={loading}
             style={{width:'100%',background:'#6b2737',color:'#fff',border:'none',padding:'12px',borderRadius:'8px',fontSize:'12px',fontWeight:'600',cursor:'pointer',marginTop:'6px',fontFamily:'Montserrat,sans-serif',letterSpacing:'.3px',opacity:loading?0.6:1}}>
             {loading ? 'Entrando...' : 'Entrar'}
