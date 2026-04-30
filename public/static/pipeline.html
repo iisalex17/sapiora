@@ -637,10 +637,13 @@ function initMap() {
 // ── DATA ─────────────────────────────────────────────
 async function loadLeads() {
   if (!CFG.url||!CFG.key){ openCfg(); return; }
+  // Get org_id from URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const orgId = urlParams.get('org') || 'yurbban';
   setSt('loading','Cargando…');
   show('map-loader'); g('ltxt').textContent = 'Conectando con Supabase…';
   try {
-    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&limit=10000`, {
+    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&org_id=eq.${orgId}&limit=10000`, {
       headers:{ apikey:CFG.key, Authorization:'Bearer '+CFG.key, Prefer:'count=exact' }
     });
     if (!res.ok) throw new Error('HTTP '+res.status);
