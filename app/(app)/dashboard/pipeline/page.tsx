@@ -1,31 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
-
-export default function DashboardPage() {
-  const [checking, setChecking] = useState(true)
-  const router = useRouter()
-  const supabase = createClient()
-
-  useEffect(() => {
-    async function check() {
-      const { data: { user } } = await supabase.auth.getUser()
-      const local = sessionStorage.getItem('test_user')
-      if (!user && !local) {
-        router.push('/login')
-        return
-      }
-      // Redirect directly to pipeline
-      router.push('/dashboard/pipeline')
-    }
-    check()
-  }, [])
-
+export default function PipelinePage() {
   return (
-    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#000'}}>
-      <div style={{color:'#6b6760',fontFamily:'Montserrat,sans-serif',fontSize:'13px'}}>Cargando...</div>
-    </div>
+    <iframe
+      src="/static/pipeline.html"
+      style={{
+        width: '100%',
+        height: '100vh',
+        border: 'none',
+        display: 'block'
+      }}
+      title="Pipeline"
+    />
   )
 }
