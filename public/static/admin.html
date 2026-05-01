@@ -600,6 +600,14 @@ td.name{font-weight:600;color:var(--text);font-size:13px}
         <div class="ff full"><label>Anon Key</label><input type="text" id="f-sb-key" placeholder="eyJhbGciOi…"/></div>
         <div class="ff full"><label>Project ID (opcional)</label><input type="text" id="f-sb-pid" placeholder="Para gestión via Management API"/></div>
       </div>
+      <!-- ONBOARDING SECTION -->
+<div id="onboarding-section" style="border-top:1px solid var(--border);margin:16px 0 20px;padding-top:20px;display:none">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>
+    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px">Cliente creado — Pasos de activación</div>
+  </div>
+  <div id="onboarding-steps"></div>
+</div>
       <div class="ff full"><label>Notas internas</label><textarea id="f-notes" placeholder="Observaciones, condiciones especiales, contexto del cliente…"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -1150,7 +1158,6 @@ function openEdit(id) {
   g('detail-overlay').classList.add('hidden');
   g('modal-overlay').classList.remove('hidden');
 }
-
 async function saveClient() {
   const name = g('f-name').value.trim();
   const email = g('f-email').value.trim();
@@ -1161,6 +1168,8 @@ async function saveClient() {
   btn.disabled = true; btn.textContent = 'Guardando…';
 
   const now = new Date().toISOString();
+  const orgId = name.toLowerCase().replace(/[^a-z0-9]/g,'_').slice(0,20) + '_' + Date.now().toString().slice(-4);
+  
   const data = {
     name, email,
     plan:    g('f-plan').value,
@@ -1172,6 +1181,181 @@ async function saveClient() {
     supabase_project_id: g('f-sb-pid').value.trim(),
     notes:   g('f-notes').value.trim(),
   };
+
+  if (editingId) {
+    const idx = clients.findIndex(c => c.id === editingId);
+    clients[idx] = { ...clients[idx], ...data, updated_at: now };
+    await saveToSupabase(clients[idx], false);
+    
+    // Update user_routing if supabase credentials changed
+    if (data.supabase_url && data.supabase_key) {
+      await updateUserRouting(email, clients[idx]);
+    }
+    
+    logActivity('Cliente editado: ' + name, '#3a7bd5');
+    toast('Cliente actualizado ✓', 'ok');
+  } else {
+    const newClient = { ...data, id: genId(), org_id: orgId, created_at: now };
+    clients.unshift(newClient);
+    await saveToSupabase(newClient, true);
+    
+    // Auto-register in user_routing if credentials provided
+    if (data.supabase_url && data.supabase_key) {
+      const routingOk = await addToUserRouting(email, newClient, orgId);
+      if (routingOk) toast('Cliente creado y routing configurado ✓', 'ok');
+      else toast('Cliente creado — configura routing manualmente', 'ok');
+    } else {
+      toast('Cliente creado ✓', 'ok');
+    }
+    
+    logActivity('Nuevo cliente: ' + name + ' (' + planLabel(data.plan) + ')', '#2d9e6b');
+    
+    // Show onboarding checklist
+    showOnboardingSteps(newClient, orgId);
+    btn.disabled = false;
+    saveToStorage();
+    renderAll();
+    return;
+  }
+
+  saveToStorage();
+  renderAll();
+  closeModal();
+  btn.disabled = false;
+}
+
+async function addToUserRouting(email, client, orgId) {
+  if (!ADMIN_CFG.url || !ADMIN_CFG.key) return false;
+  if (!client.supabase_url || !client.supabase_key) return false;
+  try {
+    const r = await fetch(ADMIN_CFG.url + '/rest/v1/user_routing', {
+      method: 'POST',
+      headers: {
+        apikey: ADMIN_CFG.key,
+        Authorization: 'Bearer ' + ADMIN_CFG.key,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify({
+        email: email,
+        org_id: orgId,
+        org_name: client.name,
+        supabase_url: client.supabase_url,
+        supabase_key: client.supabase_key
+      })
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function updateUserRouting(email, client) {
+  if (!ADMIN_CFG.url || !ADMIN_CFG.key) return;
+  try {
+    await fetch(ADMIN_CFG.url + '/rest/v1/user_routing?email=eq.' + encodeURIComponent(email), {
+      method: 'PATCH',
+      headers: {
+        apikey: ADMIN_CFG.key,
+        Authorization: 'Bearer ' + ADMIN_CFG.key,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        supabase_url: client.supabase_url,
+        supabase_key: client.supabase_key,
+        org_name: client.name
+      })
+    });
+  } catch(e) {}
+}
+
+function showOnboardingSteps(client, orgId) {
+  const sql = `CREATE TABLE IF NOT EXISTS leads (
+  id bigserial PRIMARY KEY,
+  hotel_name text, "City" text, state text,
+  rooms integer, property_type text, rating text,
+  main_problem text, why_yurbban text,
+  opportunity_type text, source_url text,
+  address text, lat float, lng float,
+  priority text DEFAULT 'new',
+  org_id text DEFAULT '${orgId}',
+  am_name text, am_email text, am_phone text,
+  am_status text, am_date date,
+  am_priority text, am_notes text,
+  am_updated_at timestamptz, am_photo_url text,
+  adr numeric, occupancy numeric,
+  acquisition_price numeric,
+  days_operative numeric DEFAULT 365,
+  gop_pct numeric DEFAULT 40,
+  has_other_income boolean DEFAULT false,
+  rooms_pct numeric DEFAULT 100,
+  date timestamptz DEFAULT now()
+);
+ALTER TABLE leads DISABLE ROW LEVEL SECURITY;`;
+
+  const hasRouting = client.supabase_url && client.supabase_key;
+  
+  const steps = [
+    {
+      done: true,
+      label: 'Cliente registrado en Sapiora',
+      detail: 'ID: ' + orgId
+    },
+    {
+      done: hasRouting,
+      label: hasRouting ? 'Routing configurado automáticamente' : 'Añadir credenciales Supabase',
+      detail: hasRouting 
+        ? 'El cliente puede entrar en sapiora.vercel.app con ' + client.email
+        : 'Edita el cliente y añade la URL y Anon Key de su Supabase'
+    },
+    {
+      done: false,
+      label: 'Crear usuario en el Supabase del cliente',
+      detail: 'Authentication → Users → Add user: ' + client.email
+    },
+    {
+      done: false,
+      label: 'Ejecutar SQL en el Supabase del cliente',
+      detail: 'SQL Editor → pegar y ejecutar el schema',
+      sql: sql
+    },
+    {
+      done: false,
+      label: 'Enviar credenciales al cliente',
+      detail: 'Email: ' + client.email + ' | URL: sapiora.vercel.app'
+    }
+  ];
+
+  const section = g('onboarding-section');
+  const stepsEl = g('onboarding-steps');
+  
+  stepsEl.innerHTML = steps.map((s, i) => `
+    <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+        background:${s.done ? 'var(--green-l)' : 'var(--bg4)'};
+        color:${s.done ? 'var(--green)' : 'var(--muted)'}">
+        ${s.done ? '✓' : (i+1)}
+      </div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:600;color:${s.done ? 'var(--green)' : 'var(--text)'};margin-bottom:2px">${s.label}</div>
+        <div style="font-size:11px;color:var(--muted)">${s.detail}</div>
+        ${s.sql ? `
+          <div style="margin-top:8px">
+            <button onclick="copySQL(this)" data-sql="${s.sql.replace(/"/g,'&quot;')}" 
+              class="btn btn-ghost btn-sm" style="font-size:10px">
+              ⎘ Copiar SQL
+            </button>
+          </div>` : ''}
+      </div>
+    </div>`).join('');
+  
+  section.style.display = 'block';
+  g('modal-save-btn').textContent = 'Cerrar';
+  g('modal-save-btn').onclick = closeModal;
+}
+
+function copySQL(btn) {
+  const sql = btn.getAttribute('data-sql');
+  navigator.clipboard.writeText(sql).then(() => toast('SQL copiado ✓ — Pégalo en el SQL Editor de Supabase', 'ok'));
+}
 
   if (editingId) {
     const idx = clients.findIndex(c => c.id === editingId);
