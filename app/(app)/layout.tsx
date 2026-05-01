@@ -25,14 +25,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     </div>
   )
 
+  // Hide header on pipeline — it has its own header
+  const isPipeline = pathname === '/dashboard/pipeline'
+  if (isPipeline) return <>{children}</>
+
+  // Only show Admin button to Sapiora admin
+  const isSapioraAdmin = session.org_id === 'yurbban' && session.email === 'alex@sapiora.es'
+
   const navItems = [
     { label: 'Pipeline', href: '/dashboard/pipeline', icon: '🗺' },
-    { label: 'Admin', href: '/admin', icon: '⚙️' },
+    ...(isSapioraAdmin ? [{ label: 'Admin', href: '/admin', icon: '⚙️' }] : []),
   ]
 
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100vh',background:'#000'}}>
-      {/* Header */}
       <div style={{
         background:'#0a0a0a',
         borderBottom:'1px solid rgba(255,255,255,.07)',
@@ -44,14 +50,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         flexShrink:0,
         zIndex:100
       }}>
-        {/* Logo */}
         <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
           <div style={{fontSize:'16px',fontWeight:'700',color:'#f0eee9',fontFamily:'Montserrat,sans-serif',letterSpacing:'-.3px',cursor:'pointer'}}
             onClick={() => router.push('/dashboard/pipeline')}>
             Sapiora<span style={{color:'#6b2737'}}>.</span>
           </div>
-
-          {/* Nav */}
           <div style={{display:'flex',gap:'4px'}}>
             {navItems.map(item => (
               <button
@@ -79,8 +82,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             ))}
           </div>
         </div>
-
-        {/* Right side */}
         <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
           <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
             <div style={{
@@ -112,15 +113,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               fontSize:'11px',
               cursor:'pointer',
               fontFamily:'Montserrat,sans-serif',
-              transition:'all .15s'
             }}
           >
             Salir
           </button>
         </div>
       </div>
-
-      {/* Content */}
       <div style={{flex:1,overflow:'hidden'}}>
         {children}
       </div>
