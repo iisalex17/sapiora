@@ -560,6 +560,22 @@ input,select,textarea{font-family:var(--font);outline:none}
 <div id="toasts"></div>
 
 <script>
+  // ── SESSION CHECK ─────────────────────────────────────
+(function() {
+  const session = sessionStorage.getItem('sapiora_session');
+  if (!session) {
+    window.top.location.href = '/login';
+    return;
+  }
+  try {
+    const s = JSON.parse(session);
+    if (!s.supabase_url || !s.supabase_key) {
+      window.top.location.href = '/login';
+    }
+  } catch(e) {
+    window.top.location.href = '/login';
+  }
+})();
 // ── UTILS ────────────────────────────────────────────
 const g = id => document.getElementById(id);
 const show = id => g(id).classList.remove('hidden');
