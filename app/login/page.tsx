@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [focused, setFocused] = useState<string | null>(null)
   const router = useRouter()
 
   async function handleLogin(e: React.FormEvent) {
@@ -64,33 +65,147 @@ export default function LoginPage() {
     }
   }
 
+  const gold = '#C4A35A'
+  const goldFaint = 'rgba(196,163,90,.15)'
+  const goldFocus = 'rgba(196,163,90,.45)'
+
   return (
-    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#000'}}>
-      <div style={{background:'#141416',border:'1px solid rgba(255,255,255,.1)',borderRadius:'16px',padding:'44px 40px',width:'100%',maxWidth:'380px'}}>
-        <div style={{fontSize:'24px',fontWeight:'700',color:'#f0eee9',marginBottom:'4px',letterSpacing:'-.5px',fontFamily:'Montserrat,sans-serif'}}>
-          Sapiora<span style={{color:'#6b2737'}}>.</span>
-        </div>
-        <div style={{fontSize:'11px',color:'#6b6760',marginBottom:'32px',letterSpacing:'.3px'}}>
-          Acceso restringido
-        </div>
-        <form onSubmit={handleLogin}>
-          <div style={{marginBottom:'14px'}}>
-            <label style={{fontSize:'10px',fontWeight:'600',color:'#6b6760',textTransform:'uppercase',letterSpacing:'.8px',display:'block',marginBottom:'6px'}}>Email</label>
-            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="tu@empresa.com" required
-              style={{width:'100%',background:'#1a1a1e',border:'1px solid rgba(255,255,255,.12)',borderRadius:'8px',padding:'10px 13px',fontSize:'13px',color:'#f0eee9',outline:'none',fontFamily:'Montserrat,sans-serif',boxSizing:'border-box' as any}}/>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
+        .sapiora-input { transition: border-color .3s, background .3s; }
+        .sapiora-input:focus { outline: none; border-color: ${goldFocus} !important; background: rgba(196,163,90,.04) !important; }
+        .sapiora-input::placeholder { color: rgba(255,255,255,.15); }
+        .sapiora-btn { transition: all .3s; }
+        .sapiora-btn:hover { border-color: rgba(196,163,90,.7) !important; color: #e8c87a !important; }
+        .sapiora-btn:active { transform: scale(.99); }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        .sapiora-card { animation: fadeUp .6s cubic-bezier(.34,1.56,.64,1) both; }
+      `}</style>
+      <div style={{
+        minHeight:'100vh', background:'#060608', display:'flex',
+        alignItems:'center', justifyContent:'center',
+        fontFamily:"'DM Sans', sans-serif", position:'relative', overflow:'hidden'
+      }}>
+        {/* Grid background */}
+        <div style={{
+          position:'absolute', inset:0,
+          backgroundImage:'linear-gradient(rgba(196,163,90,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(196,163,90,.04) 1px,transparent 1px)',
+          backgroundSize:'40px 40px', pointerEvents:'none'
+        }}/>
+        {/* Glow */}
+        <div style={{
+          position:'absolute', width:'400px', height:'400px', borderRadius:'50%',
+          background:'radial-gradient(circle,rgba(196,163,90,.06) 0%,transparent 70%)',
+          top:'50%', left:'50%', transform:'translate(-50%,-50%)', pointerEvents:'none'
+        }}/>
+
+        {/* Card */}
+        <div className="sapiora-card" style={{position:'relative', width:'360px', padding:'48px 40px'}}>
+          {/* Corner decorations */}
+          {[['0','0','1px 0 0 1px'],['0','auto','1px 1px 0 0'],['auto','0','0 0 1px 1px'],['auto','auto','0 1px 1px 0']].map(([t,r,bw],i) => (
+            <div key={i} style={{
+              position:'absolute', width:'16px', height:'16px',
+              top: i<2 ? 0 : 'auto', bottom: i>=2 ? 0 : 'auto',
+              left: i%2===0 ? 0 : 'auto', right: i%2===1 ? 0 : 'auto',
+              borderColor:'rgba(196,163,90,.2)', borderStyle:'solid', borderWidth:bw
+            }}/>
+          ))}
+
+          {/* Logo */}
+          <div style={{display:'flex', alignItems:'baseline', gap:'2px', marginBottom:'8px'}}>
+            <div style={{fontFamily:"'Cormorant Garamond', serif", fontSize:'32px', fontWeight:300, color:'#f0ede6', letterSpacing:'2px'}}>
+              Sapiora
+            </div>
+            <div style={{width:'6px', height:'6px', borderRadius:'50%', background:gold, marginLeft:'2px', marginBottom:'6px', flexShrink:0}}/>
           </div>
-          <div style={{marginBottom:'14px'}}>
-            <label style={{fontSize:'10px',fontWeight:'600',color:'#6b6760',textTransform:'uppercase',letterSpacing:'.8px',display:'block',marginBottom:'6px'}}>Contraseña</label>
-            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" required
-              style={{width:'100%',background:'#1a1a1e',border:'1px solid rgba(255,255,255,.12)',borderRadius:'8px',padding:'10px 13px',fontSize:'13px',color:'#f0eee9',outline:'none',fontFamily:'Montserrat,sans-serif',boxSizing:'border-box' as any}}/>
+          <div style={{fontSize:'9px', color:'rgba(255,255,255,.25)', letterSpacing:'3px', textTransform:'uppercase', marginBottom:'32px', fontWeight:300}}>
+            Hospitality Intelligence
           </div>
-          {error && <div style={{fontSize:'11px',color:'#c94040',marginBottom:'12px',textAlign:'center'}}>{error}</div>}
-          <button type="submit" disabled={loading}
-            style={{width:'100%',background:'#6b2737',color:'#fff',border:'none',padding:'12px',borderRadius:'8px',fontSize:'12px',fontWeight:'600',cursor:'pointer',marginTop:'6px',fontFamily:'Montserrat,sans-serif',letterSpacing:'.3px',opacity:loading?0.6:1}}>
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
+          <div style={{width:'32px', height:'1px', background:`linear-gradient(90deg,transparent,${gold},transparent)`, marginBottom:'40px'}}/>
+
+          {/* Form */}
+          <form onSubmit={handleLogin}>
+            {/* Email */}
+            <div style={{marginBottom:'20px'}}>
+              <label style={{
+                fontSize:'9px', letterSpacing:'2.5px', textTransform:'uppercase',
+                color: focused==='email' ? 'rgba(196,163,90,.6)' : 'rgba(255,255,255,.3)',
+                marginBottom:'8px', display:'block', fontWeight:400, transition:'color .3s'
+              }}>Email</label>
+              <input
+                className="sapiora-input"
+                type="email" value={email}
+                onChange={e => setEmail(e.target.value)}
+                onFocus={() => setFocused('email')}
+                onBlur={() => setFocused(null)}
+                placeholder="tu@empresa.com" required
+                style={{
+                  width:'100%', background:'rgba(255,255,255,.03)',
+                  border:`1px solid ${goldFaint}`, borderRadius:'4px',
+                  padding:'12px 16px', fontSize:'13px', color:'#f0ede6',
+                  fontFamily:"'DM Sans', sans-serif", letterSpacing:'.3px',
+                  boxSizing:'border-box' as any
+                }}
+              />
+            </div>
+
+            {/* Password */}
+            <div style={{marginBottom:'8px'}}>
+              <label style={{
+                fontSize:'9px', letterSpacing:'2.5px', textTransform:'uppercase',
+                color: focused==='password' ? 'rgba(196,163,90,.6)' : 'rgba(255,255,255,.3)',
+                marginBottom:'8px', display:'block', fontWeight:400, transition:'color .3s'
+              }}>Contraseña</label>
+              <input
+                className="sapiora-input"
+                type="password" value={password}
+                onChange={e => setPassword(e.target.value)}
+                onFocus={() => setFocused('password')}
+                onBlur={() => setFocused(null)}
+                placeholder="••••••••" required
+                style={{
+                  width:'100%', background:'rgba(255,255,255,.03)',
+                  border:`1px solid ${goldFaint}`, borderRadius:'4px',
+                  padding:'12px 16px', fontSize:'13px', color:'#f0ede6',
+                  fontFamily:"'DM Sans', sans-serif", letterSpacing:'.3px',
+                  boxSizing:'border-box' as any
+                }}
+              />
+            </div>
+
+            {/* Error */}
+            <div style={{fontSize:'11px', color:'#c4735a', marginTop:'12px', textAlign:'center', letterSpacing:'.5px', minHeight:'16px', transition:'opacity .3s', opacity: error ? 1 : 0}}>
+              {error || ' '}
+            </div>
+
+            {/* Button */}
+            <button
+              className="sapiora-btn"
+              type="submit" disabled={loading}
+              style={{
+                width:'100%', marginTop:'24px', padding:'14px',
+                background:'transparent', border:`1px solid rgba(196,163,90,.4)`,
+                borderRadius:'4px', color:gold,
+                fontFamily:"'DM Sans', sans-serif", fontSize:'11px',
+                letterSpacing:'3px', textTransform:'uppercase', cursor:'pointer',
+                opacity: loading ? .6 : 1
+              }}
+            >
+              {loading ? 'Accediendo...' : 'Acceder'}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div style={{marginTop:'48px', display:'flex', alignItems:'center', gap:'12px'}}>
+            <div style={{flex:1, height:'1px', background:'rgba(255,255,255,.06)'}}/>
+            <div style={{fontSize:'9px', color:'rgba(255,255,255,.15)', letterSpacing:'1.5px', textTransform:'uppercase'}}>
+              Acceso restringido
+            </div>
+            <div style={{flex:1, height:'1px', background:'rgba(255,255,255,.06)'}}/>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
