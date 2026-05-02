@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const ADMIN_URL = 'https://owdvtgwuizxzgppqgtps.supabase.co'
-const ADMIN_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZHZ0Z3d1aXp4emdwcHFndHBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODU5MDMsImV4cCI6MjA5Mjg2MTkwM30.hpNlm2eUX_zAgYF7Lud9Ru2QSJuHvYaR4EB-Lf9a-4A'
+const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_SUPABASE_URL!
+const ADMIN_KEY = process.env.NEXT_PUBLIC_ADMIN_SUPABASE_KEY!
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
