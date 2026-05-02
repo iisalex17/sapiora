@@ -1,49 +1,29 @@
-async function saveClient() {
-  var name = g('f-name').value.trim();
-  var email = g('f-email').value.trim();
-  if (!name) { toast('El nombre es obligatorio', 'err'); return; }
-  if (!email) { toast('El email es obligatorio', 'err'); return; }
+'use client'
 
-  var btn = g('cm-save-btn');
-  btn.disabled = true; btn.textContent = 'Guardando…';
+import { useEffect } from 'react'
+import { createClient } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
-  var now = new Date().toISOString();
-  var orgId = name.toLowerCase().replace(/[^a-z0-9]/g,'_').slice(0,20) + '_' + Date.now().toString().slice(-4);
+export default function DashboardPage() {
+  const router = useRouter()
+  const supabase = createClient()
 
-  var data = {
-    name: name, email: email,
-    plan: g('f-plan').value,
-    status: g('f-status').value,
-    phone: g('f-phone').value.trim(),
-    country: g('f-country').value.trim(),
-    supabase_url: ADMIN.url,
-    supabase_key: ADMIN.key,
-    notes: g('f-notes').value.trim()
-  };
+  useEffect(() => {
+    async function check() {
+      const { data: { user } } = await supabase.auth.getUser()
+      const local = sessionStorage.getItem('test_user')
+      if (!user && !local) {
+        router.push('/login')
+        return
+      }
+      router.push('/dashboard/pipeline')
+    }
+    check()
+  }, [])
 
-  if (editingId) {
-    var idx = clients.findIndex(function(c){ return c.id === editingId; });
-    clients[idx] = Object.assign({}, clients[idx], data, { updated_at: now });
-    await saveToSupabase(clients[idx], false);
-    await updateRouting(email, clients[idx]);
-    toast('Cliente actualizado ✓', 'ok');
-    closeClientModal();
-  } else {
-    var newClient = Object.assign({}, data, { id: genId(), org_id: orgId, created_at: now });
-    clients.unshift(newClient);
-    await saveToSupabase(newClient, true);
-
-    // Auto-register in user_routing with admin Supabase
-    var routingOk = await addToUserRouting(email, newClient, orgId);
-
-    showOnboarding(newClient, orgId, routingOk);
-    btn.disabled = false;
-    localStorage.setItem('sp_clients', JSON.stringify(clients));
-    renderAll();
-    return;
-  }
-
-  localStorage.setItem('sp_clients', JSON.stringify(clients));
-  renderAll();
-  btn.disabled = false;
+  return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#000'}}>
+      <div style={{color:'#6b6760',fontFamily:'Montserrat,sans-serif',fontSize:'13px'}}>Cargando...</div>
+    </div>
+  )
 }
