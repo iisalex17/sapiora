@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Producto — Sapiora</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#080808;--white:#f5f2ed;--gold:#c4a35a;--gold-d:#a8873e;--gold-l:rgba(196,163,90,.12);--muted:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--font-display:'Cormorant Garamond',serif;--font-body:'Sora',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:2px}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-lang{display:flex;gap:6px}
+.lang-btn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:none;font-family:var(--font-body);transition:all .2s}
+.lang-btn.active,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-cta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px 22px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s}
+.nav-cta:hover{background:var(--gold);color:var(--black)}
+section{padding:100px 60px}
+.container{max-width:1200px;margin:0 auto}
+.section-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);font-weight:300;line-height:1.1;letter-spacing:-.5px;margin-bottom:20px}
+.section-sub{font-size:15px;color:var(--muted);line-height:1.8;max-width:560px}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:none}
+.btn-primary{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:16px 36px;background:var(--gold);color:var(--black);border:none;border-radius:4px;cursor:pointer;font-family:var(--font-body);transition:all .25s;display:inline-block}
+.btn-primary:hover{background:var(--gold-d);transform:translateY(-2px)}
+.btn-ghost{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:16px 36px;background:transparent;color:var(--white);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:var(--font-body);transition:all .25s;display:inline-block}
+.btn-ghost:hover{border-color:var(--white)}
+
+/* HERO */
+#hero{padding:160px 60px 100px;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(196,163,90,.06) 0%,transparent 70%);pointer-events:none}
+#hero h1{font-family:var(--font-display);font-size:clamp(48px,7vw,88px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
+#hero h1 em{font-style:italic;color:var(--gold)}
+#hero p{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto 48px;line-height:1.8}
+
+/* DASHBOARD PREVIEW */
+#preview{background:linear-gradient(180deg,var(--black) 0%,#0a0806 100%);padding:0 60px 100px}
+.dashboard-mock{max-width:1000px;margin:0 auto;background:rgba(245,242,237,.03);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.6)}
+.mock-bar{height:40px;background:rgba(0,0,0,.5);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:8px}
+.mock-dot{width:10px;height:10px;border-radius:50%}
+.mock-title{font-size:11px;color:var(--muted);margin-left:12px;letter-spacing:.5px}
+.mock-body{display:grid;grid-template-columns:280px 1fr;height:480px}
+.mock-sidebar{border-right:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:8px}
+.mock-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.mock-kpi{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px}
+.mock-kpi-v{font-family:var(--font-display);font-size:24px;font-weight:300;color:var(--gold);line-height:1}
+.mock-kpi-l{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.mock-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;transition:background .2s}
+.mock-card:hover{background:rgba(196,163,90,.06)}
+.mock-card.active{border-color:var(--gold)}
+.mock-card-name{font-size:11px;font-weight:600;margin-bottom:4px}
+.mock-card-addr{font-size:9px;color:var(--muted)}
+.mock-card-bot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.mock-badge{font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px}
+.mock-badge.hot{background:rgba(154,60,66,.2);color:#e07a8a}
+.mock-badge.warm{background:rgba(181,98,26,.2);color:#d4884a}
+.mock-badge.new{background:rgba(42,138,110,.2);color:#4ab894}
+.mock-map{flex:1;background:rgba(42,138,110,.03);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.mock-map-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(196,163,90,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(196,163,90,.03) 1px,transparent 1px);background-size:40px 40px}
+.mock-pin{position:absolute;width:12px;height:12px;border-radius:50%;border:2px solid #fff}
+
+/* FEATURES DEEP */
+#features-deep{background:#0a0806}
+.feat-deep-grid{display:flex;flex-direction:column;gap:80px;margin-top:60px}
+.feat-deep-row{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.feat-deep-row.reverse{direction:rtl}
+.feat-deep-row.reverse>*{direction:ltr}
+.feat-visual{background:rgba(245,242,237,.03);border:1px solid var(--border);border-radius:16px;padding:32px;min-height:320px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.feat-visual::after{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(196,163,90,.06) 0%,transparent 70%)}
+.feat-num{font-family:var(--font-display);font-size:100px;font-weight:300;color:rgba(196,163,90,.06);position:absolute;top:-10px;right:20px;line-height:1;pointer-events:none}
+.feat-deep-icon{font-size:36px;margin-bottom:20px}
+.feat-deep-title{font-family:var(--font-display);font-size:32px;font-weight:300;margin-bottom:12px}
+.feat-deep-desc{font-size:14px;color:var(--muted);line-height:1.8}
+.feat-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.pill{font-size:10px;font-weight:600;letter-spacing:.8px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;color:var(--muted)}
+
+/* SCORE VISUAL */
+.score-display{display:flex;align-items:center;gap:24px;margin-bottom:20px}
+.score-circle{width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:36px;font-weight:300;color:var(--gold);flex-shrink:0}
+.score-bars{flex:1;display:flex;flex-direction:column;gap:6px}
+.sbar-row{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted)}
+.sbar-track{flex:1;height:3px;background:rgba(245,242,237,.08);border-radius:2px}
+.sbar-fill{height:100%;border-radius:2px;background:var(--gold)}
+.flag-row{display:flex;align-items:center;gap:8px;font-size:11px;padding:8px 10px;border-radius:6px}
+.flag-row.green{background:rgba(42,138,110,.1);color:#4ab894}
+.flag-row.red{background:rgba(154,60,66,.1);color:#e07a8a}
+.flag-row.yellow{background:rgba(181,98,26,.1);color:#d4884a}
+
+/* OWNER VISUAL */
+.owner-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px}
+.owner-name{font-size:15px;font-weight:600;margin-bottom:4px}
+.owner-role{font-size:11px;color:var(--muted);margin-bottom:12px}
+.owner-field{display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border)}
+.owner-field:last-child{border-bottom:none}
+.owner-field span:first-child{color:var(--muted)}
+.owner-field span:last-child{font-weight:600}
+.conf-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:rgba(42,138,110,.15);color:#4ab894;margin-top:10px}
+
+/* WORKFLOW */
+#workflow{background:var(--black);border-top:1px solid var(--border)}
+.workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:60px}
+.wf-step{background:var(--black);padding:32px;transition:background .2s}
+.wf-step:hover{background:rgba(196,163,90,.04)}
+.wf-num{font-family:var(--font-display);font-size:48px;font-weight:300;color:rgba(196,163,90,.15);line-height:1;margin-bottom:16px}
+.wf-title{font-size:14px;font-weight:600;margin-bottom:8px}
+.wf-desc{font-size:12px;color:var(--muted);line-height:1.7}
+.wf-arrow{display:none}
+
+footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:2px}
+.footer-logo span{color:var(--gold)}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{font-size:11px;color:var(--muted);transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-copy{font-size:11px;color:rgba(245,242,237,.2)}
+
+@media(max-width:900px){
+  nav{padding:16px 24px}
+  .nav-links{display:none}
+  section,#hero,#preview{padding-left:24px;padding-right:24px}
+  #preview{padding-left:24px;padding-right:24px}
+  .feat-deep-row{grid-template-columns:1fr}
+  .feat-deep-row.reverse{direction:ltr}
+  .mock-body{grid-template-columns:1fr;height:auto}
+  .mock-sidebar{display:none}
+  .workflow-steps{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Sapiora<span>.</span></a>
+  <div class="nav-links">
+    <a href="product.html">Producto</a>
+    <a href="pricing.html">Precios</a>
+    <a href="about.html">Nosotros</a>
+    <a href="contact.html">Contacto</a>
+    <div class="nav-lang">
+      <button class="lang-btn active" onclick="setLang('es')" data-lang="es">ES</button>
+      <button class="lang-btn" onclick="setLang('ca')" data-lang="ca">CA</button>
+      <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
+    </div>
+  </div>
+  <a href="contact.html" class="nav-cta">Early Access</a>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="section-tag">El producto</div>
+  <h1>Una plataforma diseñada para<br/><em>equipos de expansión hotelera.</em></h1>
+  <p>Desde la búsqueda automatizada hasta el cierre de la negociación. Sapiora centraliza todo el flujo de adquisición en un único dashboard inteligente.</p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a href="contact.html" class="btn-primary">Solicitar demo</a>
+    <a href="pricing.html" class="btn-ghost">Ver precios</a>
+  </div>
+</section>
+
+<section id="preview">
+  <div class="dashboard-mock reveal">
+    <div class="mock-bar">
+      <div class="mock-dot" style="background:#ff5f57"></div>
+      <div class="mock-dot" style="background:#ffbd2e"></div>
+      <div class="mock-dot" style="background:#28c840"></div>
+      <div class="mock-title">Sapiora — Pipeline Intelligence · sapiora.site</div>
+    </div>
+    <div class="mock-body">
+      <div class="mock-sidebar">
+        <div class="mock-kpi-grid">
+          <div class="mock-kpi"><div class="mock-kpi-v">37</div><div class="mock-kpi-l">Total</div></div>
+          <div class="mock-kpi"><div class="mock-kpi-v" style="color:#e07a8a">12</div><div class="mock-kpi-l">Hot</div></div>
+          <div class="mock-kpi"><div class="mock-kpi-v">3</div><div class="mock-kpi-l">Ciudades</div></div>
+          <div class="mock-kpi"><div class="mock-kpi-v">89%</div><div class="mock-kpi-l">AI scored</div></div>
+        </div>
+        <div class="mock-card active">
+          <div class="mock-card-name">Hotel Mediterráneo BCN</div>
+          <div class="mock-card-addr">Eixample, Barcelona</div>
+          <div class="mock-card-bot"><span class="mock-badge hot">Hot</span><span style="font-size:10px;color:var(--gold)">Score 87</span></div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-name">Midtown Suites Miami</div>
+          <div class="mock-card-addr">Brickell, Miami FL</div>
+          <div class="mock-card-bot"><span class="mock-badge warm">Warm</span><span style="font-size:10px;color:var(--muted)">Score 72</span></div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-name">Bayfront Inn Downtown</div>
+          <div class="mock-card-addr">Downtown Miami, FL</div>
+          <div class="mock-card-bot"><span class="mock-badge new">Nuevo</span><span style="font-size:10px;color:var(--muted)">Sin score</span></div>
+        </div>
+      </div>
+      <div class="mock-map">
+        <div class="mock-map-bg"></div>
+        <div class="mock-pin" style="background:#9a3c42;top:35%;left:40%"></div>
+        <div class="mock-pin" style="background:#9a3c42;top:55%;left:55%"></div>
+        <div class="mock-pin" style="background:#b5621a;top:45%;left:35%"></div>
+        <div class="mock-pin" style="background:#2a8a6e;top:30%;left:60%"></div>
+        <div class="mock-pin" style="background:#2a8a6e;top:65%;left:48%"></div>
+        <div class="mock-pin" style="background:#9a3c42;top:42%;left:70%"></div>
+        <div style="position:absolute;bottom:16px;right:16px;font-size:10px;color:var(--muted);background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px">37 propiedades · 31 geocodificadas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features-deep">
+  <div class="container">
+    <div class="section-tag reveal">Funcionalidades en detalle</div>
+    <h2 class="section-title reveal">Cada herramienta,<br/><em>pensada para hoteles.</em></h2>
+    <div class="feat-deep-grid">
+
+      <!-- AI Scoring -->
+      <div class="feat-deep-row reveal">
+        <div>
+          <div class="feat-deep-icon">🤖</div>
+          <h3 class="feat-deep-title">AI Lead Scoring</h3>
+          <p class="feat-deep-desc">Claude AI analiza cada oportunidad hotelera y genera un score 0-100 basado en tamaño, ubicación, tipo de oportunidad y potencial de mejora operativa. Incluye señales clave, red flags y acción recomendada.</p>
+          <div class="feat-pills">
+            <span class="pill">Score 0-100</span>
+            <span class="pill">Red flags</span>
+            <span class="pill">Acción recomendada</span>
+            <span class="pill">Claude AI</span>
+          </div>
+        </div>
+        <div class="feat-visual">
+          <div class="feat-num">01</div>
+          <div class="score-display">
+            <div class="score-circle">87</div>
+            <div class="score-bars">
+              <div class="sbar-row"><span style="width:80px">Ubicación</span><div class="sbar-track"><div class="sbar-fill" style="width:95%"></div></div></div>
+              <div class="sbar-row"><span style="width:80px">Tamaño</span><div class="sbar-track"><div class="sbar-fill" style="width:78%"></div></div></div>
+              <div class="sbar-row"><span style="width:80px">Oportunidad</span><div class="sbar-track"><div class="sbar-fill" style="width:88%"></div></div></div>
+              <div class="sbar-row"><span style="width:80px">Rating</span><div class="sbar-track"><div class="sbar-fill" style="width:60%"></div></div></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="flag-row green">✓ Ubicación prime en Eixample, alto tráfico turístico</div>
+            <div class="flag-row yellow">⚠ Gestión actual sin estándares de cadena hotelera</div>
+            <div class="flag-row red">✕ Rating 6.4 en Booking — por debajo del mercado BCN</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner Search -->
+      <div class="feat-deep-row reverse reveal">
+        <div>
+          <div class="feat-deep-icon">👤</div>
+          <h3 class="feat-deep-title">Owner Search</h3>
+          <p class="feat-deep-desc">El agente busca en registros públicos, LinkedIn y fuentes oficiales para identificar al propietario real del activo. Genera una estrategia de contacto y el primer mensaje de outreach personalizado.</p>
+          <div class="feat-pills">
+            <span class="pill">Registros públicos</span>
+            <span class="pill">LinkedIn</span>
+            <span class="pill">Mensaje de outreach</span>
+            <span class="pill">Confianza alta/media/baja</span>
+          </div>
+        </div>
+        <div class="feat-visual">
+          <div class="feat-num">02</div>
+          <div class="owner-card">
+            <div class="owner-name">Josep M. Ferrer</div>
+            <div class="owner-role">Propietario · Ferrer Invest SL</div>
+            <div class="owner-field"><span>Agente registrado</span><span>Ferrer Invest SL</span></div>
+            <div class="owner-field"><span>LinkedIn</span><span style="color:var(--gold)">🔗 Ver perfil ↗</span></div>
+            <div class="owner-field"><span>Contacto</span><span style="color:#4ab894">+34 93 XXX XXXX</span></div>
+            <div class="conf-badge">✓ Confianza alta</div>
+          </div>
+          <div style="background:rgba(196,163,90,.06);border:1px solid rgba(196,163,90,.15);border-radius:8px;padding:12px;font-size:11px;color:var(--muted);font-style:italic;line-height:1.6">"Estimado Sr. Ferrer, hemos identificado su propiedad en el Eixample como una oportunidad de gestión alineada con nuestra estrategia de expansión..."</div>
+        </div>
+      </div>
+
+      <!-- RevPAR Calculator -->
+      <div class="feat-deep-row reveal">
+        <div>
+          <div class="feat-deep-icon">📊</div>
+          <h3 class="feat-deep-title">RevPAR Calculator</h3>
+          <p class="feat-deep-desc">Introduce ADR, ocupación y precio de adquisición. Sapiora calcula RevPAR, GOP, Cap Rate, fee de gestión y revenue por habitación al año — en tiempo real para cada activo del pipeline.</p>
+          <div class="feat-pills">
+            <span class="pill">RevPAR</span>
+            <span class="pill">GOP 40%</span>
+            <span class="pill">Cap Rate</span>
+            <span class="pill">Fee gestión</span>
+            <span class="pill">Rev/hab/año</span>
+          </div>
+        </div>
+        <div class="feat-visual">
+          <div class="feat-num">03</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">RevPAR</div>
+              <div style="font-family:var(--font-display);font-size:28px;color:var(--gold);font-weight:300">€94</div>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Total Rev.</div>
+              <div style="font-family:var(--font-display);font-size:28px;color:var(--white);font-weight:300">€2.4M</div>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Fee gestión</div>
+              <div style="font-family:var(--font-display);font-size:28px;color:#4ab894;font-weight:300">€168K</div>
+            </div>
+            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
+              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Cap Rate</div>
+              <div style="font-family:var(--font-display);font-size:28px;color:var(--white);font-weight:300">7.2%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="workflow">
+  <div class="container">
+    <div class="section-tag reveal">Automatización</div>
+    <h2 class="section-title reveal">El agente trabaja<br/><em>mientras tú negocias.</em></h2>
+    <div class="workflow-steps reveal">
+      <div class="wf-step">
+        <div class="wf-num">01</div>
+        <div class="wf-title">Búsqueda semanal</div>
+        <div class="wf-desc">Cada semana el agente escanea Booking.com y otras fuentes según tus criterios de ciudad, rating y tamaño mínimo.</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">02</div>
+        <div class="wf-title">Enriquecimiento</div>
+        <div class="wf-desc">Verifica dirección, teléfono, web oficial, número de habitaciones y año de apertura. Sin estimaciones.</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">03</div>
+        <div class="wf-title">Clasificación</div>
+        <div class="wf-desc">Genera tipo de activo, problema principal, oportunidad y lo transforma en un lead estructurado listo para la BD.</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">04</div>
+        <div class="wf-title">Inserción automática</div>
+        <div class="wf-desc">El lead aparece en tu pipeline con todos los datos verificados, asignado a tu organización. Sin duplicados.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:80px 60px;text-align:center;background:#0a0806">
+  <div class="container">
+    <h2 class="section-title reveal" style="max-width:600px;margin:0 auto 32px">¿Listo para ver<br/><em>Sapiora en acción?</em></h2>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap" class="reveal">
+      <a href="contact.html" class="btn-primary">Solicitar demo</a>
+      <a href="pricing.html" class="btn-ghost">Ver precios</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Sapiora<span>.</span></div>
+    <div class="footer-links">
+      <a href="product.html">Producto</a>
+      <a href="pricing.html">Precios</a>
+      <a href="about.html">Nosotros</a>
+      <a href="contact.html">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2026 Sapiora. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+var observer = new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
+function setLang(l){ window.setLang && window.setLang(l); });}
+</script>
+<script src="i18n.js"></script>
+</body>
+</html>

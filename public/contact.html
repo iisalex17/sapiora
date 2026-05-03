@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contacto — Sapiora</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#080808;--white:#f5f2ed;--gold:#c4a35a;--gold-d:#a8873e;--gold-l:rgba(196,163,90,.12);--muted:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--green:#2a8a6e;--green-l:rgba(42,138,110,.15);--red:#9a3c42;--red-l:rgba(154,60,66,.15);--font-display:'Cormorant Garamond',serif;--font-body:'Sora',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:2px}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-lang{display:flex;gap:6px}
+.lang-btn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:none;font-family:var(--font-body);transition:all .2s}
+.lang-btn.active,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-cta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px 22px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s}
+.nav-cta:hover{background:var(--gold);color:var(--black)}
+.section-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,72px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:20px}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:none}
+.container{max-width:1100px;margin:0 auto}
+
+/* MAIN */
+#main{min-height:100vh;padding:140px 60px 100px;display:flex;align-items:flex-start;justify-content:center}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;width:100%;max-width:1000px;align-items:start}
+
+/* LEFT */
+.contact-left h1{font-family:var(--font-display);font-size:clamp(42px,5vw,64px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:20px}
+.contact-left h1 em{font-style:italic;color:var(--gold)}
+.contact-left p{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:32px}
+.contact-info{display:flex;flex-direction:column;gap:16px}
+.info-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--border);border-radius:10px;transition:border-color .2s}
+.info-item:hover{border-color:rgba(196,163,90,.25)}
+.info-icon{font-size:18px;flex-shrink:0}
+.info-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.info-value{font-size:13px;font-weight:500}
+.trust-items{display:flex;flex-direction:column;gap:10px;margin-top:32px}
+.trust-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.trust-item::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0}
+
+/* FORM */
+.contact-form{background:rgba(245,242,237,.02);border:1px solid var(--border);border-radius:20px;padding:48px}
+.ff{margin-bottom:20px}
+.ff label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.ff input,.ff select,.ff textarea{width:100%;background:rgba(245,242,237,.04);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-size:13px;color:var(--white);font-family:var(--font-body);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;resize:none}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-l)}
+.ff input::placeholder,.ff textarea::placeholder{color:rgba(245,242,237,.2)}
+.ff textarea{min-height:100px;line-height:1.7}
+.ff select option{background:#1a1a1a;color:var(--white)}
+.ff-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.submit-btn{width:100%;padding:18px;background:var(--gold);color:var(--black);border:none;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:var(--font-body);transition:all .25s;margin-top:8px}
+.submit-btn:hover{background:var(--gold-d);transform:translateY(-2px)}
+.submit-btn:disabled{opacity:.5;cursor:default;transform:none}
+.form-note{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6}
+
+/* SUCCESS */
+.success-state{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 40px;gap:16px}
+.success-icon{font-size:48px;margin-bottom:8px}
+.success-title{font-family:var(--font-display);font-size:36px;font-weight:300;color:var(--white)}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:320px}
+
+/* SOCIAL PROOF */
+#proof{padding:80px 60px;background:#0a0806;border-top:1px solid var(--border)}
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.proof-card{border:1px solid var(--border);border-radius:16px;padding:32px;transition:border-color .2s}
+.proof-card:hover{border-color:rgba(196,163,90,.2)}
+.proof-stars{color:var(--gold);font-size:14px;margin-bottom:16px;letter-spacing:2px}
+.proof-text{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;font-style:italic}
+.proof-author{font-size:11px;font-weight:600;letter-spacing:.5px}
+.proof-company{font-size:10px;color:var(--muted);margin-top:2px}
+
+footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:2px}
+.footer-logo span{color:var(--gold)}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{font-size:11px;color:var(--muted);transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-copy{font-size:11px;color:rgba(245,242,237,.2)}
+
+@media(max-width:900px){
+  nav{padding:16px 24px}
+  .nav-links{display:none}
+  #main,#proof{padding-left:24px;padding-right:24px}
+  .contact-grid{grid-template-columns:1fr}
+  .ff-row{grid-template-columns:1fr}
+  .proof-grid{grid-template-columns:1fr}
+  .contact-form{padding:28px 24px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Sapiora<span>.</span></a>
+  <div class="nav-links">
+    <a href="product.html">Producto</a>
+    <a href="pricing.html">Precios</a>
+    <a href="about.html">Nosotros</a>
+    <a href="contact.html">Contacto</a>
+    <div class="nav-lang">
+      <button class="lang-btn active" onclick="setLang('es')" data-lang="es">ES</button>
+      <button class="lang-btn" onclick="setLang('ca')" data-lang="ca">CA</button>
+      <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
+    </div>
+  </div>
+  <a href="contact.html" class="nav-cta">Early Access</a>
+</nav>
+
+<section id="main">
+  <div class="contact-grid">
+    <div class="contact-left reveal">
+      <div class="section-tag">Contacto</div>
+      <h1>Hablemos sobre tu <em>estrategia de expansión.</em></h1>
+      <p>Estamos en Early Access. Cada nuevo cliente recibe onboarding personalizado y acceso directo al equipo. No hay formularios genéricos ni colas de soporte.</p>
+      <div class="contact-info">
+        <div class="info-item">
+          <div class="info-icon">📧</div>
+          <div>
+            <div class="info-label">Email</div>
+            <div class="info-value">hola@sapiora.site</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">⏱</div>
+          <div>
+            <div class="info-label">Tiempo de respuesta</div>
+            <div class="info-value">Menos de 24 horas</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">🌍</div>
+          <div>
+            <div class="info-label">Idiomas</div>
+            <div class="info-value">Español · Català · English</div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-items">
+        <div class="trust-item">Sin compromiso ni contrato mínimo</div>
+        <div class="trust-item">Demo personalizada de 30 minutos</div>
+        <div class="trust-item">Onboarding incluido en todos los planes</div>
+        <div class="trust-item">Garantía de devolución 14 días</div>
+      </div>
+    </div>
+
+    <div class="contact-form reveal">
+      <div id="form-content">
+        <div style="margin-bottom:28px">
+          <div style="font-size:16px;font-weight:600;margin-bottom:4px">Solicitar Early Access</div>
+          <div style="font-size:12px;color:var(--muted)">Te contactamos en menos de 24 horas.</div>
+        </div>
+        <div class="ff-row">
+          <div class="ff"><label>Nombre *</label><input type="text" id="f-name" placeholder="Alex García"/></div>
+          <div class="ff"><label>Empresa *</label><input type="text" id="f-company" placeholder="Grupo Hotelero X"/></div>
+        </div>
+        <div class="ff"><label>Email profesional *</label><input type="email" id="f-email" placeholder="alex@empresa.com"/></div>
+        <div class="ff-row">
+          <div class="ff"><label>Teléfono</label><input type="tel" id="f-phone" placeholder="+34 600 000 000"/></div>
+          <div class="ff"><label>País</label>
+            <select id="f-country">
+              <option value="">Seleccionar…</option>
+              <option value="es">España</option>
+              <option value="us">Estados Unidos</option>
+              <option value="uk">Reino Unido</option>
+              <option value="fr">Francia</option>
+              <option value="de">Alemania</option>
+              <option value="other">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="ff"><label>Plan de interés</label>
+          <select id="f-plan">
+            <option value="">Seleccionar plan…</option>
+            <option value="starter">Starter — €149/mes</option>
+            <option value="growth">Growth — €349/mes</option>
+            <option value="enterprise">Enterprise — A medida</option>
+            <option value="demo">Solo quiero ver una demo</option>
+          </select>
+        </div>
+        <div class="ff"><label>Ciudad(es) de interés</label><input type="text" id="f-cities" placeholder="ej: Miami, Barcelona, Madrid…"/></div>
+        <div class="ff"><label>Cuéntanos sobre tu expansión</label><textarea id="f-message" placeholder="¿Cuántos hoteles gestiona tu grupo? ¿En qué mercados buscas activos? ¿Qué problema intentas resolver?"></textarea></div>
+        <div id="form-error" style="display:none;background:var(--red-l);border:1px solid rgba(154,60,66,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:#e07a8a;margin-bottom:16px"></div>
+        <button class="submit-btn" id="submit-btn" onclick="submitForm()">Enviar solicitud</button>
+        <div class="form-note">Al enviar aceptas nuestra política de privacidad. Sin spam, prometido.</div>
+      </div>
+      <div class="success-state" id="success-state">
+        <div class="success-icon">✦</div>
+        <div class="success-title">Solicitud recibida</div>
+        <div class="success-sub">Gracias por tu interés en Sapiora. Te contactamos en menos de 24 horas para coordinar la demo.</div>
+        <div style="margin-top:24px">
+          <a href="index.html" style="font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.5px">← Volver al inicio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="proof">
+  <div class="container">
+    <div class="section-tag reveal">Por qué confían en Sapiora</div>
+    <div class="proof-grid reveal">
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <div class="proof-text">"En dos semanas teníamos 37 leads verificados en Miami. Lo que antes nos llevaba meses de trabajo manual."</div>
+        <div class="proof-author">Director de Expansión</div>
+        <div class="proof-company">Grupo hotelero europeo · Early Access</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <div class="proof-text">"El Owner Search es lo que más nos sorprendió. Encontramos al propietario real de un activo en Barcelona que llevábamos meses intentando identificar."</div>
+        <div class="proof-author">Asset Manager</div>
+        <div class="proof-company">Operador independiente · Early Access</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <div class="proof-text">"La calculadora de RevPAR integrada directamente en el pipeline cambia completamente cómo priorizamos oportunidades."</div>
+        <div class="proof-author">CFO</div>
+        <div class="proof-company">Cadena boutique regional · Early Access</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Sapiora<span>.</span></div>
+    <div class="footer-links">
+      <a href="product.html">Producto</a>
+      <a href="pricing.html">Precios</a>
+      <a href="about.html">Nosotros</a>
+      <a href="contact.html">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2026 Sapiora. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+var observer = new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
+function setLang(l){ window.setLang && window.setLang(l); });}
+
+// Pre-fill email from URL
+window.onload = function() {
+  var params = new URLSearchParams(window.location.search);
+  var email = params.get('email');
+  if (email) document.getElementById('f-email').value = email;
+};
+
+function submitForm() {
+  var name = document.getElementById('f-name').value.trim();
+  var email = document.getElementById('f-email').value.trim();
+  var company = document.getElementById('f-company').value.trim();
+  var errEl = document.getElementById('form-error');
+
+  if (!name || !email || !company) {
+    errEl.textContent = 'Por favor completa los campos obligatorios (nombre, empresa y email).';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'El email no tiene un formato válido.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  // Simulate submission (replace with actual endpoint)
+  setTimeout(function() {
+    document.getElementById('form-content').style.display = 'none';
+    var ss = document.getElementById('success-state');
+    ss.style.display = 'flex';
+  }, 1200);
+}
+</script>
+<script src="i18n.js"></script>
+</body>
+</html>

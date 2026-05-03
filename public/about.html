@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nosotros — Sapiora</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#080808;--white:#f5f2ed;--gold:#c4a35a;--gold-d:#a8873e;--gold-l:rgba(196,163,90,.12);--muted:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--font-display:'Cormorant Garamond',serif;--font-body:'Sora',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:2px}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-lang{display:flex;gap:6px}
+.lang-btn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:none;font-family:var(--font-body);transition:all .2s}
+.lang-btn.active,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-cta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px 22px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s}
+.nav-cta:hover{background:var(--gold);color:var(--black)}
+.section-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);font-weight:300;line-height:1.1;letter-spacing:-.5px;margin-bottom:20px}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:none}
+.btn-primary{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:16px 36px;background:var(--gold);color:var(--black);border:none;border-radius:4px;cursor:pointer;font-family:var(--font-body);transition:all .25s;display:inline-block}
+.btn-primary:hover{background:var(--gold-d);transform:translateY(-2px)}
+.container{max-width:1100px;margin:0 auto}
+
+/* HERO */
+#hero{padding:160px 60px 100px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(196,163,90,.05) 0%,transparent 70%);pointer-events:none}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1100px;margin:0 auto}
+#hero h1{font-family:var(--font-display);font-size:clamp(48px,6vw,80px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
+#hero h1 em{font-style:italic;color:var(--gold)}
+#hero p{font-size:16px;color:var(--muted);line-height:1.9;margin-bottom:16px}
+.hero-visual{display:flex;flex-direction:column;gap:16px}
+.stat-card{border:1px solid var(--border);border-radius:16px;padding:32px;transition:border-color .2s}
+.stat-card:hover{border-color:rgba(196,163,90,.3)}
+.stat-num{font-family:var(--font-display);font-size:52px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-2px}
+.stat-lbl{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
+.stat-sub{font-size:11px;color:rgba(245,242,237,.2);margin-top:4px}
+
+/* MISSION */
+#mission{padding:100px 60px;background:#0a0806;border-top:1px solid var(--border)}
+.mission-inner{max-width:800px}
+.mission-quote{font-family:var(--font-display);font-size:clamp(28px,4vw,48px);font-weight:300;line-height:1.3;font-style:italic;margin-bottom:32px;color:var(--white)}
+.mission-quote em{color:var(--gold)}
+.mission-body{font-size:15px;color:var(--muted);line-height:1.9;display:flex;flex-direction:column;gap:16px}
+
+/* VALUES */
+#values{padding:100px 60px;background:var(--black)}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:48px}
+.value-item{background:var(--black);padding:40px;transition:background .2s}
+.value-item:hover{background:rgba(196,163,90,.03)}
+.value-icon{font-size:28px;margin-bottom:16px}
+.value-title{font-size:16px;font-weight:600;margin-bottom:10px;letter-spacing:-.2px}
+.value-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* TEAM */
+#team{padding:100px 60px;background:#0a0806}
+.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px;max-width:700px}
+.team-card{border:1px solid var(--border);border-radius:16px;padding:36px;transition:all .3s}
+.team-card:hover{border-color:rgba(196,163,90,.25);transform:translateY(-4px)}
+.team-avatar{width:56px;height:56px;border-radius:50%;background:var(--gold-l);border:1px solid rgba(196,163,90,.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;font-weight:300;color:var(--gold);margin-bottom:16px}
+.team-name{font-size:16px;font-weight:600;margin-bottom:4px}
+.team-role{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.team-bio{font-size:12px;color:var(--muted);line-height:1.7}
+
+/* MARKETS */
+#markets{padding:100px 60px;background:var(--black);border-top:1px solid var(--border)}
+.markets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px;max-width:700px}
+.market-card{border:1px solid var(--border);border-radius:12px;padding:28px;display:flex;align-items:flex-start;gap:16px;transition:border-color .2s}
+.market-card:hover{border-color:rgba(196,163,90,.25)}
+.market-flag{font-size:28px;flex-shrink:0}
+.market-name{font-size:15px;font-weight:600;margin-bottom:4px}
+.market-detail{font-size:12px;color:var(--muted);line-height:1.6}
+.market-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:10px;margin-top:8px}
+.market-badge.live{background:rgba(42,138,110,.15);color:#4ab894}
+.market-badge.soon{background:rgba(196,163,90,.1);color:var(--gold)}
+
+footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:2px}
+.footer-logo span{color:var(--gold)}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{font-size:11px;color:var(--muted);transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-copy{font-size:11px;color:rgba(245,242,237,.2)}
+
+@media(max-width:900px){
+  nav{padding:16px 24px}
+  .nav-links{display:none}
+  #hero,#mission,#values,#team,#markets{padding-left:24px;padding-right:24px}
+  .hero-inner{grid-template-columns:1fr}
+  .values-grid{grid-template-columns:1fr}
+  .team-grid,.markets-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Sapiora<span>.</span></a>
+  <div class="nav-links">
+    <a href="product.html">Producto</a>
+    <a href="pricing.html">Precios</a>
+    <a href="about.html">Nosotros</a>
+    <a href="contact.html">Contacto</a>
+    <div class="nav-lang">
+      <button class="lang-btn active" onclick="setLang('es')" data-lang="es">ES</button>
+      <button class="lang-btn" onclick="setLang('ca')" data-lang="ca">CA</button>
+      <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
+    </div>
+  </div>
+  <a href="contact.html" class="nav-cta">Early Access</a>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="reveal">
+      <div class="section-tag">Nosotros</div>
+      <h1>Construimos la <em>inteligencia</em> que acelera la expansión hotelera.</h1>
+      <p>Nacimos de una pregunta simple: ¿por qué los equipos de expansión hotelera siguen buscando activos manualmente cuando la IA puede hacerlo mejor?</p>
+      <p>Sapiora combina automatización, datos verificados e inteligencia artificial para que los mejores equipos de expansión del mundo encuentren las mejores oportunidades, más rápido.</p>
+    </div>
+    <div class="hero-visual reveal">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="stat-card">
+          <div class="stat-num">+200</div>
+          <div class="stat-lbl">Leads analizados</div>
+          <div class="stat-sub">y creciendo cada semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2</div>
+          <div class="stat-lbl">Mercados activos</div>
+          <div class="stat-sub">Miami · Barcelona</div>
+        </div>
+        <div class="stat-card" style="grid-column:1/-1">
+          <div class="stat-num">7×</div>
+          <div class="stat-lbl">Más rápido que la búsqueda manual</div>
+          <div class="stat-sub">según clientes en Early Access</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mission">
+  <div class="container">
+    <div class="mission-inner reveal">
+      <div class="section-tag">Misión</div>
+      <div class="mission-quote">Que ninguna oportunidad hotelera <em>se pierda por falta de información.</em></div>
+      <div class="mission-body">
+        <p>El sector hotelero mueve billones de euros al año. Pero la mayoría de decisiones de expansión siguen basándose en hojas de Excel, búsquedas manuales y contactos de red. Es lento, incompleto y costoso.</p>
+        <p>Sapiora existe para cambiar eso. Automatizamos la parte aburrida — búsqueda, verificación, análisis — para que los equipos de expansión se centren en lo que realmente importa: negociar y cerrar.</p>
+        <p>Creemos que el próximo gran operador hotelero europeo debería tener las mismas herramientas de inteligencia que un fondo de inversión de primera línea. Eso es lo que construimos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="values">
+  <div class="container">
+    <div class="section-tag reveal">Valores</div>
+    <h2 class="section-title reveal">Cómo trabajamos.</h2>
+    <div class="values-grid reveal">
+      <div class="value-item">
+        <div class="value-icon">🎯</div>
+        <div class="value-title">Datos, no opiniones</div>
+        <div class="value-desc">Solo incluimos lo que podemos verificar. Si no tenemos certeza sobre un dato, lo dejamos en nulo. La confianza de nuestros clientes vale más que cualquier métrica.</div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">⚡</div>
+        <div class="value-title">Velocidad sin sacrificar calidad</div>
+        <div class="value-desc">Automatizamos lo que se puede automatizar. Pero revisamos lo que necesita criterio humano. El agente busca; tú decides.</div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🤝</div>
+        <div class="value-title">Construido con los clientes</div>
+        <div class="value-desc">Sapiora nació trabajando codo con codo con un grupo hotelero real. Cada funcionalidad responde a una necesidad real de expansión, no a una suposición de producto.</div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🔒</div>
+        <div class="value-title">Multi-tenant por diseño</div>
+        <div class="value-desc">Cada organización ve solo sus datos. El aislamiento no es una opción, es la arquitectura. Tus leads son tuyos y solo tuyos.</div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🌍</div>
+        <div class="value-title">Pensado para escalar</div>
+        <div class="value-desc">Empezamos en Miami y Barcelona. Pero la arquitectura de Sapiora permite añadir cualquier ciudad del mundo en días. La expansión es nuestra también.</div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">💡</div>
+        <div class="value-title">IA que explica sus decisiones</div>
+        <div class="value-desc">Nuestro scoring no es una caja negra. Cada score incluye señales detectadas, red flags y acción recomendada. La IA ayuda; el criterio final es tuyo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="container">
+    <div class="section-tag reveal">Equipo</div>
+    <h2 class="section-title reveal">Pequeños. Enfocados.<br/><em>Obsesionados con el producto.</em></h2>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-avatar">A</div>
+        <div class="team-name">Alex</div>
+        <div class="team-role">Founder & CEO</div>
+        <div class="team-bio">Background en IT y operaciones hoteleras. Construyó Sapiora después de ver de primera mano cómo los equipos de expansión perdían oportunidades por falta de herramientas de inteligencia.</div>
+      </div>
+      <div class="team-card" style="border-style:dashed;opacity:.6">
+        <div class="team-avatar" style="opacity:.4">?</div>
+        <div class="team-name">Tú</div>
+        <div class="team-role">Próxima incorporación</div>
+        <div class="team-bio">Estamos buscando personas con experiencia en hospitality, real estate o data science que quieran construir el futuro de la expansión hotelera.</div>
+      </div>
+    </div>
+    <div style="margin-top:32px" class="reveal">
+      <a href="contact.html" class="btn-primary">Trabaja con nosotros</a>
+    </div>
+  </div>
+</section>
+
+<section id="markets">
+  <div class="container">
+    <div class="section-tag reveal">Mercados</div>
+    <h2 class="section-title reveal">Donde operamos hoy<br/><em>y hacia dónde vamos.</em></h2>
+    <div class="markets-grid reveal">
+      <div class="market-card">
+        <div class="market-flag">🇺🇸</div>
+        <div>
+          <div class="market-name">Miami, FL</div>
+          <div class="market-detail">Mercado hotelero activo. Rating objetivo &lt;7.0 · Mínimo 45 habitaciones. Más de 37 leads verificados.</div>
+          <span class="market-badge live">● Activo</span>
+        </div>
+      </div>
+      <div class="market-card">
+        <div class="market-flag">🇪🇸</div>
+        <div>
+          <div class="market-name">Barcelona, España</div>
+          <div class="market-detail">Alta demanda turística. Rating objetivo &lt;7.8 · Mínimo 20 habitaciones. Búsqueda semanal activa.</div>
+          <span class="market-badge live">● Activo</span>
+        </div>
+      </div>
+      <div class="market-card" style="opacity:.5">
+        <div class="market-flag">🇬🇧</div>
+        <div>
+          <div class="market-name">Londres, UK</div>
+          <div class="market-detail">Próximo mercado en desarrollo. Disponible para clientes Enterprise bajo petición.</div>
+          <span class="market-badge soon">Próximamente</span>
+        </div>
+      </div>
+      <div class="market-card" style="opacity:.5">
+        <div class="market-flag">🇫🇷</div>
+        <div>
+          <div class="market-name">París, Francia</div>
+          <div class="market-detail">En roadmap. Si tu expansión incluye París, habla con nosotros.</div>
+          <span class="market-badge soon">Próximamente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:80px 60px;text-align:center;background:#0a0806;border-top:1px solid var(--border)">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Early Access</div>
+      <h2 class="section-title" style="max-width:600px;margin:0 auto 16px">¿Tu empresa expande<br/>en el sector hotelero?</h2>
+      <p style="color:var(--muted);max-width:480px;margin:0 auto 32px;font-size:15px;line-height:1.8">Únete a los primeros grupos hoteleros que están usando Sapiora para encontrar oportunidades que otros no ven.</p>
+      <a href="contact.html" class="btn-primary">Solicitar Early Access</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Sapiora<span>.</span></div>
+    <div class="footer-links">
+      <a href="product.html">Producto</a>
+      <a href="pricing.html">Precios</a>
+      <a href="about.html">Nosotros</a>
+      <a href="contact.html">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2026 Sapiora. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+var observer = new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
+function setLang(l){ window.setLang && window.setLang(l); });}
+</script>
+<script src="i18n.js"></script>
+</body>
+</html>
