@@ -64,19 +64,19 @@ try {
       }
 
 // Get plan from organizations
-let plan = 'starter'
+let userPlan = 'starter'
 try {
   const orgRes = await fetch(
     `${ADMIN_URL}/rest/v1/organizations?org_id=eq.${encodeURIComponent(org_id)}&select=plan`,
     { headers: { apikey: ADMIN_KEY, Authorization: `Bearer ${ADMIN_KEY}` }}
   )
   const orgData = await orgRes.json()
-  if (orgData?.[0]?.plan) plan = orgData[0].plan
+  if (orgData?.[0]?.plan) userPlan = orgData[0].plan
 } catch(e) {}
 
 sessionStorage.setItem('sapiora_session', JSON.stringify({
   access_token: loginData.access_token,
-  email, org_id, org_name, supabase_url, supabase_key, plan
+  email, org_id, org_name, supabase_url, supabase_key, plan: userPlan
 }))
 
       router.push('/dashboard/pipeline')
