@@ -1,162 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nosotros — Sapiora</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nosotros — Sapiora | Inteligencia para Expansión Hotelera</title>
+<meta name="description" content="Sapiora nació para eliminar la búsqueda manual de oportunidades hoteleras. Conoce nuestra misión, valores y mercados activos."/>
+<meta name="robots" content="index,follow"/><link rel="canonical" href="https://sapiora.site/about.html"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--black:#080808;--white:#f5f2ed;--gold:#c4a35a;--gold-d:#a8873e;--gold-l:rgba(196,163,90,.12);--muted:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--font-display:'Cormorant Garamond',serif;--font-body:'Sora',sans-serif;}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{text-decoration:none;color:inherit}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:2px}
-.nav-logo span{color:var(--gold)}
-.nav-links{display:flex;align-items:center;gap:32px}
-.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:color .2s}
-.nav-links a:hover{color:var(--white)}
-.nav-lang{display:flex;gap:6px}
-.lang-btn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:none;font-family:var(--font-body);transition:all .2s}
-.lang-btn.active,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
-.nav-cta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px 22px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s}
-.nav-cta:hover{background:var(--gold);color:var(--black)}
-.section-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
-.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);font-weight:300;line-height:1.1;letter-spacing:-.5px;margin-bottom:20px}
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
-.reveal.visible{opacity:1;transform:none}
-.btn-primary{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:16px 36px;background:var(--gold);color:var(--black);border:none;border-radius:4px;cursor:pointer;font-family:var(--font-body);transition:all .25s;display:inline-block}
-.btn-primary:hover{background:var(--gold-d);transform:translateY(-2px)}
-.container{max-width:1100px;margin:0 auto}
+:root{--b:#080808;--w:#f5f2ed;--gold:#c4a35a;--gd:#a8873e;--gl:rgba(196,163,90,.12);--m:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--fd:'Cormorant Garamond',serif;--fb:'Sora',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--b);color:var(--w);font-family:var(--fb);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(245,242,237,.1);border-radius:2px}
+.container{max-width:1100px;margin:0 auto;padding:0 60px}.tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1,h2{font-family:var(--fd);font-weight:300;line-height:1.05;letter-spacing:-.5px}h1{font-size:clamp(48px,7vw,88px)}h2{font-size:clamp(32px,4vw,58px)}
+em{font-style:italic;color:var(--gold)}.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.reveal.vis{opacity:1;transform:none}
+.btn-g{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:15px 32px;background:var(--gold);color:var(--b);border:none;border-radius:4px;cursor:pointer;font-family:var(--fb);transition:all .25s;display:inline-block}
+.btn-g:hover{background:var(--gd);transform:translateY(-2px)}
+.btn-o{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:15px 32px;background:transparent;color:var(--w);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:var(--fb);transition:all .25s;display:inline-block}
+.btn-o:hover{border-color:rgba(245,242,237,.35)}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:860px){.container{padding:0 24px}}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;gap:24px;transition:all .3s}
+nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--fd);font-size:20px;font-weight:400;letter-spacing:2px;color:var(--w)}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);transition:color .2s}
+.nav-links a:hover{color:var(--w)}
+.nav-r{display:flex;align-items:center;gap:12px;margin-left:auto}
+.lang-sw{display:flex;gap:4px}
+.lb{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--m);cursor:pointer;background:none;font-family:var(--fb);transition:all .2s}
+.lb.active,.lb:hover{border-color:var(--gold);color:var(--gold)}
+.btn-login{font-size:11px;font-weight:500;color:var(--m);letter-spacing:.5px;transition:color .2s;padding:8px 4px}
+.btn-login:hover{color:var(--w)}
+.btn-cta{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:9px 20px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s;white-space:nowrap}
+.btn-cta:hover{background:var(--gold);color:var(--b)}
+footer{background:#050505;padding:48px 60px;border-top:1px solid var(--border)}
+.ft-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.ft-logo{font-family:var(--fd);font-size:18px;font-weight:400;letter-spacing:2px;color:var(--w)}
+.ft-logo span{color:var(--gold)}
+.ft-links{display:flex;gap:20px;flex-wrap:wrap}
+.ft-links a{font-size:11px;color:var(--m);transition:color .2s}
+.ft-links a:hover{color:var(--w)}
+.ft-copy{font-size:11px;color:rgba(245,242,237,.15)}
+@media(max-width:860px){nav{padding:14px 20px}.nav-links{display:none}.ft-inner{flex-direction:column;text-align:center}}
 
-/* HERO */
-#hero{padding:160px 60px 100px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(196,163,90,.05) 0%,transparent 70%);pointer-events:none}
-.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1100px;margin:0 auto}
-#hero h1{font-family:var(--font-display);font-size:clamp(48px,6vw,80px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
-#hero h1 em{font-style:italic;color:var(--gold)}
-#hero p{font-size:16px;color:var(--muted);line-height:1.9;margin-bottom:16px}
-.hero-visual{display:flex;flex-direction:column;gap:16px}
-.stat-card{border:1px solid var(--border);border-radius:16px;padding:32px;transition:border-color .2s}
-.stat-card:hover{border-color:rgba(196,163,90,.3)}
-.stat-num{font-family:var(--font-display);font-size:52px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-2px}
-.stat-lbl{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
-.stat-sub{font-size:11px;color:rgba(245,242,237,.2);margin-top:4px}
-
-/* MISSION */
-#mission{padding:100px 60px;background:#0a0806;border-top:1px solid var(--border)}
-.mission-inner{max-width:800px}
-.mission-quote{font-family:var(--font-display);font-size:clamp(28px,4vw,48px);font-weight:300;line-height:1.3;font-style:italic;margin-bottom:32px;color:var(--white)}
-.mission-quote em{color:var(--gold)}
-.mission-body{font-size:15px;color:var(--muted);line-height:1.9;display:flex;flex-direction:column;gap:16px}
-
-/* VALUES */
-#values{padding:100px 60px;background:var(--black)}
-.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:48px}
-.value-item{background:var(--black);padding:40px;transition:background .2s}
-.value-item:hover{background:rgba(196,163,90,.03)}
-.value-icon{font-size:28px;margin-bottom:16px}
-.value-title{font-size:16px;font-weight:600;margin-bottom:10px;letter-spacing:-.2px}
-.value-desc{font-size:13px;color:var(--muted);line-height:1.7}
-
-/* TEAM */
-#team{padding:100px 60px;background:#0a0806}
-.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px;max-width:700px}
-.team-card{border:1px solid var(--border);border-radius:16px;padding:36px;transition:all .3s}
-.team-card:hover{border-color:rgba(196,163,90,.25);transform:translateY(-4px)}
-.team-avatar{width:56px;height:56px;border-radius:50%;background:var(--gold-l);border:1px solid rgba(196,163,90,.3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;font-weight:300;color:var(--gold);margin-bottom:16px}
-.team-name{font-size:16px;font-weight:600;margin-bottom:4px}
-.team-role{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.team-bio{font-size:12px;color:var(--muted);line-height:1.7}
-
-/* MARKETS */
-#markets{padding:100px 60px;background:var(--black);border-top:1px solid var(--border)}
-.markets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px;max-width:700px}
-.market-card{border:1px solid var(--border);border-radius:12px;padding:28px;display:flex;align-items:flex-start;gap:16px;transition:border-color .2s}
-.market-card:hover{border-color:rgba(196,163,90,.25)}
-.market-flag{font-size:28px;flex-shrink:0}
-.market-name{font-size:15px;font-weight:600;margin-bottom:4px}
-.market-detail{font-size:12px;color:var(--muted);line-height:1.6}
-.market-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:10px;margin-top:8px}
-.market-badge.live{background:rgba(42,138,110,.15);color:#4ab894}
-.market-badge.soon{background:rgba(196,163,90,.1);color:var(--gold)}
-
-footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
-.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:2px}
-.footer-logo span{color:var(--gold)}
-.footer-links{display:flex;gap:24px;flex-wrap:wrap}
-.footer-links a{font-size:11px;color:var(--muted);transition:color .2s}
-.footer-links a:hover{color:var(--white)}
-.footer-copy{font-size:11px;color:rgba(245,242,237,.2)}
-
-@media(max-width:900px){
-  nav{padding:16px 24px}
-  .nav-links{display:none}
-  #hero,#mission,#values,#team,#markets{padding-left:24px;padding-right:24px}
-  .hero-inner{grid-template-columns:1fr}
-  .values-grid{grid-template-columns:1fr}
-  .team-grid,.markets-grid{grid-template-columns:1fr}
-}
+#hero{padding:160px 0 100px;position:relative;overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(196,163,90,.05) 0%,transparent 70%);pointer-events:none}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;max-width:1100px;margin:0 auto;padding:0 60px}
+#hero h1{margin-bottom:20px;animation:fadeUp .8s both}
+#hero p{color:var(--m);font-size:16px;line-height:1.9;margin-bottom:14px;animation:fadeUp .8s .1s both}
+.stat-cards{display:flex;flex-direction:column;gap:14px;animation:fadeUp .8s .2s both}
+.sc{border:1px solid var(--border);border-radius:14px;padding:28px;transition:border-color .2s}
+.sc:hover{border-color:rgba(196,163,90,.25)}
+.scn{font-family:var(--fd);font-size:48px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-2px}
+.scl{font-size:12px;color:var(--m);margin-top:5px;letter-spacing:.3px}
+.scs{font-size:11px;color:rgba(245,242,237,.2);margin-top:3px}
+#mission{padding:90px 0;background:#0a0806;border-top:1px solid var(--border)}
+.miss-q{font-family:var(--fd);font-size:clamp(26px,4vw,46px);font-weight:300;font-style:italic;line-height:1.3;margin-bottom:28px;max-width:720px}
+.miss-body{display:flex;flex-direction:column;gap:14px;max-width:700px}
+.miss-body p{font-size:15px;color:var(--m);line-height:1.9}
+#values{padding:90px 0;background:var(--b)}
+.vg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:44px}
+.vi{background:var(--b);padding:36px;transition:background .2s}.vi:hover{background:rgba(196,163,90,.03)}
+.vico{font-size:26px;margin-bottom:14px}
+.vt{font-size:15px;font-weight:600;margin-bottom:8px}.vp{font-size:13px;color:var(--m);line-height:1.7}
+#team{padding:90px 0;background:#0a0806}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px;max-width:660px}
+.tc{border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .3s}.tc:hover{border-color:rgba(196,163,90,.2);transform:translateY(-3px)}
+.tav{width:52px;height:52px;border-radius:50%;background:var(--gl);border:1px solid rgba(196,163,90,.3);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:22px;font-weight:300;color:var(--gold);margin-bottom:14px}
+.tn{font-size:15px;font-weight:600;margin-bottom:3px}.tr{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}.tb{font-size:12px;color:var(--m);line-height:1.7}
+#markets{padding:90px 0;background:var(--b);border-top:1px solid var(--border)}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:44px;max-width:680px}
+.mkt{border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s}.mkt:hover{border-color:rgba(196,163,90,.2)}
+.mflag{font-size:26px;flex-shrink:0}.mn{font-size:14px;font-weight:600;margin-bottom:3px}.md{font-size:12px;color:var(--m);line-height:1.6}
+.mbdge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:10px;margin-top:7px}
+.mbdge.live{background:rgba(42,138,110,.15);color:#4ab894}.mbdge.soon{background:rgba(196,163,90,.1);color:var(--gold)}
+@media(max-width:860px){.hgrid{grid-template-columns:1fr;padding:0 24px}.vg{grid-template-columns:1fr}.tg,.mg{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-logo">Sapiora<span>.</span></a>
+<nav id="nav">
+  <a href="/index.html" class="logo">Sapiora<span>.</span></a>
   <div class="nav-links">
-    <a href="product.html">Producto</a>
-    <a href="pricing.html">Precios</a>
-    <a href="about.html">Nosotros</a>
-    <a href="contact.html">Contacto</a>
-    <div class="nav-lang">
-      <button class="lang-btn active" onclick="setLang('es')" data-lang="es">ES</button>
-      <button class="lang-btn" onclick="setLang('ca')" data-lang="ca">CA</button>
-      <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
-    </div>
+    <a href="/product.html" data-i18n="nav_product">Producto</a>
+    <a href="/pricing.html" data-i18n="nav_pricing">Precios</a>
+    <a href="/about.html" data-i18n="nav_about">Nosotros</a>
+    <a href="/contact.html" data-i18n="nav_contact">Contacto</a>
   </div>
-  <a href="contact.html" class="nav-cta">Early Access</a>
-</nav>
-
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-inner">
-    <div class="reveal">
-      <div class="section-tag">Nosotros</div>
-      <h1>Construimos la <em>inteligencia</em> que acelera la expansión hotelera.</h1>
-      <p>Nacimos de una pregunta simple: ¿por qué los equipos de expansión hotelera siguen buscando activos manualmente cuando la IA puede hacerlo mejor?</p>
-      <p>Sapiora combina automatización, datos verificados e inteligencia artificial para que los mejores equipos de expansión del mundo encuentren las mejores oportunidades, más rápido.</p>
+  <div class="nav-r">
+    <div class="lang-sw">
+      <button class="lb active" data-lang="es" onclick="setLang('es')">ES</button>
+      <button class="lb" data-lang="ca" onclick="setLang('ca')">CA</button>
+      <button class="lb" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
-    <div class="hero-visual reveal">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="stat-card">
-          <div class="stat-num">+200</div>
-          <div class="stat-lbl">Leads analizados</div>
-          <div class="stat-sub">y creciendo cada semana</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">2</div>
-          <div class="stat-lbl">Mercados activos</div>
-          <div class="stat-sub">Miami · Barcelona</div>
-        </div>
-        <div class="stat-card" style="grid-column:1/-1">
-          <div class="stat-num">7×</div>
-          <div class="stat-lbl">Más rápido que la búsqueda manual</div>
-          <div class="stat-sub">según clientes en Early Access</div>
-        </div>
+    <a href="/login" class="btn-login" data-i18n="nav_login">Acceder →</a>
+    <a href="/contact.html" class="btn-cta" data-i18n="nav_cta">Early Access</a>
+  </div>
+</nav>
+<section id="hero">
+  <div class="hbg"></div>
+  <div class="hgrid">
+    <div class="reveal">
+      <div class="tag" data-i18n="about_tag_txt">Nosotros</div>
+      <h1 data-i18n="about_h">Construimos la <em>inteligencia</em><br>que acelera la expansión hotelera.</h1>
+      <p data-i18n="about_p1">Nacimos de una pregunta: ¿por qué los equipos de expansión hotelera buscan activos manualmente cuando la IA puede hacerlo mejor?</p>
+      <p data-i18n="about_p2">Sapiora combina automatización, datos verificados e IA para que los mejores equipos encuentren las mejores oportunidades, más rápido.</p>
+    </div>
+    <div class="stat-cards reveal">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="sc"><div class="scn">+200</div><div class="scl" data-i18n="stat_leads">Leads analizados</div><div class="scs">y creciendo</div></div>
+        <div class="sc"><div class="scn">2</div><div class="scl" data-i18n="stat_markets">Mercados activos</div><div class="scs">Miami · Barcelona</div></div>
       </div>
+      <div class="sc"><div class="scn">7×</div><div class="scl" data-i18n="stat_speed">Más rápido que manual</div><div class="scs">según clientes Early Access</div></div>
     </div>
   </div>
 </section>
 
 <section id="mission">
   <div class="container">
-    <div class="mission-inner reveal">
-      <div class="section-tag">Misión</div>
-      <div class="mission-quote">Que ninguna oportunidad hotelera <em>se pierda por falta de información.</em></div>
-      <div class="mission-body">
-        <p>El sector hotelero mueve billones de euros al año. Pero la mayoría de decisiones de expansión siguen basándose en hojas de Excel, búsquedas manuales y contactos de red. Es lento, incompleto y costoso.</p>
-        <p>Sapiora existe para cambiar eso. Automatizamos la parte aburrida — búsqueda, verificación, análisis — para que los equipos de expansión se centren en lo que realmente importa: negociar y cerrar.</p>
-        <p>Creemos que el próximo gran operador hotelero europeo debería tener las mismas herramientas de inteligencia que un fondo de inversión de primera línea. Eso es lo que construimos.</p>
+    <div class="reveal">
+      <div class="tag" data-i18n="miss_h">Misión</div>
+      <div class="miss-q" data-i18n="miss_q">"Que ninguna oportunidad hotelera se pierda por falta de información."</div>
+      <div class="miss-body">
+        <p data-i18n="miss_p1">El sector hotelero mueve billones al año. Pero las decisiones de expansión siguen basándose en Excel y búsquedas manuales.</p>
+        <p data-i18n="miss_p2">Sapiora automatiza la parte aburrida para que los equipos se centren en lo que importa: negociar y cerrar.</p>
       </div>
     </div>
   </div>
@@ -164,137 +131,374 @@ footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
 
 <section id="values">
   <div class="container">
-    <div class="section-tag reveal">Valores</div>
-    <h2 class="section-title reveal">Cómo trabajamos.</h2>
-    <div class="values-grid reveal">
-      <div class="value-item">
-        <div class="value-icon">🎯</div>
-        <div class="value-title">Datos, no opiniones</div>
-        <div class="value-desc">Solo incluimos lo que podemos verificar. Si no tenemos certeza sobre un dato, lo dejamos en nulo. La confianza de nuestros clientes vale más que cualquier métrica.</div>
-      </div>
-      <div class="value-item">
-        <div class="value-icon">⚡</div>
-        <div class="value-title">Velocidad sin sacrificar calidad</div>
-        <div class="value-desc">Automatizamos lo que se puede automatizar. Pero revisamos lo que necesita criterio humano. El agente busca; tú decides.</div>
-      </div>
-      <div class="value-item">
-        <div class="value-icon">🤝</div>
-        <div class="value-title">Construido con los clientes</div>
-        <div class="value-desc">Sapiora nació trabajando codo con codo con un grupo hotelero real. Cada funcionalidad responde a una necesidad real de expansión, no a una suposición de producto.</div>
-      </div>
-      <div class="value-item">
-        <div class="value-icon">🔒</div>
-        <div class="value-title">Multi-tenant por diseño</div>
-        <div class="value-desc">Cada organización ve solo sus datos. El aislamiento no es una opción, es la arquitectura. Tus leads son tuyos y solo tuyos.</div>
-      </div>
-      <div class="value-item">
-        <div class="value-icon">🌍</div>
-        <div class="value-title">Pensado para escalar</div>
-        <div class="value-desc">Empezamos en Miami y Barcelona. Pero la arquitectura de Sapiora permite añadir cualquier ciudad del mundo en días. La expansión es nuestra también.</div>
-      </div>
-      <div class="value-item">
-        <div class="value-icon">💡</div>
-        <div class="value-title">IA que explica sus decisiones</div>
-        <div class="value-desc">Nuestro scoring no es una caja negra. Cada score incluye señales detectadas, red flags y acción recomendada. La IA ayuda; el criterio final es tuyo.</div>
-      </div>
+    <div class="tag reveal" data-i18n="val_h">Valores</div>
+    <h2 class="reveal">Cómo trabajamos.</h2>
+    <div class="vg reveal">
+      <div class="vi"><div class="vico">🎯</div><div class="vt" data-i18n="v1h">Datos, no opiniones</div><div class="vp" data-i18n="v1p">Solo incluimos lo que podemos verificar.</div></div>
+      <div class="vi"><div class="vico">⚡</div><div class="vt" data-i18n="v2h">Velocidad sin sacrificar calidad</div><div class="vp" data-i18n="v2p">Automatizamos lo que se puede. Revisamos lo que necesita criterio humano.</div></div>
+      <div class="vi"><div class="vico">🤝</div><div class="vt" data-i18n="v3h">Construido con clientes reales</div><div class="vp" data-i18n="v3p">Nació trabajando con un grupo hotelero real.</div></div>
+      <div class="vi"><div class="vico">🔒</div><div class="vt" data-i18n="v4h">Multi-tenant por diseño</div><div class="vp" data-i18n="v4p">Cada organización ve solo sus datos.</div></div>
+      <div class="vi"><div class="vico">🌍</div><div class="vt" data-i18n="v5h">Pensado para escalar</div><div class="vp" data-i18n="v5p">Miami y Barcelona hoy. Cualquier ciudad del mundo en días.</div></div>
+      <div class="vi"><div class="vico">💡</div><div class="vt" data-i18n="v6h">IA que explica sus decisiones</div><div class="vp" data-i18n="v6p">Score 0-100 con señales detectadas y acción recomendada.</div></div>
     </div>
   </div>
 </section>
 
 <section id="team">
   <div class="container">
-    <div class="section-tag reveal">Equipo</div>
-    <h2 class="section-title reveal">Pequeños. Enfocados.<br/><em>Obsesionados con el producto.</em></h2>
-    <div class="team-grid reveal">
-      <div class="team-card">
-        <div class="team-avatar">A</div>
-        <div class="team-name">Alex</div>
-        <div class="team-role">Founder & CEO</div>
-        <div class="team-bio">Background en IT y operaciones hoteleras. Construyó Sapiora después de ver de primera mano cómo los equipos de expansión perdían oportunidades por falta de herramientas de inteligencia.</div>
-      </div>
-      <div class="team-card" style="border-style:dashed;opacity:.6">
-        <div class="team-avatar" style="opacity:.4">?</div>
-        <div class="team-name">Tú</div>
-        <div class="team-role">Próxima incorporación</div>
-        <div class="team-bio">Estamos buscando personas con experiencia en hospitality, real estate o data science que quieran construir el futuro de la expansión hotelera.</div>
-      </div>
+    <div class="tag reveal" data-i18n="team_tag_txt">Equipo</div>
+    <h2 class="reveal" data-i18n="team_h">Pequeños. Enfocados.<br><em>Obsesionados con el producto.</em></h2>
+    <div class="tg reveal">
+      <div class="tc"><div class="tav">A</div><div class="tn">Alex</div><div class="tr">Founder & CEO</div><div class="tb">Background en IT y operaciones hoteleras. Construyó Sapiora después de ver de primera mano cómo los equipos perdían oportunidades por falta de herramientas.</div></div>
+      <div class="tc" style="border-style:dashed;opacity:.5"><div class="tav" style="opacity:.4">?</div><div class="tn">Tú</div><div class="tr">Próxima incorporación</div><div class="tb">Buscamos personas con experiencia en hospitality, real estate o data science.</div></div>
     </div>
-    <div style="margin-top:32px" class="reveal">
-      <a href="contact.html" class="btn-primary">Trabaja con nosotros</a>
-    </div>
+    <div style="margin-top:28px" class="reveal"><a href="/contact.html" class="btn-g" data-i18n="team_cta_txt">Trabaja con nosotros</a></div>
   </div>
 </section>
 
 <section id="markets">
   <div class="container">
-    <div class="section-tag reveal">Mercados</div>
-    <h2 class="section-title reveal">Donde operamos hoy<br/><em>y hacia dónde vamos.</em></h2>
-    <div class="markets-grid reveal">
-      <div class="market-card">
-        <div class="market-flag">🇺🇸</div>
-        <div>
-          <div class="market-name">Miami, FL</div>
-          <div class="market-detail">Mercado hotelero activo. Rating objetivo &lt;7.0 · Mínimo 45 habitaciones. Más de 37 leads verificados.</div>
-          <span class="market-badge live">● Activo</span>
-        </div>
-      </div>
-      <div class="market-card">
-        <div class="market-flag">🇪🇸</div>
-        <div>
-          <div class="market-name">Barcelona, España</div>
-          <div class="market-detail">Alta demanda turística. Rating objetivo &lt;7.8 · Mínimo 20 habitaciones. Búsqueda semanal activa.</div>
-          <span class="market-badge live">● Activo</span>
-        </div>
-      </div>
-      <div class="market-card" style="opacity:.5">
-        <div class="market-flag">🇬🇧</div>
-        <div>
-          <div class="market-name">Londres, UK</div>
-          <div class="market-detail">Próximo mercado en desarrollo. Disponible para clientes Enterprise bajo petición.</div>
-          <span class="market-badge soon">Próximamente</span>
-        </div>
-      </div>
-      <div class="market-card" style="opacity:.5">
-        <div class="market-flag">🇫🇷</div>
-        <div>
-          <div class="market-name">París, Francia</div>
-          <div class="market-detail">En roadmap. Si tu expansión incluye París, habla con nosotros.</div>
-          <span class="market-badge soon">Próximamente</span>
-        </div>
-      </div>
+    <div class="tag reveal" data-i18n="mkt_tag_txt">Mercados</div>
+    <h2 class="reveal" data-i18n="mkt_h">Donde operamos hoy<br><em>y hacia dónde vamos.</em></h2>
+    <div class="mg reveal">
+      <div class="mkt"><div class="mflag">🇺🇸</div><div><div class="mn">Miami, FL</div><div class="md">Rating &lt;7.0 · Mín. 45 hab. · +37 leads verificados.</div><span class="mbdge live">● Activo</span></div></div>
+      <div class="mkt"><div class="mflag">🇪🇸</div><div><div class="mn">Barcelona, España</div><div class="md">Rating &lt;7.8 · Mín. 20 hab. · Búsqueda semanal activa.</div><span class="mbdge live">● Activo</span></div></div>
+      <div class="mkt" style="opacity:.45"><div class="mflag">🇬🇧</div><div><div class="mn">Londres, UK</div><div class="md">Disponible para clientes Enterprise bajo petición.</div><span class="mbdge soon">Próximamente</span></div></div>
+      <div class="mkt" style="opacity:.45"><div class="mflag">🇫🇷</div><div><div class="mn">París, Francia</div><div class="md">En roadmap.</div><span class="mbdge soon">Próximamente</span></div></div>
     </div>
   </div>
 </section>
 
-<section style="padding:80px 60px;text-align:center;background:#0a0806;border-top:1px solid var(--border)">
+<section style="padding:72px 0;text-align:center;background:#0a0806;border-top:1px solid var(--border)">
   <div class="container">
     <div class="reveal">
-      <div class="section-tag">Early Access</div>
-      <h2 class="section-title" style="max-width:600px;margin:0 auto 16px">¿Tu empresa expande<br/>en el sector hotelero?</h2>
-      <p style="color:var(--muted);max-width:480px;margin:0 auto 32px;font-size:15px;line-height:1.8">Únete a los primeros grupos hoteleros que están usando Sapiora para encontrar oportunidades que otros no ven.</p>
-      <a href="contact.html" class="btn-primary">Solicitar Early Access</a>
+      <div class="tag" style="margin-bottom:14px">Early Access</div>
+      <h2 data-i18n="about_cta_h" style="max-width:560px;margin:0 auto 14px">¿Tu empresa expande<br>en el sector hotelero?</h2>
+      <p style="color:var(--m);max-width:440px;margin:0 auto 28px;font-size:15px;line-height:1.8" data-i18n="about_cta_p">Únete a los primeros grupos hoteleros que usan Sapiora.</p>
+      <a href="/contact.html" class="btn-g" data-i18n="about_cta_btn">Solicitar Early Access</a>
     </div>
   </div>
 </section>
-
 <footer>
-  <div class="footer-inner">
-    <div class="footer-logo">Sapiora<span>.</span></div>
-    <div class="footer-links">
-      <a href="product.html">Producto</a>
-      <a href="pricing.html">Precios</a>
-      <a href="about.html">Nosotros</a>
-      <a href="contact.html">Contacto</a>
+  <div class="ft-inner">
+    <div class="ft-logo">Sapiora<span>.</span></div>
+    <div class="ft-links">
+      <a href="/product.html" data-i18n="nav_product">Producto</a>
+      <a href="/pricing.html" data-i18n="nav_pricing">Precios</a>
+      <a href="/about.html" data-i18n="nav_about">Nosotros</a>
+      <a href="/contact.html" data-i18n="nav_contact">Contacto</a>
+      <a href="/login" data-i18n="nav_login">Acceder</a>
     </div>
-    <div class="footer-copy">© 2026 Sapiora. All rights reserved.</div>
+    <div class="ft-copy">© 2026 Sapiora. All rights reserved.</div>
   </div>
 </footer>
-
 <script>
-var observer = new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
-function setLang(l){ window.setLang && window.setLang(l); });}
+
+var T={
+es:{
+  nav_product:'Producto',nav_pricing:'Precios',nav_about:'Nosotros',nav_contact:'Contacto',nav_cta:'Early Access',nav_login:'Acceder →',
+  hero_tag:'IA para Expansión Hotelera',
+  hero_h:'El agente que encuentra<br><em>hoteles que comprar.</em>',
+  hero_p:'Sapiora automatiza la prospección, análisis financiero y gestión del pipeline de adquisición hotelera. Cada semana, nuevas oportunidades en tu mercado.',
+  hero_cta1:'Solicitar Early Access',hero_cta2:'Ver el producto',
+  s1:'Leads analizados',s2:'Más rápido que manual',s3:'Datos verificados',s4:'Búsqueda continua',
+  how_tag:'Cómo funciona',how_h:'De búsqueda a<br>propuesta en días.',
+  st1_h:'Defines tus criterios',st1_p:'Ciudad, tipo de activo, rango de habitaciones y rating objetivo.',
+  st2_h:'El agente busca y enriquece',st2_p:'IA escanea el mercado, verifica datos y calcula RevPAR estimado cada semana.',
+  st3_h:'Gestionas el pipeline',st3_p:'Mapa interactivo, Kanban, Asset Manager y calculadora financiera.',
+  st4_h:'Encuentras al propietario',st4_p:'Owner Search busca el propietario real y genera el primer mensaje de outreach.',
+  feat_tag:'Funcionalidades',feat_h:'Todo lo que necesita<br>un equipo de expansión.',
+  f1h:'Mapa de oportunidades',f1p:'Visualiza leads en mapa interactivo. Filtra por ciudad, tipo y prioridad.',
+  f2h:'AI Lead Scoring',f2p:'Claude AI genera un score 0-100 con señales clave, red flags y acción recomendada.',
+  f3h:'Owner Search',f3p:'IA identifica al propietario real, su LinkedIn y genera el outreach personalizado.',
+  f4h:'RevPAR Calculator',f4p:'Calcula RevPAR, GOP, Cap Rate y fee de gestión en tiempo real.',
+  f5h:'Asset Manager',f5p:'Gestiona contactos, negociaciones y notas. Sincronizado para todo el equipo.',
+  f6h:'Automatización semanal',f6p:'El agente añade nuevas oportunidades cada semana sin intervención humana.',
+  quote:'"Sapiora reemplazó semanas de búsqueda manual. Ahora nos centramos en negociar."',
+  quote_who:'Director de Expansión · Grupo hotelero europeo',
+  cta_h:'Empieza a encontrar<br>oportunidades hoy.',
+  cta_p:'Plazas limitadas. Onboarding personalizado incluido.',
+  cta_ph:'tu@empresa.com',cta_btn:'Solicitar acceso',
+  cta_note:'Sin compromiso. Te contactamos en menos de 24h.',
+  // PRODUCT
+  prod_h:'Una plataforma para<br><em>equipos de expansión hotelera.</em>',
+  prod_p:'Desde la búsqueda automatizada hasta el cierre. Todo en un dashboard.',
+  prod_demo:'Solicitar demo',
+  ai_h:'AI Lead Scoring',ai_p:'Claude AI analiza cada hotel y genera score 0-100 con señales, red flags y acción recomendada.',
+  own_h:'Owner Search',own_p:'IA busca al propietario real en registros públicos y LinkedIn. Genera el primer mensaje de outreach personalizado.',
+  rev_h:'RevPAR Calculator',rev_p:'Introduce ADR y ocupación. Calcula RevPAR, GOP, Cap Rate y fee de gestión en tiempo real.',
+  auto_h:'El agente trabaja<br><em>mientras tú negocias.</em>',
+  w1h:'Búsqueda semanal',w1p:'Escanea Booking.com según tus criterios cada semana.',
+  w2h:'Enriquecimiento',w2p:'Verifica dirección, teléfono, web y habitaciones. Sin estimaciones.',
+  w3h:'Clasificación',w3p:'Genera tipo, problema y oportunidad. Lead estructurado listo.',
+  w4h:'Inserción automática',w4p:'Aparece en tu pipeline verificado. Sin duplicados.',
+  // PRICING
+  price_h:'Simple, transparente,<br><em>sin sorpresas.</em>',
+  price_p:'Sin costes de setup · Sin contratos anuales · Cancela cuando quieras',
+  billing_m:'Mensual',billing_a:'Anual',billing_save:'2 meses gratis',
+  plan_popular:'Más popular',
+  s_name:'Starter',s_price:'249',s_period:'1 usuario · 1 zona · 50–100 leads/mes',
+  s_f1:'Búsqueda semanal automática',s_f2:'Mapa interactivo',s_f3:'Pipeline Kanban',
+  s_f4:'Scoring básico',s_f5:'Asset Manager',s_f6:'RevPAR Calculator',
+  s_f7:'Exportación CSV limitada',s_f8:'Soporte email',
+  p_name:'Pro',p_price:'499',p_period:'3 usuarios · 5 zonas · 300–500 leads/mes',
+  p_f1:'Todo en Starter',p_f2:'AI Scoring avanzado (Claude)',p_f3:'Owner Search',
+  p_f4:'Alertas semanales',p_f5:'Pipeline avanzado',p_f6:'Exportación completa',
+  p_f7:'Analytics dashboard',p_f8:'Soporte prioritario',
+  b_name:'Business',b_price:'1.200',b_period:'5–10 usuarios · Varias ciudades · 1.000–2.000 leads/mes',
+  b_f1:'Todo en Pro',b_f2:'Scoring personalizado',b_f3:'Alertas diarias',
+  b_f4:'Dashboard ejecutivo',b_f5:'Onboarding dedicado',b_f6:'Revisión mensual',
+  b_f7:'Soporte telefónico',b_f8:'Múltiples ciudades',
+  c_name:'Custom',c_price:'2.500',c_period:'Precio personalizado · Todo a medida',
+  c_f1:'Todo en Business',c_f2:'Criterios a medida',c_f3:'Ciudades ilimitadas',
+  c_f4:'Modelo de scoring propio',c_f5:'Integraciones CRM/ERP',c_f6:'Informes ejecutivos',
+  c_f7:'Soporte premium 24/7',c_f8:'SLA garantizado',
+  plan_cta:'Solicitar acceso',ent_cta:'Hablar con ventas',
+  faq_h:'Preguntas frecuentes.',
+  faq1q:'¿Puedo cambiar de plan?',faq1a:'Sí, en cualquier momento. Sin penalización.',
+  faq2q:'¿Hay permanencia mínima?',faq2a:'No. Todos los planes son mensuales. Cancela cuando quieras.',
+  faq3q:'¿Qué ciudades puedo añadir?',faq3a:'Miami y Barcelona actualmente. Nuevas ciudades bajo petición. Custom: cualquier ciudad del mundo.',
+  faq4q:'¿Con qué frecuencia llegan leads?',faq4a:'Búsquedas semanales automáticas. Business y Custom: alertas diarias.',
+  faq5q:'¿Los datos son verificados?',faq5a:'Solo datos verificados. Si no podemos confirmar un campo, queda nulo. Sin estimaciones.',
+  faq6q:'¿Cómo funciona el onboarding?',faq6a:'Configuramos tu organización y ejecutamos la primera búsqueda. En menos de 48h tienes leads en el pipeline.',
+  guar_h:'Garantía 14 días.',guar_p:'Si no estás satisfecho en los primeros 14 días, te devolvemos el importe íntegro.',guar_cta:'Empezar ahora',
+  // ABOUT
+  about_h:'Construimos la <em>inteligencia</em><br>que acelera la expansión hotelera.',
+  about_p1:'Nacimos de una pregunta: ¿por qué los equipos de expansión hotelera buscan activos manualmente cuando la IA puede hacerlo mejor?',
+  about_p2:'Sapiora combina automatización, datos verificados e IA para que los mejores equipos encuentren las mejores oportunidades, más rápido.',
+  miss_h:'Misión',miss_q:'"Que ninguna oportunidad hotelera se pierda por falta de información."',
+  miss_p1:'El sector hotelero mueve billones al año. Pero las decisiones de expansión siguen basándose en Excel y búsquedas manuales.',
+  miss_p2:'Sapiora automatiza la parte aburrida para que los equipos se centren en lo que importa: negociar y cerrar.',
+  val_h:'Valores',
+  v1h:'Datos, no opiniones',v1p:'Solo incluimos lo que podemos verificar. La confianza vale más que cualquier métrica.',
+  v2h:'Velocidad sin sacrificar calidad',v2p:'Automatizamos lo que se puede. Revisamos lo que necesita criterio humano.',
+  v3h:'Construido con clientes reales',v3p:'Nació trabajando con un grupo hotelero real. Cada funcionalidad responde a una necesidad real.',
+  v4h:'Multi-tenant por diseño',v4p:'Cada organización ve solo sus datos. El aislamiento es la arquitectura.',
+  v5h:'Pensado para escalar',v5p:'Miami y Barcelona hoy. Cualquier ciudad del mundo en días.',
+  v6h:'IA que explica sus decisiones',v6p:'Score 0-100 con señales detectadas, red flags y acción recomendada.',
+  team_h:'Pequeños. Enfocados.<br><em>Obsesionados con el producto.</em>',
+  mkt_h:'Donde operamos hoy<br><em>y hacia dónde vamos.</em>',
+  about_cta_h:'¿Tu empresa expande<br>en el sector hotelero?',
+  about_cta_p:'Únete a los primeros grupos hoteleros que usan Sapiora.',
+  about_cta_btn:'Solicitar Early Access',
+  // CONTACT
+  cont_h:'Hablemos sobre tu<br><em>estrategia de expansión.</em>',
+  cont_p:'Early Access — cada cliente recibe onboarding personalizado y acceso directo al equipo.',
+  trust1:'Sin compromiso ni contrato mínimo',trust2:'Demo de 30 minutos',
+  trust3:'Onboarding incluido en todos los planes',trust4:'Garantía 14 días',
+  form_h:'Solicitar Early Access',form_p:'Te contactamos en menos de 24 horas.',
+  fl_name:'Nombre *',fl_co:'Empresa *',fl_email:'Email *',fl_phone:'Teléfono',
+  fl_plan:'Plan de interés',fl_city:'Ciudad(es)',fl_msg:'Cuéntanos tu expansión',
+  fl_submit:'Enviar solicitud',fl_note:'Sin spam. Política de privacidad.',
+  ok_h:'Solicitud recibida',ok_p:'Te contactamos en menos de 24 horas.',ok_back:'← Volver',
+},
+ca:{
+  nav_product:'Producte',nav_pricing:'Preus',nav_about:'Nosaltres',nav_contact:'Contacte',nav_cta:'Early Access',nav_login:'Accedir →',
+  hero_tag:'IA per a Expansió Hotelera',
+  hero_h:'L\'agent que troba<br><em>hotels per comprar.</em>',
+  hero_p:'Sapiora automatitza la prospecció, l\'anàlisi financer i la gestió del pipeline d\'adquisició hotelera. Cada setmana, noves oportunitats.',
+  hero_cta1:'Sol·licitar Early Access',hero_cta2:'Veure el producte',
+  s1:'Leads analitzats',s2:'Més ràpid que manual',s3:'Dades verificades',s4:'Cerca contínua',
+  how_tag:'Com funciona',how_h:'De cerca a<br>proposta en dies.',
+  st1_h:'Defineixes els criteris',st1_p:'Ciutat, tipus d\'actiu, rang d\'habitacions i rating objectiu.',
+  st2_h:'L\'agent cerca i enriqueix',st2_p:'IA escaneja el mercat, verifica dades i calcula RevPAR cada setmana.',
+  st3_h:'Gestiones el pipeline',st3_p:'Mapa interactiu, Kanban, Asset Manager i calculadora financera.',
+  st4_h:'Trobes el propietari',st4_p:'Owner Search cerca el propietari real i genera el primer missatge.',
+  feat_tag:'Funcionalitats',feat_h:'Tot el que necessita<br>un equip d\'expansió.',
+  f1h:'Mapa d\'oportunitats',f1p:'Visualitza leads en mapa interactiu.',
+  f2h:'AI Lead Scoring',f2p:'Claude AI genera score 0-100 amb senyals i acció recomanada.',
+  f3h:'Owner Search',f3p:'IA identifica el propietari real i genera l\'outreach personalitzat.',
+  f4h:'RevPAR Calculator',f4p:'Calcula RevPAR, GOP, Cap Rate en temps real.',
+  f5h:'Asset Manager',f5p:'Gestiona contactes i negociacions. Sincronitzat per a tot l\'equip.',
+  f6h:'Automatització setmanal',f6p:'L\'agent afegeix oportunitats cada setmana sense intervenció humana.',
+  quote:'"Sapiora va reemplaçar setmanes de cerca manual. Ara ens centrem a negociar."',
+  quote_who:'Director d\'Expansió · Grup hoteler europeu',
+  cta_h:'Comença a trobar<br>oportunitats avui.',
+  cta_p:'Places limitades. Onboarding personalitzat inclòs.',
+  cta_ph:'tu@empresa.com',cta_btn:'Sol·licitar accés',
+  cta_note:'Sense compromís. Et contactem en menys de 24h.',
+  prod_h:'Una plataforma per a<br><em>equips d\'expansió hotelera.</em>',
+  prod_p:'Des de la cerca automatitzada fins al tancament.',
+  prod_demo:'Sol·licitar demo',
+  ai_h:'AI Lead Scoring',ai_p:'Claude AI analitza cada hotel i genera score 0-100 amb senyals i acció recomanada.',
+  own_h:'Owner Search',own_p:'IA cerca el propietari real i genera el primer missatge personalitzat.',
+  rev_h:'RevPAR Calculator',rev_p:'Calcula RevPAR, GOP, Cap Rate i fee en temps real.',
+  auto_h:'L\'agent treballa<br><em>mentre tu negocies.</em>',
+  w1h:'Cerca setmanal',w1p:'Escaneja Booking.com cada setmana.',
+  w2h:'Enriquiment',w2p:'Verifica adreça, telèfon i habitacions.',
+  w3h:'Classificació',w3p:'Genera tipus, problema i oportunitat.',
+  w4h:'Inserció automàtica',w4p:'Apareix al teu pipeline verificat.',
+  price_h:'Simple, transparent,<br><em>sense sorpreses.</em>',
+  price_p:'Sense costos de setup · Sense contractes anuals · Cancel·la quan vulguis',
+  billing_m:'Mensual',billing_a:'Anual',billing_save:'2 mesos gratis',
+  plan_popular:'Més popular',
+  s_name:'Starter',s_price:'249',s_period:'1 usuari · 1 zona · 50–100 leads/mes',
+  s_f1:'Cerca setmanal automàtica',s_f2:'Mapa interactiu',s_f3:'Pipeline Kanban',
+  s_f4:'Scoring bàsic',s_f5:'Asset Manager',s_f6:'RevPAR Calculator',
+  s_f7:'Exportació CSV limitada',s_f8:'Suport email',
+  p_name:'Pro',p_price:'499',p_period:'3 usuaris · 5 zones · 300–500 leads/mes',
+  p_f1:'Tot en Starter',p_f2:'AI Scoring avançat (Claude)',p_f3:'Owner Search',
+  p_f4:'Alertes setmanals',p_f5:'Pipeline avançat',p_f6:'Exportació completa',
+  p_f7:'Analytics dashboard',p_f8:'Suport prioritari',
+  b_name:'Business',b_price:'1.200',b_period:'5–10 usuaris · Diverses ciutats · 1.000–2.000 leads/mes',
+  b_f1:'Tot en Pro',b_f2:'Scoring personalitzat',b_f3:'Alertes diàries',
+  b_f4:'Dashboard executiu',b_f5:'Onboarding dedicat',b_f6:'Revisió mensual',
+  b_f7:'Suport telefònic',b_f8:'Múltiples ciutats',
+  c_name:'Custom',c_price:'2.500',c_period:'Preu personalitzat · Tot a mida',
+  c_f1:'Tot en Business',c_f2:'Criteris a mida',c_f3:'Ciutats il·limitades',
+  c_f4:'Model de scoring propi',c_f5:'Integracions CRM/ERP',c_f6:'Informes executius',
+  c_f7:'Suport premium 24/7',c_f8:'SLA garantit',
+  plan_cta:'Sol·licitar accés',ent_cta:'Parlar amb vendes',
+  faq_h:'Preguntes freqüents.',
+  faq1q:'Puc canviar de pla?',faq1a:'Sí, en qualsevol moment. Sense penalització.',
+  faq2q:'Hi ha permanència mínima?',faq2a:'No. Tots els plans són mensuals.',
+  faq3q:'Quines ciutats puc afegir?',faq3a:'Miami i Barcelona ara. Noves ciutats sota petició.',
+  faq4q:'Amb quina freqüència arriben leads?',faq4a:'Cerques setmanals automàtiques. Business i Custom: alertes diàries.',
+  faq5q:'Les dades són verificades?',faq5a:'Només dades verificades. Si no podem confirmar, queda nul.',
+  faq6q:'Com funciona l\'onboarding?',faq6a:'Configurem la teva organització. En menys de 48h tens leads al pipeline.',
+  guar_h:'Garantia 14 dies.',guar_p:'Si no estàs satisfet, et tornem l\'import íntegre.',guar_cta:'Començar ara',
+  about_h:'Construïm la <em>intel·ligència</em><br>que accelera l\'expansió hotelera.',
+  about_p1:'Vam néixer d\'una pregunta: per què els equips d\'expansió busquen actius manualment quan la IA pot fer-ho millor?',
+  about_p2:'Sapiora combina automatització, dades verificades i IA per als millors equips d\'expansió.',
+  miss_h:'Missió',miss_q:'"Que cap oportunitat hotelera es perdi per falta d\'informació."',
+  miss_p1:'El sector hoteler mou bilions a l\'any. Les decisions d\'expansió segueixen basant-se en Excel.',
+  miss_p2:'Sapiora automatitza la part avorrida perquè els equips es centrin en el que importa.',
+  val_h:'Valors',
+  v1h:'Dades, no opinions',v1p:'Només incloem el que podem verificar.',
+  v2h:'Velocitat sense sacrificar qualitat',v2p:'Automatitzem el que es pot. Revisem el que necessita criteri humà.',
+  v3h:'Construït amb clients reals',v3p:'Va néixer treballant amb un grup hoteler real.',
+  v4h:'Multi-tenant per disseny',v4p:'Cada organització veu només les seves dades.',
+  v5h:'Pensat per escalar',v5p:'Qualsevol ciutat del món en dies.',
+  v6h:'IA que explica les seves decisions',v6p:'Score 0-100 amb senyals i acció recomanada.',
+  team_h:'Petits. Enfocats.<br><em>Obsessionats amb el producte.</em>',
+  mkt_h:'On operem avui<br><em>i cap on anem.</em>',
+  about_cta_h:'La teva empresa s\'expandeix<br>al sector hoteler?',
+  about_cta_p:'Uneix-te als primers grups hotelers que fan servir Sapiora.',
+  about_cta_btn:'Sol·licitar Early Access',
+  cont_h:'Parlem sobre la teva<br><em>estratègia d\'expansió.</em>',
+  cont_p:'Early Access — cada client rep onboarding personalitzat i accés directe a l\'equip.',
+  trust1:'Sense compromís ni contracte mínim',trust2:'Demo de 30 minuts',
+  trust3:'Onboarding inclòs en tots els plans',trust4:'Garantia 14 dies',
+  form_h:'Sol·licitar Early Access',form_p:'Et contactem en menys de 24 hores.',
+  fl_name:'Nom *',fl_co:'Empresa *',fl_email:'Email *',fl_phone:'Telèfon',
+  fl_plan:'Pla d\'interès',fl_city:'Ciutat(s)',fl_msg:'Explica\'ns la teva expansió',
+  fl_submit:'Enviar sol·licitud',fl_note:'Sense spam. Política de privacitat.',
+  ok_h:'Sol·licitud rebuda',ok_p:'Et contactem en menys de 24 hores.',ok_back:'← Tornar',
+},
+en:{
+  nav_product:'Product',nav_pricing:'Pricing',nav_about:'About',nav_contact:'Contact',nav_cta:'Early Access',nav_login:'Sign in →',
+  hero_tag:'AI for Hotel Expansion',
+  hero_h:'The agent that finds<br><em>hotels to acquire.</em>',
+  hero_p:'Sapiora automates prospecting, financial analysis and pipeline management for hotel acquisitions. Every week, new opportunities in your market.',
+  hero_cta1:'Apply for Early Access',hero_cta2:'See the product',
+  s1:'Leads analyzed',s2:'Faster than manual',s3:'Verified data',s4:'Continuous search',
+  how_tag:'How it works',how_h:'From search to<br>proposal in days.',
+  st1_h:'You define criteria',st1_p:'City, asset type, room range and target rating.',
+  st2_h:'The agent searches & enriches',st2_p:'AI scans the market, verifies data and calculates estimated RevPAR every week.',
+  st3_h:'You manage the pipeline',st3_p:'Interactive map, Kanban, Asset Manager and financial calculator.',
+  st4_h:'You find the owner',st4_p:'Owner Search finds the real owner and generates the first outreach message.',
+  feat_tag:'Features',feat_h:'Everything an expansion<br>team needs.',
+  f1h:'Opportunity map',f1p:'Visualize leads on an interactive map. Filter by city, type and priority.',
+  f2h:'AI Lead Scoring',f2p:'Claude AI generates a 0-100 score with key signals, red flags and recommended action.',
+  f3h:'Owner Search',f3p:'AI identifies the real owner, their LinkedIn and generates personalized outreach.',
+  f4h:'RevPAR Calculator',f4p:'Calculate RevPAR, GOP, Cap Rate and management fee in real time.',
+  f5h:'Asset Manager',f5p:'Manage contacts, negotiations and notes. Synced for the whole team.',
+  f6h:'Weekly automation',f6p:'The agent adds new opportunities every week without human intervention.',
+  quote:'"Sapiora replaced weeks of manual research. Now we focus on negotiating."',
+  quote_who:'Expansion Director · European hotel group',
+  cta_h:'Start finding<br>opportunities today.',
+  cta_p:'Limited spots. Personalized onboarding included.',
+  cta_ph:'you@company.com',cta_btn:'Apply for access',
+  cta_note:'No commitment. We\'ll contact you within 24h.',
+  prod_h:'A platform for<br><em>hotel expansion teams.</em>',
+  prod_p:'From automated search to closing. All in one dashboard.',
+  prod_demo:'Request demo',
+  ai_h:'AI Lead Scoring',ai_p:'Claude AI analyzes each hotel and generates a 0-100 score with signals, red flags and recommended action.',
+  own_h:'Owner Search',own_p:'AI finds the real owner in public records and LinkedIn. Generates personalized outreach.',
+  rev_h:'RevPAR Calculator',rev_p:'Enter ADR and occupancy. Calculates RevPAR, GOP, Cap Rate and management fee in real time.',
+  auto_h:'The agent works<br><em>while you negotiate.</em>',
+  w1h:'Weekly search',w1p:'Scans Booking.com based on your criteria every week.',
+  w2h:'Enrichment',w2p:'Verifies address, phone, website and rooms. No estimates.',
+  w3h:'Classification',w3p:'Generates type, problem and opportunity. Structured lead ready.',
+  w4h:'Auto insertion',w4p:'Appears in your pipeline verified. No duplicates.',
+  price_h:'Simple, transparent,<br><em>no surprises.</em>',
+  price_p:'No setup costs · No annual contracts · Cancel anytime',
+  billing_m:'Monthly',billing_a:'Annual',billing_save:'2 months free',
+  plan_popular:'Most popular',
+  s_name:'Starter',s_price:'249',s_period:'1 user · 1 zone · 50–100 leads/mo',
+  s_f1:'Automatic weekly search',s_f2:'Interactive map',s_f3:'Kanban pipeline',
+  s_f4:'Basic scoring',s_f5:'Asset Manager',s_f6:'RevPAR Calculator',
+  s_f7:'Limited CSV export',s_f8:'Email support',
+  p_name:'Pro',p_price:'499',p_period:'3 users · 5 zones · 300–500 leads/mo',
+  p_f1:'Everything in Starter',p_f2:'Advanced AI Scoring (Claude)',p_f3:'Owner Search',
+  p_f4:'Weekly alerts',p_f5:'Advanced pipeline',p_f6:'Full unlimited export',
+  p_f7:'Analytics dashboard',p_f8:'Priority support',
+  b_name:'Business',b_price:'1,200',b_period:'5–10 users · Multiple cities · 1,000–2,000 leads/mo',
+  b_f1:'Everything in Pro',b_f2:'Custom scoring',b_f3:'Daily alerts',
+  b_f4:'Executive dashboard',b_f5:'Dedicated onboarding',b_f6:'Monthly review',
+  b_f7:'Phone support',b_f8:'Multiple cities',
+  c_name:'Custom',c_price:'2,500',c_period:'Custom pricing · Everything custom',
+  c_f1:'Everything in Business',c_f2:'Custom search criteria',c_f3:'Unlimited cities',
+  c_f4:'Custom scoring model',c_f5:'CRM/ERP integrations',c_f6:'Executive reports',
+  c_f7:'Premium 24/7 support',c_f8:'Guaranteed SLA',
+  plan_cta:'Apply for access',ent_cta:'Talk to sales',
+  faq_h:'Frequently asked questions.',
+  faq1q:'Can I change plans?',faq1a:'Yes, at any time. No penalty.',
+  faq2q:'Is there a minimum commitment?',faq2a:'No. All plans are monthly. Cancel anytime.',
+  faq3q:'Which cities can I add?',faq3a:'Miami and Barcelona now. New cities on request. Custom: any city worldwide.',
+  faq4q:'How often do leads arrive?',faq4a:'Automatic weekly searches. Business and Custom: daily alerts.',
+  faq5q:'Is the data verified?',faq5a:'Verified data only. If we can\'t confirm a field, it stays null.',
+  faq6q:'How does onboarding work?',faq6a:'We set up your organization and run the first search. Within 48h you have leads.',
+  guar_h:'14-day guarantee.',guar_p:'Not satisfied in the first 14 days? Full refund, no questions asked.',guar_cta:'Get started',
+  about_h:'We build the <em>intelligence</em><br>that accelerates hotel expansion.',
+  about_p1:'We were born from a question: why do hotel expansion teams still search for assets manually when AI can do it better?',
+  about_p2:'Sapiora combines automation, verified data and AI so the best expansion teams find the best opportunities, faster.',
+  miss_h:'Mission',miss_q:'"No hotel opportunity should be lost for lack of information."',
+  miss_p1:'The hospitality sector moves trillions a year. Expansion decisions still rely on spreadsheets and manual searches.',
+  miss_p2:'Sapiora automates the boring part so teams focus on what matters: negotiating and closing.',
+  val_h:'Values',
+  v1h:'Data, not opinions',v1p:'We only include what we can verify. Trust is worth more than any metric.',
+  v2h:'Speed without sacrificing quality',v2p:'We automate what can be automated. We review what needs human judgment.',
+  v3h:'Built with real customers',v3p:'Born working alongside a real hotel group.',
+  v4h:'Multi-tenant by design',v4p:'Each organization sees only their data.',
+  v5h:'Built to scale',v5p:'Any city in the world in days.',
+  v6h:'AI that explains itself',v6p:'0-100 score with detected signals and recommended action.',
+  team_h:'Small. Focused.<br><em>Obsessed with the product.</em>',
+  mkt_h:'Where we operate today<br><em>and where we\'re going.</em>',
+  about_cta_h:'Does your company expand<br>in the hotel sector?',
+  about_cta_p:'Join the first hotel groups using Sapiora to find opportunities others miss.',
+  about_cta_btn:'Apply for Early Access',
+  cont_h:'Let\'s talk about your<br><em>expansion strategy.</em>',
+  cont_p:'Early Access — every customer gets personalized onboarding and direct access to the team.',
+  trust1:'No commitment or minimum contract',trust2:'30-minute demo',
+  trust3:'Onboarding included in all plans',trust4:'14-day money-back guarantee',
+  form_h:'Apply for Early Access',form_p:'We\'ll contact you within 24 hours.',
+  fl_name:'Name *',fl_co:'Company *',fl_email:'Email *',fl_phone:'Phone',
+  fl_plan:'Plan of interest',fl_city:'City/cities',fl_msg:'Tell us about your expansion',
+  fl_submit:'Send request',fl_note:'No spam. Privacy policy.',
+  ok_h:'Request received',ok_p:'We\'ll contact you within 24 hours.',ok_back:'← Back',
+}
+};
+var lang=localStorage.getItem('sapiora_lang')||'es';
+function setLang(l){
+  lang=l;
+  localStorage.setItem('sapiora_lang',l);
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lb').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-lang')===l);});
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n');
+    if(T[l]&&T[l][k]!==undefined)el.innerHTML=T[l][k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var k=el.getAttribute('data-i18n-ph');
+    if(T[l]&&T[l][k]!==undefined)el.placeholder=T[l][k];
+  });
+}
+document.addEventListener('DOMContentLoaded',function(){setLang(lang);});
+
+window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',window.scrollY>40);});
+var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
 </script>
-<script src="i18n.js"></script>
 </body>
 </html>

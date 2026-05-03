@@ -1,312 +1,238 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Producto — Sapiora</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Producto — Sapiora | Pipeline de Expansión Hotelera con IA</title>
+<meta name="description" content="Dashboard de expansión hotelera con IA. Mapa de oportunidades, AI Scoring, Owner Search, RevPAR Calculator y Asset Manager en una sola plataforma."/>
+<meta name="robots" content="index,follow"/><link rel="canonical" href="https://sapiora.site/product.html"/>
+<meta property="og:title" content="Producto — Sapiora"/><meta property="og:url" content="https://sapiora.site/product.html"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--black:#080808;--white:#f5f2ed;--gold:#c4a35a;--gold-d:#a8873e;--gold-l:rgba(196,163,90,.12);--muted:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--font-display:'Cormorant Garamond',serif;--font-body:'Sora',sans-serif;}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{text-decoration:none;color:inherit}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:var(--font-display);font-size:22px;font-weight:400;letter-spacing:2px}
-.nav-logo span{color:var(--gold)}
-.nav-links{display:flex;align-items:center;gap:32px}
-.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:color .2s}
-.nav-links a:hover{color:var(--white)}
-.nav-lang{display:flex;gap:6px}
-.lang-btn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:none;font-family:var(--font-body);transition:all .2s}
-.lang-btn.active,.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
-.nav-cta{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px 22px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s}
-.nav-cta:hover{background:var(--gold);color:var(--black)}
-section{padding:100px 60px}
-.container{max-width:1200px;margin:0 auto}
-.section-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
-.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);font-weight:300;line-height:1.1;letter-spacing:-.5px;margin-bottom:20px}
-.section-sub{font-size:15px;color:var(--muted);line-height:1.8;max-width:560px}
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
-.reveal.visible{opacity:1;transform:none}
-.btn-primary{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:16px 36px;background:var(--gold);color:var(--black);border:none;border-radius:4px;cursor:pointer;font-family:var(--font-body);transition:all .25s;display:inline-block}
-.btn-primary:hover{background:var(--gold-d);transform:translateY(-2px)}
-.btn-ghost{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:16px 36px;background:transparent;color:var(--white);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:var(--font-body);transition:all .25s;display:inline-block}
-.btn-ghost:hover{border-color:var(--white)}
+:root{--b:#080808;--w:#f5f2ed;--gold:#c4a35a;--gd:#a8873e;--gl:rgba(196,163,90,.12);--m:rgba(245,242,237,.45);--border:rgba(245,242,237,.08);--fd:'Cormorant Garamond',serif;--fb:'Sora',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--b);color:var(--w);font-family:var(--fb);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(245,242,237,.1);border-radius:2px}
+.container{max-width:1100px;margin:0 auto;padding:0 60px}.tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1,h2{font-family:var(--fd);font-weight:300;line-height:1.05;letter-spacing:-.5px}h1{font-size:clamp(48px,7vw,88px)}h2{font-size:clamp(32px,4vw,58px)}
+em{font-style:italic;color:var(--gold)}.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.reveal.vis{opacity:1;transform:none}
+.btn-g{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:15px 32px;background:var(--gold);color:var(--b);border:none;border-radius:4px;cursor:pointer;font-family:var(--fb);transition:all .25s;display:inline-block}
+.btn-g:hover{background:var(--gd);transform:translateY(-2px)}
+.btn-o{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:15px 32px;background:transparent;color:var(--w);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:var(--fb);transition:all .25s;display:inline-block}
+.btn-o:hover{border-color:rgba(245,242,237,.35)}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:860px){.container{padding:0 24px}}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;gap:24px;transition:all .3s}
+nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--fd);font-size:20px;font-weight:400;letter-spacing:2px;color:var(--w)}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);transition:color .2s}
+.nav-links a:hover{color:var(--w)}
+.nav-r{display:flex;align-items:center;gap:12px;margin-left:auto}
+.lang-sw{display:flex;gap:4px}
+.lb{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--m);cursor:pointer;background:none;font-family:var(--fb);transition:all .2s}
+.lb.active,.lb:hover{border-color:var(--gold);color:var(--gold)}
+.btn-login{font-size:11px;font-weight:500;color:var(--m);letter-spacing:.5px;transition:color .2s;padding:8px 4px}
+.btn-login:hover{color:var(--w)}
+.btn-cta{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:9px 20px;border:1px solid var(--gold);color:var(--gold);border-radius:4px;transition:all .2s;white-space:nowrap}
+.btn-cta:hover{background:var(--gold);color:var(--b)}
+footer{background:#050505;padding:48px 60px;border-top:1px solid var(--border)}
+.ft-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.ft-logo{font-family:var(--fd);font-size:18px;font-weight:400;letter-spacing:2px;color:var(--w)}
+.ft-logo span{color:var(--gold)}
+.ft-links{display:flex;gap:20px;flex-wrap:wrap}
+.ft-links a{font-size:11px;color:var(--m);transition:color .2s}
+.ft-links a:hover{color:var(--w)}
+.ft-copy{font-size:11px;color:rgba(245,242,237,.15)}
+@media(max-width:860px){nav{padding:14px 20px}.nav-links{display:none}.ft-inner{flex-direction:column;text-align:center}}
 
-/* HERO */
-#hero{padding:160px 60px 100px;text-align:center;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(196,163,90,.06) 0%,transparent 70%);pointer-events:none}
-#hero h1{font-family:var(--font-display);font-size:clamp(48px,7vw,88px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
-#hero h1 em{font-style:italic;color:var(--gold)}
-#hero p{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto 48px;line-height:1.8}
-
-/* DASHBOARD PREVIEW */
-#preview{background:linear-gradient(180deg,var(--black) 0%,#0a0806 100%);padding:0 60px 100px}
-.dashboard-mock{max-width:1000px;margin:0 auto;background:rgba(245,242,237,.03);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.6)}
-.mock-bar{height:40px;background:rgba(0,0,0,.5);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:8px}
-.mock-dot{width:10px;height:10px;border-radius:50%}
-.mock-title{font-size:11px;color:var(--muted);margin-left:12px;letter-spacing:.5px}
-.mock-body{display:grid;grid-template-columns:280px 1fr;height:480px}
-.mock-sidebar{border-right:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:8px}
-.mock-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
-.mock-kpi{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px}
-.mock-kpi-v{font-family:var(--font-display);font-size:24px;font-weight:300;color:var(--gold);line-height:1}
-.mock-kpi-l{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-.mock-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;transition:background .2s}
-.mock-card:hover{background:rgba(196,163,90,.06)}
-.mock-card.active{border-color:var(--gold)}
-.mock-card-name{font-size:11px;font-weight:600;margin-bottom:4px}
-.mock-card-addr{font-size:9px;color:var(--muted)}
-.mock-card-bot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.mock-badge{font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px}
-.mock-badge.hot{background:rgba(154,60,66,.2);color:#e07a8a}
-.mock-badge.warm{background:rgba(181,98,26,.2);color:#d4884a}
-.mock-badge.new{background:rgba(42,138,110,.2);color:#4ab894}
-.mock-map{flex:1;background:rgba(42,138,110,.03);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.mock-map-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(196,163,90,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(196,163,90,.03) 1px,transparent 1px);background-size:40px 40px}
-.mock-pin{position:absolute;width:12px;height:12px;border-radius:50%;border:2px solid #fff}
-
-/* FEATURES DEEP */
-#features-deep{background:#0a0806}
-.feat-deep-grid{display:flex;flex-direction:column;gap:80px;margin-top:60px}
-.feat-deep-row{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
-.feat-deep-row.reverse{direction:rtl}
-.feat-deep-row.reverse>*{direction:ltr}
-.feat-visual{background:rgba(245,242,237,.03);border:1px solid var(--border);border-radius:16px;padding:32px;min-height:320px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
-.feat-visual::after{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(196,163,90,.06) 0%,transparent 70%)}
-.feat-num{font-family:var(--font-display);font-size:100px;font-weight:300;color:rgba(196,163,90,.06);position:absolute;top:-10px;right:20px;line-height:1;pointer-events:none}
-.feat-deep-icon{font-size:36px;margin-bottom:20px}
-.feat-deep-title{font-family:var(--font-display);font-size:32px;font-weight:300;margin-bottom:12px}
-.feat-deep-desc{font-size:14px;color:var(--muted);line-height:1.8}
-.feat-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.pill{font-size:10px;font-weight:600;letter-spacing:.8px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;color:var(--muted)}
-
-/* SCORE VISUAL */
-.score-display{display:flex;align-items:center;gap:24px;margin-bottom:20px}
-.score-circle{width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:36px;font-weight:300;color:var(--gold);flex-shrink:0}
-.score-bars{flex:1;display:flex;flex-direction:column;gap:6px}
-.sbar-row{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted)}
-.sbar-track{flex:1;height:3px;background:rgba(245,242,237,.08);border-radius:2px}
-.sbar-fill{height:100%;border-radius:2px;background:var(--gold)}
-.flag-row{display:flex;align-items:center;gap:8px;font-size:11px;padding:8px 10px;border-radius:6px}
-.flag-row.green{background:rgba(42,138,110,.1);color:#4ab894}
-.flag-row.red{background:rgba(154,60,66,.1);color:#e07a8a}
-.flag-row.yellow{background:rgba(181,98,26,.1);color:#d4884a}
-
-/* OWNER VISUAL */
-.owner-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px}
-.owner-name{font-size:15px;font-weight:600;margin-bottom:4px}
-.owner-role{font-size:11px;color:var(--muted);margin-bottom:12px}
-.owner-field{display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border)}
-.owner-field:last-child{border-bottom:none}
-.owner-field span:first-child{color:var(--muted)}
-.owner-field span:last-child{font-weight:600}
-.conf-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:rgba(42,138,110,.15);color:#4ab894;margin-top:10px}
-
-/* WORKFLOW */
-#workflow{background:var(--black);border-top:1px solid var(--border)}
-.workflow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:60px}
-.wf-step{background:var(--black);padding:32px;transition:background .2s}
-.wf-step:hover{background:rgba(196,163,90,.04)}
-.wf-num{font-family:var(--font-display);font-size:48px;font-weight:300;color:rgba(196,163,90,.15);line-height:1;margin-bottom:16px}
-.wf-title{font-size:14px;font-weight:600;margin-bottom:8px}
-.wf-desc{font-size:12px;color:var(--muted);line-height:1.7}
-.wf-arrow{display:none}
-
-footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
-.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:400;letter-spacing:2px}
-.footer-logo span{color:var(--gold)}
-.footer-links{display:flex;gap:24px;flex-wrap:wrap}
-.footer-links a{font-size:11px;color:var(--muted);transition:color .2s}
-.footer-links a:hover{color:var(--white)}
-.footer-copy{font-size:11px;color:rgba(245,242,237,.2)}
-
-@media(max-width:900px){
-  nav{padding:16px 24px}
-  .nav-links{display:none}
-  section,#hero,#preview{padding-left:24px;padding-right:24px}
-  #preview{padding-left:24px;padding-right:24px}
-  .feat-deep-row{grid-template-columns:1fr}
-  .feat-deep-row.reverse{direction:ltr}
-  .mock-body{grid-template-columns:1fr;height:auto}
-  .mock-sidebar{display:none}
-  .workflow-steps{grid-template-columns:1fr 1fr}
-}
+#hero{padding:160px 0 80px;position:relative;overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(196,163,90,.05) 0%,transparent 70%);pointer-events:none}
+.hinner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+#hero h1{margin-bottom:20px;animation:fadeUp .8s both}
+#hero p{color:var(--m);font-size:16px;line-height:1.9;margin-bottom:32px;animation:fadeUp .8s .1s both}
+.hbtns{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .8s .2s both}
+.mock{background:rgba(245,242,237,.03);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5);animation:fadeUp .8s .2s both}
+.mbar{height:36px;background:rgba(0,0,0,.4);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:6px}
+.md{width:9px;height:9px;border-radius:50%}
+.mbody{display:grid;grid-template-columns:240px 1fr;height:380px}
+.msb{border-right:1px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:7px}
+.mkpi{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:4px}
+.mki{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:7px;padding:9px}
+.mkv{font-family:var(--fd);font-size:22px;font-weight:300;color:var(--gold);line-height:1}
+.mkl{font-size:9px;color:var(--m);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.mc{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:7px;padding:9px;cursor:pointer;transition:background .2s}
+.mc:hover,.mc.on{background:rgba(196,163,90,.06);border-color:rgba(196,163,90,.25)}
+.mcn{font-size:11px;font-weight:600;margin-bottom:3px}
+.mca{font-size:9px;color:var(--m)}
+.mcb{display:flex;justify-content:space-between;align-items:center;margin-top:5px}
+.mbg{font-size:8px;font-weight:700;padding:2px 6px;border-radius:6px;text-transform:uppercase}
+.mbg.h{background:rgba(154,60,66,.2);color:#e07a8a}
+.mbg.w{background:rgba(181,98,26,.2);color:#d4884a}
+.mmap{flex:1;background:rgba(42,138,110,.03);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.mmap-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(196,163,90,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(196,163,90,.025) 1px,transparent 1px);background-size:36px 36px}
+.mpin{position:absolute;width:11px;height:11px;border-radius:50%;border:2px solid #fff}
+#feats{padding:100px 0;background:#0a0806}
+.feats-hd{text-align:center;margin-bottom:56px}
+.feats-hd h2{margin-bottom:14px}
+.feats-hd p{color:var(--m);max-width:480px;margin:0 auto;font-size:15px}
+.fd-list{display:flex;flex-direction:column;gap:80px;margin-top:60px}
+.fd-row{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.fd-row.rev{direction:rtl}.fd-row.rev>*{direction:ltr}
+.fv{background:rgba(245,242,237,.03);border:1px solid var(--border);border-radius:16px;padding:28px;min-height:280px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.fv::after{content:'';position:absolute;top:-30px;right:-30px;width:150px;height:150px;background:radial-gradient(circle,rgba(196,163,90,.07) 0%,transparent 70%)}
+.fvn{font-family:var(--fd);font-size:90px;font-weight:300;color:rgba(196,163,90,.05);position:absolute;top:-10px;right:16px;line-height:1;pointer-events:none}
+.fd-ico{font-size:32px;margin-bottom:16px}
+.fd-h{font-family:var(--fd);font-size:30px;font-weight:300;margin-bottom:10px}
+.fd-p{font-size:14px;color:var(--m);line-height:1.8}
+.fd-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.fdp{font-size:10px;font-weight:600;padding:4px 11px;border:1px solid var(--border);border-radius:20px;color:var(--m)}
+.score-disp{display:flex;align-items:center;gap:20px;margin-bottom:16px}
+.sc{width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:32px;font-weight:300;color:var(--gold);flex-shrink:0}
+.sb-bars{flex:1;display:flex;flex-direction:column;gap:5px}
+.sbr{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--m)}
+.sbrl{width:70px;flex-shrink:0}
+.sbrt{flex:1;height:3px;background:rgba(245,242,237,.07);border-radius:2px}
+.sbrf{height:100%;border-radius:2px;background:var(--gold)}
+.flag{display:flex;align-items:center;gap:7px;font-size:11px;padding:7px 10px;border-radius:6px}
+.flag.g{background:rgba(42,138,110,.1);color:#4ab894}.flag.r{background:rgba(154,60,66,.1);color:#e07a8a}.flag.y{background:rgba(181,98,26,.1);color:#d4884a}
+.ow-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px}
+.own{font-size:14px;font-weight:600;margin-bottom:3px}.owrole{font-size:11px;color:var(--m);margin-bottom:10px}
+.owf{display:flex;justify-content:space-between;font-size:11px;padding:5px 0;border-bottom:1px solid var(--border)}.owf:last-child{border-bottom:none}
+.owf span:first-child{color:var(--m)}
+.conf{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:rgba(42,138,110,.15);color:#4ab894;margin-top:8px}
+.rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.rvc{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.rvl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.rvv{font-family:var(--fd);font-size:26px;font-weight:300;line-height:1}
+#workflow{padding:100px 0;background:var(--b);border-top:1px solid var(--border)}
+.wf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:48px}
+.wf{background:var(--b);padding:32px;transition:background .2s}.wf:hover{background:rgba(196,163,90,.03)}
+.wfn{font-family:var(--fd);font-size:44px;font-weight:300;color:rgba(196,163,90,.12);line-height:1;margin-bottom:14px}
+.wft{font-size:14px;font-weight:600;margin-bottom:7px}.wfp{font-size:12px;color:var(--m);line-height:1.7}
+@media(max-width:860px){.hinner{grid-template-columns:1fr}.mock{display:none}.fd-row{grid-template-columns:1fr}.fd-row.rev{direction:ltr}.wf-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-logo">Sapiora<span>.</span></a>
+<nav id="nav">
+  <a href="/index.html" class="logo">Sapiora<span>.</span></a>
   <div class="nav-links">
-    <a href="product.html">Producto</a>
-    <a href="pricing.html">Precios</a>
-    <a href="about.html">Nosotros</a>
-    <a href="contact.html">Contacto</a>
-    <div class="nav-lang">
-      <button class="lang-btn active" onclick="setLang('es')" data-lang="es">ES</button>
-      <button class="lang-btn" onclick="setLang('ca')" data-lang="ca">CA</button>
-      <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
-    </div>
+    <a href="/product.html" data-i18n="nav_product">Producto</a>
+    <a href="/pricing.html" data-i18n="nav_pricing">Precios</a>
+    <a href="/about.html" data-i18n="nav_about">Nosotros</a>
+    <a href="/contact.html" data-i18n="nav_contact">Contacto</a>
   </div>
-  <a href="contact.html" class="nav-cta">Early Access</a>
+  <div class="nav-r">
+    <div class="lang-sw">
+      <button class="lb active" data-lang="es" onclick="setLang('es')">ES</button>
+      <button class="lb" data-lang="ca" onclick="setLang('ca')">CA</button>
+      <button class="lb" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="/login" class="btn-login" data-i18n="nav_login">Acceder →</a>
+    <a href="/contact.html" class="btn-cta" data-i18n="nav_cta">Early Access</a>
+  </div>
 </nav>
-
 <section id="hero">
-  <div class="hero-bg"></div>
-  <div class="section-tag">El producto</div>
-  <h1>Una plataforma diseñada para<br/><em>equipos de expansión hotelera.</em></h1>
-  <p>Desde la búsqueda automatizada hasta el cierre de la negociación. Sapiora centraliza todo el flujo de adquisición en un único dashboard inteligente.</p>
-  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-    <a href="contact.html" class="btn-primary">Solicitar demo</a>
-    <a href="pricing.html" class="btn-ghost">Ver precios</a>
-  </div>
-</section>
-
-<section id="preview">
-  <div class="dashboard-mock reveal">
-    <div class="mock-bar">
-      <div class="mock-dot" style="background:#ff5f57"></div>
-      <div class="mock-dot" style="background:#ffbd2e"></div>
-      <div class="mock-dot" style="background:#28c840"></div>
-      <div class="mock-title">Sapiora — Pipeline Intelligence · sapiora.site</div>
-    </div>
-    <div class="mock-body">
-      <div class="mock-sidebar">
-        <div class="mock-kpi-grid">
-          <div class="mock-kpi"><div class="mock-kpi-v">37</div><div class="mock-kpi-l">Total</div></div>
-          <div class="mock-kpi"><div class="mock-kpi-v" style="color:#e07a8a">12</div><div class="mock-kpi-l">Hot</div></div>
-          <div class="mock-kpi"><div class="mock-kpi-v">3</div><div class="mock-kpi-l">Ciudades</div></div>
-          <div class="mock-kpi"><div class="mock-kpi-v">89%</div><div class="mock-kpi-l">AI scored</div></div>
-        </div>
-        <div class="mock-card active">
-          <div class="mock-card-name">Hotel Mediterráneo BCN</div>
-          <div class="mock-card-addr">Eixample, Barcelona</div>
-          <div class="mock-card-bot"><span class="mock-badge hot">Hot</span><span style="font-size:10px;color:var(--gold)">Score 87</span></div>
-        </div>
-        <div class="mock-card">
-          <div class="mock-card-name">Midtown Suites Miami</div>
-          <div class="mock-card-addr">Brickell, Miami FL</div>
-          <div class="mock-card-bot"><span class="mock-badge warm">Warm</span><span style="font-size:10px;color:var(--muted)">Score 72</span></div>
-        </div>
-        <div class="mock-card">
-          <div class="mock-card-name">Bayfront Inn Downtown</div>
-          <div class="mock-card-addr">Downtown Miami, FL</div>
-          <div class="mock-card-bot"><span class="mock-badge new">Nuevo</span><span style="font-size:10px;color:var(--muted)">Sin score</span></div>
-        </div>
-      </div>
-      <div class="mock-map">
-        <div class="mock-map-bg"></div>
-        <div class="mock-pin" style="background:#9a3c42;top:35%;left:40%"></div>
-        <div class="mock-pin" style="background:#9a3c42;top:55%;left:55%"></div>
-        <div class="mock-pin" style="background:#b5621a;top:45%;left:35%"></div>
-        <div class="mock-pin" style="background:#2a8a6e;top:30%;left:60%"></div>
-        <div class="mock-pin" style="background:#2a8a6e;top:65%;left:48%"></div>
-        <div class="mock-pin" style="background:#9a3c42;top:42%;left:70%"></div>
-        <div style="position:absolute;bottom:16px;right:16px;font-size:10px;color:var(--muted);background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px">37 propiedades · 31 geocodificadas</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="features-deep">
+  <div class="hbg"></div>
   <div class="container">
-    <div class="section-tag reveal">Funcionalidades en detalle</div>
-    <h2 class="section-title reveal">Cada herramienta,<br/><em>pensada para hoteles.</em></h2>
-    <div class="feat-deep-grid">
-
-      <!-- AI Scoring -->
-      <div class="feat-deep-row reveal">
-        <div>
-          <div class="feat-deep-icon">🤖</div>
-          <h3 class="feat-deep-title">AI Lead Scoring</h3>
-          <p class="feat-deep-desc">Claude AI analiza cada oportunidad hotelera y genera un score 0-100 basado en tamaño, ubicación, tipo de oportunidad y potencial de mejora operativa. Incluye señales clave, red flags y acción recomendada.</p>
-          <div class="feat-pills">
-            <span class="pill">Score 0-100</span>
-            <span class="pill">Red flags</span>
-            <span class="pill">Acción recomendada</span>
-            <span class="pill">Claude AI</span>
-          </div>
+    <div class="hinner">
+      <div class="reveal">
+        <div class="tag" data-i18n="prod_tag_txt">El producto</div>
+        <h1 data-i18n="prod_h">Una plataforma para<br><em>equipos de expansión hotelera.</em></h1>
+        <p data-i18n="prod_p">Desde la búsqueda automatizada hasta el cierre. Todo en un dashboard.</p>
+        <div class="hbtns">
+          <a href="/contact.html" class="btn-g" data-i18n="prod_demo">Solicitar demo</a>
+          <a href="/pricing.html" class="btn-o" data-i18n="nav_pricing">Precios</a>
         </div>
-        <div class="feat-visual">
-          <div class="feat-num">01</div>
-          <div class="score-display">
-            <div class="score-circle">87</div>
-            <div class="score-bars">
-              <div class="sbar-row"><span style="width:80px">Ubicación</span><div class="sbar-track"><div class="sbar-fill" style="width:95%"></div></div></div>
-              <div class="sbar-row"><span style="width:80px">Tamaño</span><div class="sbar-track"><div class="sbar-fill" style="width:78%"></div></div></div>
-              <div class="sbar-row"><span style="width:80px">Oportunidad</span><div class="sbar-track"><div class="sbar-fill" style="width:88%"></div></div></div>
-              <div class="sbar-row"><span style="width:80px">Rating</span><div class="sbar-track"><div class="sbar-fill" style="width:60%"></div></div></div>
+      </div>
+      <div class="mock reveal">
+        <div class="mbar">
+          <div class="md" style="background:#ff5f57"></div>
+          <div class="md" style="background:#ffbd2e"></div>
+          <div class="md" style="background:#28c840"></div>
+        </div>
+        <div class="mbody">
+          <div class="msb">
+            <div class="mkpi">
+              <div class="mki"><div class="mkv">37</div><div class="mkl">Total</div></div>
+              <div class="mki"><div class="mkv" style="color:#e07a8a">12</div><div class="mkl">Hot</div></div>
             </div>
+            <div class="mc on"><div class="mcn">Hotel Mediterráneo BCN</div><div class="mca">Eixample, Barcelona</div><div class="mcb"><span class="mbg h">Hot</span><span style="font-size:10px;color:var(--gold)">Score 87</span></div></div>
+            <div class="mc"><div class="mcn">Midtown Suites Miami</div><div class="mca">Brickell, Miami FL</div><div class="mcb"><span class="mbg w">Warm</span><span style="font-size:10px;color:var(--m)">Score 72</span></div></div>
+            <div class="mc"><div class="mcn">Bayfront Inn Downtown</div><div class="mca">Downtown Miami, FL</div><div class="mcb"><span class="mbg" style="background:rgba(42,138,110,.2);color:#4ab894">Nuevo</span></div></div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div class="flag-row green">✓ Ubicación prime en Eixample, alto tráfico turístico</div>
-            <div class="flag-row yellow">⚠ Gestión actual sin estándares de cadena hotelera</div>
-            <div class="flag-row red">✕ Rating 6.4 en Booking — por debajo del mercado BCN</div>
+          <div class="mmap">
+            <div class="mmap-bg"></div>
+            <div class="mpin" style="background:#9a3c42;top:32%;left:38%"></div>
+            <div class="mpin" style="background:#9a3c42;top:52%;left:54%"></div>
+            <div class="mpin" style="background:#b5621a;top:44%;left:34%"></div>
+            <div class="mpin" style="background:#2a8a6e;top:28%;left:62%"></div>
+            <div class="mpin" style="background:#2a8a6e;top:64%;left:46%"></div>
+            <div class="mpin" style="background:#9a3c42;top:40%;left:70%"></div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- Owner Search -->
-      <div class="feat-deep-row reverse reveal">
+<section id="feats">
+  <div class="container">
+    <div class="feats-hd reveal">
+      <div class="tag" data-i18n="prod_feat_tag_txt">Funcionalidades en detalle</div>
+      <h2 data-i18n="prod_feat_h_txt">Cada herramienta,<br><em>pensada para hoteles.</em></h2>
+      <p>Diseñado con y para equipos que gestionan pipelines de adquisición hotelera.</p>
+    </div>
+    <div class="fd-list">
+      <div class="fd-row reveal">
         <div>
-          <div class="feat-deep-icon">👤</div>
-          <h3 class="feat-deep-title">Owner Search</h3>
-          <p class="feat-deep-desc">El agente busca en registros públicos, LinkedIn y fuentes oficiales para identificar al propietario real del activo. Genera una estrategia de contacto y el primer mensaje de outreach personalizado.</p>
-          <div class="feat-pills">
-            <span class="pill">Registros públicos</span>
-            <span class="pill">LinkedIn</span>
-            <span class="pill">Mensaje de outreach</span>
-            <span class="pill">Confianza alta/media/baja</span>
-          </div>
+          <div class="fd-ico">🤖</div>
+          <h3 class="fd-h" data-i18n="ai_h">AI Lead Scoring</h3>
+          <p class="fd-p" data-i18n="ai_p">Claude AI analiza cada hotel y genera score 0-100 con señales, red flags y acción recomendada.</p>
+          <div class="fd-pills"><span class="fdp">Score 0-100</span><span class="fdp">Red flags</span><span class="fdp">Acción recomendada</span><span class="fdp">Claude AI</span></div>
         </div>
-        <div class="feat-visual">
-          <div class="feat-num">02</div>
-          <div class="owner-card">
-            <div class="owner-name">Josep M. Ferrer</div>
-            <div class="owner-role">Propietario · Ferrer Invest SL</div>
-            <div class="owner-field"><span>Agente registrado</span><span>Ferrer Invest SL</span></div>
-            <div class="owner-field"><span>LinkedIn</span><span style="color:var(--gold)">🔗 Ver perfil ↗</span></div>
-            <div class="owner-field"><span>Contacto</span><span style="color:#4ab894">+34 93 XXX XXXX</span></div>
-            <div class="conf-badge">✓ Confianza alta</div>
+        <div class="fv">
+          <div class="fvn">01</div>
+          <div class="score-disp"><div class="sc">87</div><div class="sb-bars"><div class="sbr"><span class="sbrl">Ubicación</span><div class="sbrt"><div class="sbrf" style="width:95%"></div></div></div><div class="sbr"><span class="sbrl">Tamaño</span><div class="sbrt"><div class="sbrf" style="width:78%"></div></div></div><div class="sbr"><span class="sbrl">Oportunidad</span><div class="sbrt"><div class="sbrf" style="width:88%"></div></div></div><div class="sbr"><span class="sbrl">Rating</span><div class="sbrt"><div class="sbrf" style="width:60%"></div></div></div></div></div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div class="flag g">✓ Ubicación prime en Eixample</div>
+            <div class="flag y">⚠ Gestión sin estándares de cadena</div>
+            <div class="flag r">✕ Rating 6.4 — bajo para Barcelona</div>
           </div>
-          <div style="background:rgba(196,163,90,.06);border:1px solid rgba(196,163,90,.15);border-radius:8px;padding:12px;font-size:11px;color:var(--muted);font-style:italic;line-height:1.6">"Estimado Sr. Ferrer, hemos identificado su propiedad en el Eixample como una oportunidad de gestión alineada con nuestra estrategia de expansión..."</div>
         </div>
       </div>
-
-      <!-- RevPAR Calculator -->
-      <div class="feat-deep-row reveal">
+      <div class="fd-row rev reveal">
         <div>
-          <div class="feat-deep-icon">📊</div>
-          <h3 class="feat-deep-title">RevPAR Calculator</h3>
-          <p class="feat-deep-desc">Introduce ADR, ocupación y precio de adquisición. Sapiora calcula RevPAR, GOP, Cap Rate, fee de gestión y revenue por habitación al año — en tiempo real para cada activo del pipeline.</p>
-          <div class="feat-pills">
-            <span class="pill">RevPAR</span>
-            <span class="pill">GOP 40%</span>
-            <span class="pill">Cap Rate</span>
-            <span class="pill">Fee gestión</span>
-            <span class="pill">Rev/hab/año</span>
-          </div>
+          <div class="fd-ico">👤</div>
+          <h3 class="fd-h" data-i18n="own_h">Owner Search</h3>
+          <p class="fd-p" data-i18n="own_p">IA busca al propietario real en registros públicos y LinkedIn. Genera el primer mensaje de outreach personalizado.</p>
+          <div class="fd-pills"><span class="fdp">Registros públicos</span><span class="fdp">LinkedIn</span><span class="fdp">Outreach generado</span></div>
         </div>
-        <div class="feat-visual">
-          <div class="feat-num">03</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
-              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">RevPAR</div>
-              <div style="font-family:var(--font-display);font-size:28px;color:var(--gold);font-weight:300">€94</div>
-            </div>
-            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
-              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Total Rev.</div>
-              <div style="font-family:var(--font-display);font-size:28px;color:var(--white);font-weight:300">€2.4M</div>
-            </div>
-            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
-              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Fee gestión</div>
-              <div style="font-family:var(--font-display);font-size:28px;color:#4ab894;font-weight:300">€168K</div>
-            </div>
-            <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center">
-              <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Cap Rate</div>
-              <div style="font-family:var(--font-display);font-size:28px;color:var(--white);font-weight:300">7.2%</div>
-            </div>
+        <div class="fv">
+          <div class="fvn">02</div>
+          <div class="ow-card">
+            <div class="own">Josep M. Ferrer</div><div class="owrole">Propietario · Ferrer Invest SL</div>
+            <div class="owf"><span>Agente registrado</span><span>Ferrer Invest SL</span></div>
+            <div class="owf"><span>LinkedIn</span><span style="color:var(--gold)">🔗 Ver perfil ↗</span></div>
+            <div class="owf"><span>Contacto</span><span style="color:#4ab894">+34 93 XXX XXXX</span></div>
+            <div class="conf">✓ Confianza alta</div>
+          </div>
+          <div style="background:rgba(196,163,90,.06);border:1px solid rgba(196,163,90,.15);border-radius:8px;padding:10px;font-size:11px;color:var(--m);font-style:italic;line-height:1.6">"Estimado Sr. Ferrer, hemos identificado su propiedad como una oportunidad alineada con nuestra estrategia de expansión..."</div>
+        </div>
+      </div>
+      <div class="fd-row reveal">
+        <div>
+          <div class="fd-ico">📊</div>
+          <h3 class="fd-h" data-i18n="rev_h">RevPAR Calculator</h3>
+          <p class="fd-p" data-i18n="rev_p">Introduce ADR y ocupación. Calcula RevPAR, GOP, Cap Rate y fee de gestión en tiempo real.</p>
+          <div class="fd-pills"><span class="fdp">RevPAR</span><span class="fdp">GOP 40%</span><span class="fdp">Cap Rate</span><span class="fdp">Fee gestión</span></div>
+        </div>
+        <div class="fv">
+          <div class="fvn">03</div>
+          <div class="rv-grid">
+            <div class="rvc"><div class="rvl">RevPAR</div><div class="rvv" style="color:var(--gold)">€94</div></div>
+            <div class="rvc"><div class="rvl">Total Rev.</div><div class="rvv">€2.4M</div></div>
+            <div class="rvc"><div class="rvl">Fee gestión</div><div class="rvv" style="color:#4ab894">€168K</div></div>
+            <div class="rvc"><div class="rvl">Cap Rate</div><div class="rvv">7.2%</div></div>
           </div>
         </div>
       </div>
@@ -316,61 +242,348 @@ footer{background:#050505;padding:60px;border-top:1px solid var(--border)}
 
 <section id="workflow">
   <div class="container">
-    <div class="section-tag reveal">Automatización</div>
-    <h2 class="section-title reveal">El agente trabaja<br/><em>mientras tú negocias.</em></h2>
-    <div class="workflow-steps reveal">
-      <div class="wf-step">
-        <div class="wf-num">01</div>
-        <div class="wf-title">Búsqueda semanal</div>
-        <div class="wf-desc">Cada semana el agente escanea Booking.com y otras fuentes según tus criterios de ciudad, rating y tamaño mínimo.</div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">02</div>
-        <div class="wf-title">Enriquecimiento</div>
-        <div class="wf-desc">Verifica dirección, teléfono, web oficial, número de habitaciones y año de apertura. Sin estimaciones.</div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">03</div>
-        <div class="wf-title">Clasificación</div>
-        <div class="wf-desc">Genera tipo de activo, problema principal, oportunidad y lo transforma en un lead estructurado listo para la BD.</div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">04</div>
-        <div class="wf-title">Inserción automática</div>
-        <div class="wf-desc">El lead aparece en tu pipeline con todos los datos verificados, asignado a tu organización. Sin duplicados.</div>
-      </div>
+    <div class="tag reveal" data-i18n="auto_tag_txt">Automatización</div>
+    <h2 class="reveal" data-i18n="auto_h">El agente trabaja<br><em>mientras tú negocias.</em></h2>
+    <div class="wf-grid reveal">
+      <div class="wf"><div class="wfn">01</div><div class="wft" data-i18n="w1h">Búsqueda semanal</div><div class="wfp" data-i18n="w1p">Escanea Booking.com según tus criterios cada semana.</div></div>
+      <div class="wf"><div class="wfn">02</div><div class="wft" data-i18n="w2h">Enriquecimiento</div><div class="wfp" data-i18n="w2p">Verifica dirección, teléfono, web y habitaciones.</div></div>
+      <div class="wf"><div class="wfn">03</div><div class="wft" data-i18n="w3h">Clasificación</div><div class="wfp" data-i18n="w3p">Genera tipo, problema y oportunidad. Lead estructurado listo.</div></div>
+      <div class="wf"><div class="wfn">04</div><div class="wft" data-i18n="w4h">Inserción automática</div><div class="wfp" data-i18n="w4p">Aparece en tu pipeline verificado. Sin duplicados.</div></div>
     </div>
   </div>
 </section>
 
-<section style="padding:80px 60px;text-align:center;background:#0a0806">
+<section style="padding:72px 0;text-align:center;background:#0a0806;border-top:1px solid var(--border)">
   <div class="container">
-    <h2 class="section-title reveal" style="max-width:600px;margin:0 auto 32px">¿Listo para ver<br/><em>Sapiora en acción?</em></h2>
-    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap" class="reveal">
-      <a href="contact.html" class="btn-primary">Solicitar demo</a>
-      <a href="pricing.html" class="btn-ghost">Ver precios</a>
+    <div class="reveal">
+      <h2 data-i18n="prod_cta_title">¿Listo para ver<br><em>Sapiora en acción?</em></h2>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+        <a href="/contact.html" class="btn-g" data-i18n="prod_demo">Solicitar demo</a>
+        <a href="/pricing.html" class="btn-o" data-i18n="nav_pricing">Ver precios</a>
+      </div>
     </div>
   </div>
 </section>
-
 <footer>
-  <div class="footer-inner">
-    <div class="footer-logo">Sapiora<span>.</span></div>
-    <div class="footer-links">
-      <a href="product.html">Producto</a>
-      <a href="pricing.html">Precios</a>
-      <a href="about.html">Nosotros</a>
-      <a href="contact.html">Contacto</a>
+  <div class="ft-inner">
+    <div class="ft-logo">Sapiora<span>.</span></div>
+    <div class="ft-links">
+      <a href="/product.html" data-i18n="nav_product">Producto</a>
+      <a href="/pricing.html" data-i18n="nav_pricing">Precios</a>
+      <a href="/about.html" data-i18n="nav_about">Nosotros</a>
+      <a href="/contact.html" data-i18n="nav_contact">Contacto</a>
+      <a href="/login" data-i18n="nav_login">Acceder</a>
     </div>
-    <div class="footer-copy">© 2026 Sapiora. All rights reserved.</div>
+    <div class="ft-copy">© 2026 Sapiora. All rights reserved.</div>
   </div>
 </footer>
-
 <script>
-var observer = new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
-function setLang(l){ window.setLang && window.setLang(l); });}
+
+var T={
+es:{
+  nav_product:'Producto',nav_pricing:'Precios',nav_about:'Nosotros',nav_contact:'Contacto',nav_cta:'Early Access',nav_login:'Acceder →',
+  hero_tag:'IA para Expansión Hotelera',
+  hero_h:'El agente que encuentra<br><em>hoteles que comprar.</em>',
+  hero_p:'Sapiora automatiza la prospección, análisis financiero y gestión del pipeline de adquisición hotelera. Cada semana, nuevas oportunidades en tu mercado.',
+  hero_cta1:'Solicitar Early Access',hero_cta2:'Ver el producto',
+  s1:'Leads analizados',s2:'Más rápido que manual',s3:'Datos verificados',s4:'Búsqueda continua',
+  how_tag:'Cómo funciona',how_h:'De búsqueda a<br>propuesta en días.',
+  st1_h:'Defines tus criterios',st1_p:'Ciudad, tipo de activo, rango de habitaciones y rating objetivo.',
+  st2_h:'El agente busca y enriquece',st2_p:'IA escanea el mercado, verifica datos y calcula RevPAR estimado cada semana.',
+  st3_h:'Gestionas el pipeline',st3_p:'Mapa interactivo, Kanban, Asset Manager y calculadora financiera.',
+  st4_h:'Encuentras al propietario',st4_p:'Owner Search busca el propietario real y genera el primer mensaje de outreach.',
+  feat_tag:'Funcionalidades',feat_h:'Todo lo que necesita<br>un equipo de expansión.',
+  f1h:'Mapa de oportunidades',f1p:'Visualiza leads en mapa interactivo. Filtra por ciudad, tipo y prioridad.',
+  f2h:'AI Lead Scoring',f2p:'Claude AI genera un score 0-100 con señales clave, red flags y acción recomendada.',
+  f3h:'Owner Search',f3p:'IA identifica al propietario real, su LinkedIn y genera el outreach personalizado.',
+  f4h:'RevPAR Calculator',f4p:'Calcula RevPAR, GOP, Cap Rate y fee de gestión en tiempo real.',
+  f5h:'Asset Manager',f5p:'Gestiona contactos, negociaciones y notas. Sincronizado para todo el equipo.',
+  f6h:'Automatización semanal',f6p:'El agente añade nuevas oportunidades cada semana sin intervención humana.',
+  quote:'"Sapiora reemplazó semanas de búsqueda manual. Ahora nos centramos en negociar."',
+  quote_who:'Director de Expansión · Grupo hotelero europeo',
+  cta_h:'Empieza a encontrar<br>oportunidades hoy.',
+  cta_p:'Plazas limitadas. Onboarding personalizado incluido.',
+  cta_ph:'tu@empresa.com',cta_btn:'Solicitar acceso',
+  cta_note:'Sin compromiso. Te contactamos en menos de 24h.',
+  // PRODUCT
+  prod_h:'Una plataforma para<br><em>equipos de expansión hotelera.</em>',
+  prod_p:'Desde la búsqueda automatizada hasta el cierre. Todo en un dashboard.',
+  prod_demo:'Solicitar demo',
+  ai_h:'AI Lead Scoring',ai_p:'Claude AI analiza cada hotel y genera score 0-100 con señales, red flags y acción recomendada.',
+  own_h:'Owner Search',own_p:'IA busca al propietario real en registros públicos y LinkedIn. Genera el primer mensaje de outreach personalizado.',
+  rev_h:'RevPAR Calculator',rev_p:'Introduce ADR y ocupación. Calcula RevPAR, GOP, Cap Rate y fee de gestión en tiempo real.',
+  auto_h:'El agente trabaja<br><em>mientras tú negocias.</em>',
+  w1h:'Búsqueda semanal',w1p:'Escanea Booking.com según tus criterios cada semana.',
+  w2h:'Enriquecimiento',w2p:'Verifica dirección, teléfono, web y habitaciones. Sin estimaciones.',
+  w3h:'Clasificación',w3p:'Genera tipo, problema y oportunidad. Lead estructurado listo.',
+  w4h:'Inserción automática',w4p:'Aparece en tu pipeline verificado. Sin duplicados.',
+  // PRICING
+  price_h:'Simple, transparente,<br><em>sin sorpresas.</em>',
+  price_p:'Sin costes de setup · Sin contratos anuales · Cancela cuando quieras',
+  billing_m:'Mensual',billing_a:'Anual',billing_save:'2 meses gratis',
+  plan_popular:'Más popular',
+  s_name:'Starter',s_price:'249',s_period:'1 usuario · 1 zona · 50–100 leads/mes',
+  s_f1:'Búsqueda semanal automática',s_f2:'Mapa interactivo',s_f3:'Pipeline Kanban',
+  s_f4:'Scoring básico',s_f5:'Asset Manager',s_f6:'RevPAR Calculator',
+  s_f7:'Exportación CSV limitada',s_f8:'Soporte email',
+  p_name:'Pro',p_price:'499',p_period:'3 usuarios · 5 zonas · 300–500 leads/mes',
+  p_f1:'Todo en Starter',p_f2:'AI Scoring avanzado (Claude)',p_f3:'Owner Search',
+  p_f4:'Alertas semanales',p_f5:'Pipeline avanzado',p_f6:'Exportación completa',
+  p_f7:'Analytics dashboard',p_f8:'Soporte prioritario',
+  b_name:'Business',b_price:'1.200',b_period:'5–10 usuarios · Varias ciudades · 1.000–2.000 leads/mes',
+  b_f1:'Todo en Pro',b_f2:'Scoring personalizado',b_f3:'Alertas diarias',
+  b_f4:'Dashboard ejecutivo',b_f5:'Onboarding dedicado',b_f6:'Revisión mensual',
+  b_f7:'Soporte telefónico',b_f8:'Múltiples ciudades',
+  c_name:'Custom',c_price:'2.500',c_period:'Precio personalizado · Todo a medida',
+  c_f1:'Todo en Business',c_f2:'Criterios a medida',c_f3:'Ciudades ilimitadas',
+  c_f4:'Modelo de scoring propio',c_f5:'Integraciones CRM/ERP',c_f6:'Informes ejecutivos',
+  c_f7:'Soporte premium 24/7',c_f8:'SLA garantizado',
+  plan_cta:'Solicitar acceso',ent_cta:'Hablar con ventas',
+  faq_h:'Preguntas frecuentes.',
+  faq1q:'¿Puedo cambiar de plan?',faq1a:'Sí, en cualquier momento. Sin penalización.',
+  faq2q:'¿Hay permanencia mínima?',faq2a:'No. Todos los planes son mensuales. Cancela cuando quieras.',
+  faq3q:'¿Qué ciudades puedo añadir?',faq3a:'Miami y Barcelona actualmente. Nuevas ciudades bajo petición. Custom: cualquier ciudad del mundo.',
+  faq4q:'¿Con qué frecuencia llegan leads?',faq4a:'Búsquedas semanales automáticas. Business y Custom: alertas diarias.',
+  faq5q:'¿Los datos son verificados?',faq5a:'Solo datos verificados. Si no podemos confirmar un campo, queda nulo. Sin estimaciones.',
+  faq6q:'¿Cómo funciona el onboarding?',faq6a:'Configuramos tu organización y ejecutamos la primera búsqueda. En menos de 48h tienes leads en el pipeline.',
+  guar_h:'Garantía 14 días.',guar_p:'Si no estás satisfecho en los primeros 14 días, te devolvemos el importe íntegro.',guar_cta:'Empezar ahora',
+  // ABOUT
+  about_h:'Construimos la <em>inteligencia</em><br>que acelera la expansión hotelera.',
+  about_p1:'Nacimos de una pregunta: ¿por qué los equipos de expansión hotelera buscan activos manualmente cuando la IA puede hacerlo mejor?',
+  about_p2:'Sapiora combina automatización, datos verificados e IA para que los mejores equipos encuentren las mejores oportunidades, más rápido.',
+  miss_h:'Misión',miss_q:'"Que ninguna oportunidad hotelera se pierda por falta de información."',
+  miss_p1:'El sector hotelero mueve billones al año. Pero las decisiones de expansión siguen basándose en Excel y búsquedas manuales.',
+  miss_p2:'Sapiora automatiza la parte aburrida para que los equipos se centren en lo que importa: negociar y cerrar.',
+  val_h:'Valores',
+  v1h:'Datos, no opiniones',v1p:'Solo incluimos lo que podemos verificar. La confianza vale más que cualquier métrica.',
+  v2h:'Velocidad sin sacrificar calidad',v2p:'Automatizamos lo que se puede. Revisamos lo que necesita criterio humano.',
+  v3h:'Construido con clientes reales',v3p:'Nació trabajando con un grupo hotelero real. Cada funcionalidad responde a una necesidad real.',
+  v4h:'Multi-tenant por diseño',v4p:'Cada organización ve solo sus datos. El aislamiento es la arquitectura.',
+  v5h:'Pensado para escalar',v5p:'Miami y Barcelona hoy. Cualquier ciudad del mundo en días.',
+  v6h:'IA que explica sus decisiones',v6p:'Score 0-100 con señales detectadas, red flags y acción recomendada.',
+  team_h:'Pequeños. Enfocados.<br><em>Obsesionados con el producto.</em>',
+  mkt_h:'Donde operamos hoy<br><em>y hacia dónde vamos.</em>',
+  about_cta_h:'¿Tu empresa expande<br>en el sector hotelero?',
+  about_cta_p:'Únete a los primeros grupos hoteleros que usan Sapiora.',
+  about_cta_btn:'Solicitar Early Access',
+  // CONTACT
+  cont_h:'Hablemos sobre tu<br><em>estrategia de expansión.</em>',
+  cont_p:'Early Access — cada cliente recibe onboarding personalizado y acceso directo al equipo.',
+  trust1:'Sin compromiso ni contrato mínimo',trust2:'Demo de 30 minutos',
+  trust3:'Onboarding incluido en todos los planes',trust4:'Garantía 14 días',
+  form_h:'Solicitar Early Access',form_p:'Te contactamos en menos de 24 horas.',
+  fl_name:'Nombre *',fl_co:'Empresa *',fl_email:'Email *',fl_phone:'Teléfono',
+  fl_plan:'Plan de interés',fl_city:'Ciudad(es)',fl_msg:'Cuéntanos tu expansión',
+  fl_submit:'Enviar solicitud',fl_note:'Sin spam. Política de privacidad.',
+  ok_h:'Solicitud recibida',ok_p:'Te contactamos en menos de 24 horas.',ok_back:'← Volver',
+},
+ca:{
+  nav_product:'Producte',nav_pricing:'Preus',nav_about:'Nosaltres',nav_contact:'Contacte',nav_cta:'Early Access',nav_login:'Accedir →',
+  hero_tag:'IA per a Expansió Hotelera',
+  hero_h:'L\'agent que troba<br><em>hotels per comprar.</em>',
+  hero_p:'Sapiora automatitza la prospecció, l\'anàlisi financer i la gestió del pipeline d\'adquisició hotelera. Cada setmana, noves oportunitats.',
+  hero_cta1:'Sol·licitar Early Access',hero_cta2:'Veure el producte',
+  s1:'Leads analitzats',s2:'Més ràpid que manual',s3:'Dades verificades',s4:'Cerca contínua',
+  how_tag:'Com funciona',how_h:'De cerca a<br>proposta en dies.',
+  st1_h:'Defineixes els criteris',st1_p:'Ciutat, tipus d\'actiu, rang d\'habitacions i rating objectiu.',
+  st2_h:'L\'agent cerca i enriqueix',st2_p:'IA escaneja el mercat, verifica dades i calcula RevPAR cada setmana.',
+  st3_h:'Gestiones el pipeline',st3_p:'Mapa interactiu, Kanban, Asset Manager i calculadora financera.',
+  st4_h:'Trobes el propietari',st4_p:'Owner Search cerca el propietari real i genera el primer missatge.',
+  feat_tag:'Funcionalitats',feat_h:'Tot el que necessita<br>un equip d\'expansió.',
+  f1h:'Mapa d\'oportunitats',f1p:'Visualitza leads en mapa interactiu.',
+  f2h:'AI Lead Scoring',f2p:'Claude AI genera score 0-100 amb senyals i acció recomanada.',
+  f3h:'Owner Search',f3p:'IA identifica el propietari real i genera l\'outreach personalitzat.',
+  f4h:'RevPAR Calculator',f4p:'Calcula RevPAR, GOP, Cap Rate en temps real.',
+  f5h:'Asset Manager',f5p:'Gestiona contactes i negociacions. Sincronitzat per a tot l\'equip.',
+  f6h:'Automatització setmanal',f6p:'L\'agent afegeix oportunitats cada setmana sense intervenció humana.',
+  quote:'"Sapiora va reemplaçar setmanes de cerca manual. Ara ens centrem a negociar."',
+  quote_who:'Director d\'Expansió · Grup hoteler europeu',
+  cta_h:'Comença a trobar<br>oportunitats avui.',
+  cta_p:'Places limitades. Onboarding personalitzat inclòs.',
+  cta_ph:'tu@empresa.com',cta_btn:'Sol·licitar accés',
+  cta_note:'Sense compromís. Et contactem en menys de 24h.',
+  prod_h:'Una plataforma per a<br><em>equips d\'expansió hotelera.</em>',
+  prod_p:'Des de la cerca automatitzada fins al tancament.',
+  prod_demo:'Sol·licitar demo',
+  ai_h:'AI Lead Scoring',ai_p:'Claude AI analitza cada hotel i genera score 0-100 amb senyals i acció recomanada.',
+  own_h:'Owner Search',own_p:'IA cerca el propietari real i genera el primer missatge personalitzat.',
+  rev_h:'RevPAR Calculator',rev_p:'Calcula RevPAR, GOP, Cap Rate i fee en temps real.',
+  auto_h:'L\'agent treballa<br><em>mentre tu negocies.</em>',
+  w1h:'Cerca setmanal',w1p:'Escaneja Booking.com cada setmana.',
+  w2h:'Enriquiment',w2p:'Verifica adreça, telèfon i habitacions.',
+  w3h:'Classificació',w3p:'Genera tipus, problema i oportunitat.',
+  w4h:'Inserció automàtica',w4p:'Apareix al teu pipeline verificat.',
+  price_h:'Simple, transparent,<br><em>sense sorpreses.</em>',
+  price_p:'Sense costos de setup · Sense contractes anuals · Cancel·la quan vulguis',
+  billing_m:'Mensual',billing_a:'Anual',billing_save:'2 mesos gratis',
+  plan_popular:'Més popular',
+  s_name:'Starter',s_price:'249',s_period:'1 usuari · 1 zona · 50–100 leads/mes',
+  s_f1:'Cerca setmanal automàtica',s_f2:'Mapa interactiu',s_f3:'Pipeline Kanban',
+  s_f4:'Scoring bàsic',s_f5:'Asset Manager',s_f6:'RevPAR Calculator',
+  s_f7:'Exportació CSV limitada',s_f8:'Suport email',
+  p_name:'Pro',p_price:'499',p_period:'3 usuaris · 5 zones · 300–500 leads/mes',
+  p_f1:'Tot en Starter',p_f2:'AI Scoring avançat (Claude)',p_f3:'Owner Search',
+  p_f4:'Alertes setmanals',p_f5:'Pipeline avançat',p_f6:'Exportació completa',
+  p_f7:'Analytics dashboard',p_f8:'Suport prioritari',
+  b_name:'Business',b_price:'1.200',b_period:'5–10 usuaris · Diverses ciutats · 1.000–2.000 leads/mes',
+  b_f1:'Tot en Pro',b_f2:'Scoring personalitzat',b_f3:'Alertes diàries',
+  b_f4:'Dashboard executiu',b_f5:'Onboarding dedicat',b_f6:'Revisió mensual',
+  b_f7:'Suport telefònic',b_f8:'Múltiples ciutats',
+  c_name:'Custom',c_price:'2.500',c_period:'Preu personalitzat · Tot a mida',
+  c_f1:'Tot en Business',c_f2:'Criteris a mida',c_f3:'Ciutats il·limitades',
+  c_f4:'Model de scoring propi',c_f5:'Integracions CRM/ERP',c_f6:'Informes executius',
+  c_f7:'Suport premium 24/7',c_f8:'SLA garantit',
+  plan_cta:'Sol·licitar accés',ent_cta:'Parlar amb vendes',
+  faq_h:'Preguntes freqüents.',
+  faq1q:'Puc canviar de pla?',faq1a:'Sí, en qualsevol moment. Sense penalització.',
+  faq2q:'Hi ha permanència mínima?',faq2a:'No. Tots els plans són mensuals.',
+  faq3q:'Quines ciutats puc afegir?',faq3a:'Miami i Barcelona ara. Noves ciutats sota petició.',
+  faq4q:'Amb quina freqüència arriben leads?',faq4a:'Cerques setmanals automàtiques. Business i Custom: alertes diàries.',
+  faq5q:'Les dades són verificades?',faq5a:'Només dades verificades. Si no podem confirmar, queda nul.',
+  faq6q:'Com funciona l\'onboarding?',faq6a:'Configurem la teva organització. En menys de 48h tens leads al pipeline.',
+  guar_h:'Garantia 14 dies.',guar_p:'Si no estàs satisfet, et tornem l\'import íntegre.',guar_cta:'Començar ara',
+  about_h:'Construïm la <em>intel·ligència</em><br>que accelera l\'expansió hotelera.',
+  about_p1:'Vam néixer d\'una pregunta: per què els equips d\'expansió busquen actius manualment quan la IA pot fer-ho millor?',
+  about_p2:'Sapiora combina automatització, dades verificades i IA per als millors equips d\'expansió.',
+  miss_h:'Missió',miss_q:'"Que cap oportunitat hotelera es perdi per falta d\'informació."',
+  miss_p1:'El sector hoteler mou bilions a l\'any. Les decisions d\'expansió segueixen basant-se en Excel.',
+  miss_p2:'Sapiora automatitza la part avorrida perquè els equips es centrin en el que importa.',
+  val_h:'Valors',
+  v1h:'Dades, no opinions',v1p:'Només incloem el que podem verificar.',
+  v2h:'Velocitat sense sacrificar qualitat',v2p:'Automatitzem el que es pot. Revisem el que necessita criteri humà.',
+  v3h:'Construït amb clients reals',v3p:'Va néixer treballant amb un grup hoteler real.',
+  v4h:'Multi-tenant per disseny',v4p:'Cada organització veu només les seves dades.',
+  v5h:'Pensat per escalar',v5p:'Qualsevol ciutat del món en dies.',
+  v6h:'IA que explica les seves decisions',v6p:'Score 0-100 amb senyals i acció recomanada.',
+  team_h:'Petits. Enfocats.<br><em>Obsessionats amb el producte.</em>',
+  mkt_h:'On operem avui<br><em>i cap on anem.</em>',
+  about_cta_h:'La teva empresa s\'expandeix<br>al sector hoteler?',
+  about_cta_p:'Uneix-te als primers grups hotelers que fan servir Sapiora.',
+  about_cta_btn:'Sol·licitar Early Access',
+  cont_h:'Parlem sobre la teva<br><em>estratègia d\'expansió.</em>',
+  cont_p:'Early Access — cada client rep onboarding personalitzat i accés directe a l\'equip.',
+  trust1:'Sense compromís ni contracte mínim',trust2:'Demo de 30 minuts',
+  trust3:'Onboarding inclòs en tots els plans',trust4:'Garantia 14 dies',
+  form_h:'Sol·licitar Early Access',form_p:'Et contactem en menys de 24 hores.',
+  fl_name:'Nom *',fl_co:'Empresa *',fl_email:'Email *',fl_phone:'Telèfon',
+  fl_plan:'Pla d\'interès',fl_city:'Ciutat(s)',fl_msg:'Explica\'ns la teva expansió',
+  fl_submit:'Enviar sol·licitud',fl_note:'Sense spam. Política de privacitat.',
+  ok_h:'Sol·licitud rebuda',ok_p:'Et contactem en menys de 24 hores.',ok_back:'← Tornar',
+},
+en:{
+  nav_product:'Product',nav_pricing:'Pricing',nav_about:'About',nav_contact:'Contact',nav_cta:'Early Access',nav_login:'Sign in →',
+  hero_tag:'AI for Hotel Expansion',
+  hero_h:'The agent that finds<br><em>hotels to acquire.</em>',
+  hero_p:'Sapiora automates prospecting, financial analysis and pipeline management for hotel acquisitions. Every week, new opportunities in your market.',
+  hero_cta1:'Apply for Early Access',hero_cta2:'See the product',
+  s1:'Leads analyzed',s2:'Faster than manual',s3:'Verified data',s4:'Continuous search',
+  how_tag:'How it works',how_h:'From search to<br>proposal in days.',
+  st1_h:'You define criteria',st1_p:'City, asset type, room range and target rating.',
+  st2_h:'The agent searches & enriches',st2_p:'AI scans the market, verifies data and calculates estimated RevPAR every week.',
+  st3_h:'You manage the pipeline',st3_p:'Interactive map, Kanban, Asset Manager and financial calculator.',
+  st4_h:'You find the owner',st4_p:'Owner Search finds the real owner and generates the first outreach message.',
+  feat_tag:'Features',feat_h:'Everything an expansion<br>team needs.',
+  f1h:'Opportunity map',f1p:'Visualize leads on an interactive map. Filter by city, type and priority.',
+  f2h:'AI Lead Scoring',f2p:'Claude AI generates a 0-100 score with key signals, red flags and recommended action.',
+  f3h:'Owner Search',f3p:'AI identifies the real owner, their LinkedIn and generates personalized outreach.',
+  f4h:'RevPAR Calculator',f4p:'Calculate RevPAR, GOP, Cap Rate and management fee in real time.',
+  f5h:'Asset Manager',f5p:'Manage contacts, negotiations and notes. Synced for the whole team.',
+  f6h:'Weekly automation',f6p:'The agent adds new opportunities every week without human intervention.',
+  quote:'"Sapiora replaced weeks of manual research. Now we focus on negotiating."',
+  quote_who:'Expansion Director · European hotel group',
+  cta_h:'Start finding<br>opportunities today.',
+  cta_p:'Limited spots. Personalized onboarding included.',
+  cta_ph:'you@company.com',cta_btn:'Apply for access',
+  cta_note:'No commitment. We\'ll contact you within 24h.',
+  prod_h:'A platform for<br><em>hotel expansion teams.</em>',
+  prod_p:'From automated search to closing. All in one dashboard.',
+  prod_demo:'Request demo',
+  ai_h:'AI Lead Scoring',ai_p:'Claude AI analyzes each hotel and generates a 0-100 score with signals, red flags and recommended action.',
+  own_h:'Owner Search',own_p:'AI finds the real owner in public records and LinkedIn. Generates personalized outreach.',
+  rev_h:'RevPAR Calculator',rev_p:'Enter ADR and occupancy. Calculates RevPAR, GOP, Cap Rate and management fee in real time.',
+  auto_h:'The agent works<br><em>while you negotiate.</em>',
+  w1h:'Weekly search',w1p:'Scans Booking.com based on your criteria every week.',
+  w2h:'Enrichment',w2p:'Verifies address, phone, website and rooms. No estimates.',
+  w3h:'Classification',w3p:'Generates type, problem and opportunity. Structured lead ready.',
+  w4h:'Auto insertion',w4p:'Appears in your pipeline verified. No duplicates.',
+  price_h:'Simple, transparent,<br><em>no surprises.</em>',
+  price_p:'No setup costs · No annual contracts · Cancel anytime',
+  billing_m:'Monthly',billing_a:'Annual',billing_save:'2 months free',
+  plan_popular:'Most popular',
+  s_name:'Starter',s_price:'249',s_period:'1 user · 1 zone · 50–100 leads/mo',
+  s_f1:'Automatic weekly search',s_f2:'Interactive map',s_f3:'Kanban pipeline',
+  s_f4:'Basic scoring',s_f5:'Asset Manager',s_f6:'RevPAR Calculator',
+  s_f7:'Limited CSV export',s_f8:'Email support',
+  p_name:'Pro',p_price:'499',p_period:'3 users · 5 zones · 300–500 leads/mo',
+  p_f1:'Everything in Starter',p_f2:'Advanced AI Scoring (Claude)',p_f3:'Owner Search',
+  p_f4:'Weekly alerts',p_f5:'Advanced pipeline',p_f6:'Full unlimited export',
+  p_f7:'Analytics dashboard',p_f8:'Priority support',
+  b_name:'Business',b_price:'1,200',b_period:'5–10 users · Multiple cities · 1,000–2,000 leads/mo',
+  b_f1:'Everything in Pro',b_f2:'Custom scoring',b_f3:'Daily alerts',
+  b_f4:'Executive dashboard',b_f5:'Dedicated onboarding',b_f6:'Monthly review',
+  b_f7:'Phone support',b_f8:'Multiple cities',
+  c_name:'Custom',c_price:'2,500',c_period:'Custom pricing · Everything custom',
+  c_f1:'Everything in Business',c_f2:'Custom search criteria',c_f3:'Unlimited cities',
+  c_f4:'Custom scoring model',c_f5:'CRM/ERP integrations',c_f6:'Executive reports',
+  c_f7:'Premium 24/7 support',c_f8:'Guaranteed SLA',
+  plan_cta:'Apply for access',ent_cta:'Talk to sales',
+  faq_h:'Frequently asked questions.',
+  faq1q:'Can I change plans?',faq1a:'Yes, at any time. No penalty.',
+  faq2q:'Is there a minimum commitment?',faq2a:'No. All plans are monthly. Cancel anytime.',
+  faq3q:'Which cities can I add?',faq3a:'Miami and Barcelona now. New cities on request. Custom: any city worldwide.',
+  faq4q:'How often do leads arrive?',faq4a:'Automatic weekly searches. Business and Custom: daily alerts.',
+  faq5q:'Is the data verified?',faq5a:'Verified data only. If we can\'t confirm a field, it stays null.',
+  faq6q:'How does onboarding work?',faq6a:'We set up your organization and run the first search. Within 48h you have leads.',
+  guar_h:'14-day guarantee.',guar_p:'Not satisfied in the first 14 days? Full refund, no questions asked.',guar_cta:'Get started',
+  about_h:'We build the <em>intelligence</em><br>that accelerates hotel expansion.',
+  about_p1:'We were born from a question: why do hotel expansion teams still search for assets manually when AI can do it better?',
+  about_p2:'Sapiora combines automation, verified data and AI so the best expansion teams find the best opportunities, faster.',
+  miss_h:'Mission',miss_q:'"No hotel opportunity should be lost for lack of information."',
+  miss_p1:'The hospitality sector moves trillions a year. Expansion decisions still rely on spreadsheets and manual searches.',
+  miss_p2:'Sapiora automates the boring part so teams focus on what matters: negotiating and closing.',
+  val_h:'Values',
+  v1h:'Data, not opinions',v1p:'We only include what we can verify. Trust is worth more than any metric.',
+  v2h:'Speed without sacrificing quality',v2p:'We automate what can be automated. We review what needs human judgment.',
+  v3h:'Built with real customers',v3p:'Born working alongside a real hotel group.',
+  v4h:'Multi-tenant by design',v4p:'Each organization sees only their data.',
+  v5h:'Built to scale',v5p:'Any city in the world in days.',
+  v6h:'AI that explains itself',v6p:'0-100 score with detected signals and recommended action.',
+  team_h:'Small. Focused.<br><em>Obsessed with the product.</em>',
+  mkt_h:'Where we operate today<br><em>and where we\'re going.</em>',
+  about_cta_h:'Does your company expand<br>in the hotel sector?',
+  about_cta_p:'Join the first hotel groups using Sapiora to find opportunities others miss.',
+  about_cta_btn:'Apply for Early Access',
+  cont_h:'Let\'s talk about your<br><em>expansion strategy.</em>',
+  cont_p:'Early Access — every customer gets personalized onboarding and direct access to the team.',
+  trust1:'No commitment or minimum contract',trust2:'30-minute demo',
+  trust3:'Onboarding included in all plans',trust4:'14-day money-back guarantee',
+  form_h:'Apply for Early Access',form_p:'We\'ll contact you within 24 hours.',
+  fl_name:'Name *',fl_co:'Company *',fl_email:'Email *',fl_phone:'Phone',
+  fl_plan:'Plan of interest',fl_city:'City/cities',fl_msg:'Tell us about your expansion',
+  fl_submit:'Send request',fl_note:'No spam. Privacy policy.',
+  ok_h:'Request received',ok_p:'We\'ll contact you within 24 hours.',ok_back:'← Back',
+}
+};
+var lang=localStorage.getItem('sapiora_lang')||'es';
+function setLang(l){
+  lang=l;
+  localStorage.setItem('sapiora_lang',l);
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lb').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-lang')===l);});
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n');
+    if(T[l]&&T[l][k]!==undefined)el.innerHTML=T[l][k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var k=el.getAttribute('data-i18n-ph');
+    if(T[l]&&T[l][k]!==undefined)el.placeholder=T[l][k];
+  });
+}
+document.addEventListener('DOMContentLoaded',function(){setLang(lang);});
+
+window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',window.scrollY>40);});
+var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
 </script>
-<script src="i18n.js"></script>
 </body>
 </html>
