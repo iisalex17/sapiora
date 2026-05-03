@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HLIE 2.0 —  </title>
+<title>Sapiora — Pipeline Intelligence</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -297,7 +298,7 @@ input,select,textarea{font-family:var(--font);outline:none}
   <!-- HEADER -->
   <div id="hdr">
     <div class="hdr-brand">
-      <div class="hdr-logo">SAPIORA<span>.</span></div>
+      <div class="hdr-logo">YURBBAN<span>.</span></div>
       <div class="hdr-sep"></div>
       <div class="hdr-sub">Lead Intelligence 2.0</div>
     </div>
@@ -315,7 +316,6 @@ input,select,textarea{font-family:var(--font);outline:none}
       <button class="hbtn" onclick="exportCSV()">↓ Export</button>
       <button class="hbtn" onclick="openCfg()">⚙ Config</button>
       <button class="hbtn gold" onclick="loadLeads()">↺ Sync</button>
-      <button class="hbtn" onclick="doLogout()">Salir</button>
     </div>
   </div>
 
@@ -417,7 +417,7 @@ input,select,textarea{font-family:var(--font);outline:none}
                   <div class="ig full"><div class="ig-l">Dirección completa</div><div class="ig-v sm" id="d-fa">—</div></div>
                   <div class="ig full gold"><div class="ig-l">Tipo de oportunidad</div><div class="ig-v" id="d-op">—</div></div>
                   <div class="ig full"><div class="ig-l">Problema principal</div><div class="ig-v sm" id="d-pb">—</div></div>
-                  <div class="ig full"><div class="ig-l">Por qué SAPIORA puede mejorarlo</div><div class="ig-v sm" id="d-wy">—</div></div>
+                  <div class="ig full"><div class="ig-l">Por qué puede mejorarlo</div><div class="ig-v sm" id="d-wy">—</div></div>
                 </div>
               </div>
               <!-- AI SCORING -->
@@ -441,7 +441,7 @@ input,select,textarea{font-family:var(--font);outline:none}
               <div class="dp-panel" id="tab-am">
                 <div class="am-grid">
                   <div class="am-field"><label>Responsable</label><input type="text" id="am-n" placeholder="Nombre del asset manager"/></div>
-                  <div class="am-field"><label>Email</label><input type="email" id="am-e" placeholder="email@SAPIORA.com"/></div>
+                  <div class="am-field"><label>Email</label><input type="email" id="am-e" placeholder="email@empresa.com"/></div>
                   <div class="am-field"><label>Teléfono</label><input type="tel" id="am-p" placeholder="+1 305 555 0100"/></div>
                   <div class="am-field"><label>Estado</label>
                     <select id="am-s">
@@ -455,7 +455,7 @@ input,select,textarea{font-family:var(--font);outline:none}
                     </select>
                   </div>
                   <div class="am-field"><label>Próximo seguimiento</label><input type="date" id="am-d"/></div>
-                  <div class="am-field"><label>Prioridad SAPIORA</label>
+                  <div class="am-field"><label>Prioridad interna</label>
                     <select id="am-pr">
                       <option value="">Sin asignar</option>
                       <option value="A">A — Alta</option>
@@ -477,7 +477,7 @@ input,select,textarea{font-family:var(--font);outline:none}
                   <div class="rv-results">
                     <div class="rv-cell"><div class="rv-cell-l">RevPAR</div><div class="rv-cell-v hi" id="rv-revpar">—</div></div>
                     <div class="rv-cell"><div class="rv-cell-l">Total Rev.</div><div class="rv-cell-v" id="rv-totalrev">—</div></div>
-                    <div class="rv-cell"><div class="rv-cell-l">Fee SAPIORA (7%)</div><div class="rv-cell-v" id="rv-fee">—</div></div>
+                    <div class="rv-cell"><div class="rv-cell-l">Fee gestión (7%)</div><div class="rv-cell-v" id="rv-fee">—</div></div>
                     <div class="rv-cell"><div class="rv-cell-l">GOP (40%)</div><div class="rv-cell-v" id="rv-gop">—</div></div>
                     <div class="rv-cell"><div class="rv-cell-l">Cap Rate</div><div class="rv-cell-v" id="rv-cap">—</div></div>
                     <div class="rv-cell"><div class="rv-cell-l">Rev/Hab/Año</div><div class="rv-cell-v" id="rv-prm">—</div></div>
@@ -561,22 +561,6 @@ input,select,textarea{font-family:var(--font);outline:none}
 <div id="toasts"></div>
 
 <script>
-  // ── SESSION CHECK ─────────────────────────────────────
-(function() {
-  const session = sessionStorage.getItem('sapiora_session');
-  if (!session) {
-    window.top.location.href = '/login';
-    return;
-  }
-  try {
-    const s = JSON.parse(session);
-    if (!s.supabase_url || !s.supabase_key) {
-      window.top.location.href = '/login';
-    }
-  } catch(e) {
-    window.top.location.href = '/login';
-  }
-})();
 // ── UTILS ────────────────────────────────────────────
 const g = id => document.getElementById(id);
 const show = id => g(id).classList.remove('hidden');
@@ -598,15 +582,11 @@ function scoreColor(s){
 // ── CONFIG ───────────────────────────────────────────
 var ANTHROPIC_KEY = "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";
 
-const CFG = {
-  url:'https://mgnaabgsmrxmfwqtphhw.supabase.co',
-  key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbmFhYmdzbXJ4bWZ3cXRwaGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MzQ5MzksImV4cCI6MjA5MjMxMDkzOX0.O8uCENzWKqIab7DWEAjoA59qpeXwiX4TZZwTC-tQRv0',
-  table:'leads'
-};
+const CFG = { url:'', key:'', table:'leads' };
 const COL = {
   name:'hotel_name', city:'City', state:'state', rooms:'rooms',
   type:'property_type', rating:'rating', prob:'main_problem',
-  why:'why_SAPIORA', opp:'opportunity_type', src:'source_url',
+  why:'why_yurbban', opp:'opportunity_type', src:'source_url',
   addr:'address', lat:'lat', lng:'lng', prio:'priority'
 };
 const PC = { hot:'#9a3c42', warm:'#b5621a', cold:'#2f4a7a', new:'#2a8a6e' };
@@ -632,36 +612,16 @@ let realtimeWs = null;
 
 // ── INIT ─────────────────────────────────────────────
 window.onload = function() {
-
-  // Read credentials from URL params (multi-tenant)
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlParam = urlParams.get('url');
-  const keyParam = urlParams.get('key');
-  const orgParam = urlParams.get('org');
-
-  if (urlParam && keyParam) {
-    CFG.url = urlParam;
-    CFG.key = keyParam;
-  } else {
-    try { Object.assign(CFG, JSON.parse(localStorage.getItem('y_cfg')||'{}')); } catch(e){}
-  }
-
+  try { Object.assign(CFG, JSON.parse(localStorage.getItem('y_cfg')||'{}')); } catch(e){}
   try { amLocal = JSON.parse(localStorage.getItem('y_am_cache')||'{}'); } catch(e){}
   try { aiScores = JSON.parse(localStorage.getItem('y_ai_scores')||'{}'); } catch(e){}
   g('cu').value = CFG.url; g('ck').value = CFG.key; g('ctb').value = CFG.table;
-  // Set org name in header
-try {
-  var sess = JSON.parse(sessionStorage.getItem('sapiora_session') || '{}');
-  var orgName = sess.org_name || 'Sapiora';
-  var logoEl = document.querySelector('.hdr-logo');
-  if (logoEl) logoEl.innerHTML = orgName.toUpperCase() + '<span>.</span>';
-} catch(e) {}
   initMap();
 };
 
 // ── MAP ──────────────────────────────────────────────
 function initMap() {
-map = L.map('map', { center:[25.77,-80.19], zoom:4 });
+  map = L.map('map', { center:[25.77,-80.19], zoom:11 });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution:'&copy; OSM &copy; CARTO', maxZoom:19
   }).addTo(map);
@@ -674,13 +634,10 @@ map = L.map('map', { center:[25.77,-80.19], zoom:4 });
 // ── DATA ─────────────────────────────────────────────
 async function loadLeads() {
   if (!CFG.url||!CFG.key){ openCfg(); return; }
-  // Get org_id from URL params
-  const urlParams = new URLSearchParams(window.location.search);
-  const orgId = urlParams.get('org') || 'SAPIORA';
   setSt('loading','Cargando…');
   show('map-loader'); g('ltxt').textContent = 'Conectando con Supabase…';
   try {
-    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&org_id=eq.${orgId}&limit=10000`, {
+    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&limit=10000`, {
       headers:{ apikey:CFG.key, Authorization:'Bearer '+CFG.key, Prefer:'count=exact' }
     });
     if (!res.ok) throw new Error('HTTP '+res.status);
@@ -691,6 +648,13 @@ async function loadLeads() {
     const geo = all.filter(l=>l._lat).length;
     setSt('ok', all.length+' leads');
     g('vbar-sub').textContent = all.length+' propiedades · '+geo+' geocodificadas';
+    // Auto-center map on leads
+    var geoLeads = all.filter(function(l){ return l._lat && l._lng; });
+    if (geoLeads.length > 0) {
+      var avgLat = geoLeads.reduce(function(s,l){ return s+l._lat; }, 0) / geoLeads.length;
+      var avgLng = geoLeads.reduce(function(s,l){ return s+l._lng; }, 0) / geoLeads.length;
+      map.setView([avgLat, avgLng], 12);
+    }
     geocode();
     startRealtime();
     toast('🏨 '+all.length+' leads cargados','Sincronizado correctamente');
@@ -716,7 +680,7 @@ function normalize(row, i) {
     addr, city:row[c.city]||'—', state:row[c.state]||'—',
     rooms:row[c.rooms]||'—', type:row[c.type]||'—',
     rating:row[c.rating]||'—', prob:row[c.prob]||'—',
-    why:row[c.why]||'—', opp:row[c.opp]||'—', src:row[c.src]||'',
+    why:row[c.why]||row['why_yurbban']||'—', opp:row[c.opp]||'—', src:row[c.src]||'',
     am:{
       name:row.am_name||'', email:row.am_email||'', phone:row.am_phone||'',
       status:row.am_status||'', date:row.am_date||'', prio:row.am_priority||'', notes:row.am_notes||''
@@ -740,7 +704,7 @@ async function geocode() {
   let done=0;
   for (const l of miss) {
     try {
-      const q = l.addr+' Miami Florida';
+      const q = l.addr+' '+l.city+' '+l.state;
       const r = await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(q)+'&limit=1',{headers:{'Accept-Language':'en'}});
       const d = await r.json();
       if (d?.features?.[0]) {
@@ -926,7 +890,7 @@ function openAddLead(){
         </div>
         <div class="am-field"><label>Rating (1-5)</label><input type="number" id="nl-rating" placeholder="3.5" min="1" max="5" step="0.1"/></div>
         <div class="am-field am-full"><label>Problema principal</label><input type="text" id="nl-prob" placeholder="ej: Baja ocupación, gestión deficiente"/></div>
-        <div class="am-field am-full"><label>Por qué SAPIORA</label><input type="text" id="nl-why" placeholder="ej: Potencial de rebranding y mejora operativa"/></div>
+        <div class="am-field am-full"><label>Por qué puede mejorarlo</label><input type="text" id="nl-why" placeholder="ej: Potencial de rebranding y mejora operativa"/></div>
         <div class="am-field am-full"><label>URL fuente</label><input type="text" id="nl-src" placeholder="https://…"/></div>
         <div class="am-field am-full" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:4px">
           <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">🔗 Importar desde Booking.com</div>
@@ -1020,12 +984,13 @@ function cpLead(){
 
 // ── AI SCORING ───────────────────────────────────────
 async function runAIScoring() {
+  if (!FEAT.aiScoring) { showUpgrade('AI Lead Scoring'); return; }
   const l=all.find(x=>x._i===activeId);if(!l)return;
   const btn=document.querySelector('#ai-score-content button');
   if(btn){ btn.disabled=true; btn.textContent='Analizando…'; }
   g('ai-score-content').innerHTML=`<div class="ai-loading"><div class="spin"></div>Claude AI está analizando este lead…</div>`;
 
-  const prompt=`Eres un analista de inversiones hoteleras especializado en el mercado de Miami para Yurbban Hospitality Group.
+  const prompt=`Eres un analista de inversiones hoteleras especializado en mercados hoteleros.
 
 Analiza este lead y devuelve un JSON con el siguiente formato exacto (sin markdown, solo JSON):
 {
@@ -1048,7 +1013,7 @@ Datos del hotel:
 - Rating: ${l.rating}
 - Tipo de oportunidad: ${l.opp}
 - Problema principal: ${l.prob}
-- Por qué Yurbban: ${l.why}
+- Por qué puede mejorarlo: ${l.why}
 - Prioridad actual: ${l._prio}
 
 Criterios de scoring: tamaño (habitaciones), ubicación (Miami Beach/Brickell = premium), tipo de oportunidad (management contract = ideal), rating (bajo = oportunidad mejora, alto = difícil negociar), problema claramente articulado = mayor puntuación.`;
@@ -1110,6 +1075,11 @@ function renderAIResult(r){
 
 // ── OWNER SEARCH ─────────────────────────────────────
 async function runOwnerSearch() {
+  if (!FEAT.ownerSearch) {
+    g('owner-result').className='';
+    g('owner-result').innerHTML='<div style="text-align:center;padding:30px;color:var(--muted)"><div style="font-size:28px;margin-bottom:8px">🔒</div><div style="font-size:13px;font-weight:600;margin-bottom:8px">Owner Search</div><div style="font-size:11px;margin-bottom:16px">Disponible en plan Pro o superior</div><a href="/pricing.html" target="_blank"><button class="act-gold">Ver planes ↗</button></a></div>';
+    return;
+  }
   const l=all.find(x=>x._i===activeId);if(!l)return;
   show('owner-result');
   g('owner-result').innerHTML=`<div class="ai-loading"><div class="spin"></div>Buscando en internet: Sunbiz, registros de propiedad, LinkedIn…</div>`;
@@ -1617,10 +1587,7 @@ function fillFromBooking() {
   if (d.description && g('nl-why')) g('nl-why').value = d.description;
   toast('Formulario rellenado desde Booking ✓','ok');
 }
-function doLogout() {
-  sessionStorage.removeItem('sapiora_session');
-  window.top.location.href = '/login';
-}
+
 </script>
 </body>
 </html>
