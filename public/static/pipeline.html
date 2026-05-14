@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HLIE 2.0 — Yurbban Hospitality Group</title>
+<title>Pipeline — Yurbban Hospitality Group</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -248,6 +248,8 @@ input,select,textarea{font-family:var(--font);outline:none}
 .act-gold{background:var(--gold);color:#fff;padding:9px 18px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;box-shadow:0 2px 8px rgba(196,163,90,.3);transition:all .2s var(--spring)}
 .act-gold:hover{background:var(--gold-d);transform:translateY(-1px)}
 .act-gold:disabled{opacity:.5;cursor:default;transform:none}
+.hspot-ok{background:#ff7a59!important;border-color:#ff5c35!important;}
+.hspot-ok:hover{background:#ff5c35!important;}
 
 /* Config Modal */
 #cfg-modal{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;padding:20px;transition:background .3s}
@@ -297,9 +299,9 @@ input,select,textarea{font-family:var(--font);outline:none}
   <!-- HEADER -->
   <div id="hdr">
     <div class="hdr-brand">
-      <div class="hdr-logo">YURBBAN<span>.</span></div>
+      <div class="hdr-logo">SAPIORA<span>.</span></div>
       <div class="hdr-sep"></div>
-      <div class="hdr-sub">Lead Intelligence 2.0</div>
+      <div class="hdr-sub">Lead Intelligence 2.0 <span style="color:var(--gold);font-size:8px">v3.1</span></div>
     </div>
     <div class="hdr-nav">
       <button class="nav-btn on" onclick="switchView('map',this)">Mapa</button>
@@ -314,7 +316,12 @@ input,select,textarea{font-family:var(--font);outline:none}
       <button class="hbtn" onclick="openAddLead()">+ Lead</button>
       <button class="hbtn" onclick="exportCSV()">↓ Export</button>
       <button class="hbtn" onclick="openCfg()">⚙ Config</button>
+      <button class="hbtn" onclick="openHubspotInspector()" title="Ver campos HubSpot">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-right:4px;vertical-align:middle"><path d="M18.164 7.93V5.084a2.198 2.198 0 0 0 1.268-1.978V3.07a2.198 2.198 0 0 0-2.195-2.195h-.037a2.198 2.198 0 0 0-2.195 2.195v.037c0 .87.507 1.626 1.268 1.978V7.93a6.232 6.232 0 0 0-2.965 1.301L4.192 4.38a2.456 2.456 0 0 0 .09-.637 2.47 2.47 0 1 0-2.47 2.47c.444 0 .86-.12 1.217-.326l8.976 4.807a6.232 6.232 0 0 0-.048 6.158L9.03 18.77a2.095 2.095 0 0 0-.59-.085 2.11 2.11 0 1 0 2.11 2.11c0-.388-.106-.75-.29-1.06l2.897-1.87a6.254 6.254 0 1 0 4.007-10.935zm-.964 9.738a3.128 3.128 0 1 1 0-6.256 3.128 3.128 0 0 1 0 6.256z"/></svg>
+        Campos HS
+      </button>
       <button class="hbtn gold" onclick="loadLeads()">↺ Sync</button>
+      <button class="hbtn" onclick="doLogout()">Salir</button>
     </div>
   </div>
 
@@ -349,11 +356,20 @@ input,select,textarea{font-family:var(--font);outline:none}
           <div class="vbar-title" id="vbar-title">Mapa de oportunidades</div>
           <div class="vbar-sub" id="vbar-sub">Conecta Supabase para comenzar</div>
         </div>
-        <div class="vg" id="map-vg">
-          <button class="vb on" onclick="setMapF('all',this)">Todos</button>
-          <button class="vb" onclick="setMapF('hot',this)">Hot</button>
-          <button class="vb" onclick="setMapF('warm',this)">Warm</button>
-          <button class="vb" onclick="setMapF('nogeo',this)">Sin geo</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="vg" id="map-vg">
+            <button class="vb on" onclick="setMapF('all',this)">Todos</button>
+            <button class="vb" onclick="setMapF('hot',this)">Hot</button>
+            <button class="vb" onclick="setMapF('warm',this)">Warm</button>
+            <button class="vb" onclick="setMapF('new7',this)">🆕 Esta semana</button>
+            <button class="vb" onclick="setMapF('nogeo',this)">Sin geo</button>
+          </div>
+          <select id="sort-sel" onchange="setSortMode(this.value)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.8px;text-transform:uppercase;cursor:pointer;font-family:var(--font);outline:none">
+            <option value="priority">↕ Prioridad</option>
+            <option value="recent">🕐 Más recientes</option>
+            <option value="score">✦ Mayor score</option>
+            <option value="rooms">🏨 Habitaciones</option>
+          </select>
         </div>
       </div>
 
@@ -499,6 +515,9 @@ input,select,textarea{font-family:var(--font);outline:none}
             <div class="dp-acts">
               <button class="act-p" id="act-src" onclick="openSrc()">Ver fuente ↗</button>
               <button class="act-s" onclick="cpLead()">Copiar datos</button>
+              <button class="act-gold" id="btn-hubspot" onclick="sendToCRM()" style="display:flex;align-items:center;gap:6px">
+                🔗 <span id="crm-btn-label">CRM</span>
+              </button>
             </div>
           </div>
         </div>
@@ -559,6 +578,56 @@ input,select,textarea{font-family:var(--font);outline:none}
 
 <div id="toasts"></div>
 
+<!-- HUBSPOT INSPECTOR MODAL -->
+<div id="hs-modal" style="display:none;position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.5);padding:20px;overflow:auto">
+  <div style="background:var(--bg2);border-radius:var(--r-xl);max-width:900px;margin:0 auto;box-shadow:var(--sh-xl)">
+    <div style="background:#0a0a0a;padding:18px 22px;border-radius:var(--r-xl) var(--r-xl) 0 0;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff7a59" style="vertical-align:middle;margin-right:6px"><path d="M18.164 7.93V5.084a2.198 2.198 0 0 0 1.268-1.978V3.07a2.198 2.198 0 0 0-2.195-2.195h-.037a2.198 2.198 0 0 0-2.195 2.195v.037c0 .87.507 1.626 1.268 1.978V7.93a6.232 6.232 0 0 0-2.965 1.301L4.192 4.38a2.456 2.456 0 0 0 .09-.637 2.47 2.47 0 1 0-2.47 2.47c.444 0 .86-.12 1.217-.326l8.976 4.807a6.232 6.232 0 0 0-.048 6.158L9.03 18.77a2.095 2.095 0 0 0-.59-.085 2.11 2.11 0 1 0 2.11 2.11c0-.388-.106-.75-.29-1.06l2.897-1.87a6.254 6.254 0 1 0 4.007-10.935zm-.964 9.738a3.128 3.128 0 1 1 0-6.256 3.128 3.128 0 0 1 0 6.256z"/></svg>
+          HubSpot — Campos disponibles
+        </div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px">Propiedades de tu cuenta para mapear leads</div>
+      </div>
+      <button onclick="document.getElementById('hs-modal').style.display='none'" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+    </div>
+    <div style="padding:16px 22px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <div style="display:flex;gap:6px">
+        <button onclick="loadHSProps('contacts')" id="hs-btn-contacts" class="act-gold" style="font-size:10px;padding:7px 14px">Contacts</button>
+        <button onclick="loadHSProps('deals')" id="hs-btn-deals" class="act-s" style="font-size:10px;padding:7px 14px">Deals</button>
+        <button onclick="loadHSProps('companies')" id="hs-btn-companies" class="act-s" style="font-size:10px;padding:7px 14px">Companies</button>
+      </div>
+      <input id="hs-search" type="text" placeholder="Filtrar campos…" oninput="filterHSProps()" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--text);font-family:var(--font)"/>
+      <label style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer">
+        <input type="checkbox" id="hs-custom-only" onchange="filterHSProps()" style="width:auto"/>
+        Solo personalizados
+      </label>
+      <button onclick="copyHSTable()" class="act-s" style="font-size:10px;padding:7px 14px">↓ Copiar CSV</button>
+    </div>
+    <div id="hs-status" style="padding:40px;text-align:center;color:var(--muted);font-size:12px">
+      Selecciona un objeto para cargar sus propiedades
+    </div>
+    <div id="hs-table-wrap" style="display:none;max-height:60vh;overflow-y:auto">
+      <table id="hs-table" style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead style="position:sticky;top:0;background:var(--surface);z-index:1">
+          <tr>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border);cursor:pointer" onclick="sortHSTable(0)">Nombre interno ↕</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border);cursor:pointer" onclick="sortHSTable(1)">Label ↕</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)">Tipo</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)">Grupo</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)">Custom</th>
+          </tr>
+        </thead>
+        <tbody id="hs-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div id="hs-count" style="font-size:11px;color:var(--muted)"></div>
+      <button onclick="document.getElementById('hs-modal').style.display='none'" class="act-s" style="font-size:10px;padding:7px 14px">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── UTILS ────────────────────────────────────────────
 const g = id => document.getElementById(id);
@@ -579,15 +648,14 @@ function scoreColor(s){
 }
 
 // ── CONFIG ───────────────────────────────────────────
-const CFG = {
-  url:'https://mgnaabgsmrxmfwqtphhw.supabase.co',
-  key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbmFhYmdzbXJ4bWZ3cXRwaGh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MzQ5MzksImV4cCI6MjA5MjMxMDkzOX0.O8uCENzWKqIab7DWEAjoA59qpeXwiX4TZZwTC-tQRv0',
-  table:'leads'
-};
+var ANTHROPIC_KEY = "";  // Key moved to Vercel env vars - handled by /api/ai
+var HUBSPOT_KEY = "pat-eu1-3148f098-a865-4249-b7ad-3060ac20c4c6";var OPENAI_KEY = "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";
+
+const CFG = { url:'', key:'', table:'leads' };
 const COL = {
-  name:'hotel name', city:'City', state:'state', rooms:'rooms',
-  type:'property type', rating:'rating', prob:'main problem',
-  why:'why yurbban', opp:'opportunity type', src:'source url',
+  name:'hotel_name', city:'City', state:'state', rooms:'rooms',
+  type:'property_type', rating:'rating', prob:'main_problem',
+  why:'why_yurbban', opp:'opportunity_type', src:'source_url',
   addr:'address', lat:'lat', lng:'lng', prio:'priority'
 };
 const PC = { hot:'#9a3c42', warm:'#b5621a', cold:'#2f4a7a', new:'#2a8a6e' };
@@ -605,16 +673,108 @@ const KANBAN_COLS = [
 // ── STATE ────────────────────────────────────────────
 let map, markersLayer;
 let all = [], filtered = [], activeId = null, mapFilter = 'all';
+let sortMode = 'priority'; // priority | recent | score | rooms
+let lastVisit = null; // timestamp of last visit for new leads detection
 let curView = 'map', curSrc = '';
 let amLocal = {};
 let aiScores = {}; // {leadId: {score, summary, flags, action}}
 let draggedLead = null;
 let realtimeWs = null;
 
+// ── STANDALONE MODE ─────────────────────────────────────
+
+// ── PIPELINE CONFIG (from session) ───────────────────────────
+// Defaults — overridden by session.pipeline_config on load
+var CONFIG = {
+  prompt_context:       'Yurbban Hospitality Group (YHG), operador hotelero europeo.',
+  target_market:        'Miami Beach y Miami City, Florida, USA',
+  scoring_criteria:     'Tamaño 50-300 hab., ubicación prime Miami Beach, propietario independiente.',
+  outreach_language:    'es',
+  outreach_context:     'Somos un grupo hotelero europeo que busca activos para gestionar bajo management contract.',
+  // CRM config
+  crm:                  'hubspot',  // hubspot | pipedrive | salesforce | zoho | none
+  crm_key:              '',
+  hubspot_pipeline:     'default',
+  hubspot_stages:       { hot:'appointmentscheduled', warm:'presentationscheduled', cold:'appointmentscheduled', new:'appointmentscheduled' },
+  pipedrive_domain:     '',         // tu-empresa.pipedrive.com
+  pipedrive_pipeline:   1,
+  salesforce_instance:  '',         // tu-empresa.salesforce.com
+  salesforce_token:     '',
+  zoho_domain:          'zohocrm.com',
+  zoho_pipeline:        '',
+  crm_stage_map:        { hot:'qualified', warm:'contact_made', cold:'new', new:'new' },
+  currency:             'USD',
+  revpar_fee_pct:       7,
+  revpar_gop_pct:       40,
+  map_center:           [25.77, -80.19],
+  map_zoom:             11,
+  owner_search_regions: ['Miami-Dade County', 'Florida'],
+  col_why_label:        'Por qué puede mejorarlo',
+};
+
+var FEAT = { aiScoring:false, ownerSearch:false, analytics:false, addLead:false, exportFull:false };
+var ORG_ID = '';
+
 // ── INIT ─────────────────────────────────────────────
 window.onload = function() {
-  try { Object.assign(CFG, JSON.parse(localStorage.getItem('y_cfg')||'{}')); } catch(e){}
-  try { amLocal = JSON.parse(localStorage.getItem('y_am_cache')||'{}'); } catch(e){}
+  // ── CREDENTIALS: Hardcoded for Yurbban Hospitality Group ────
+  const session = {
+    supabase_url:    'https://owdvtgwuizxzgppqgtps.supabase.co',
+    supabase_key:    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZHZ0Z3d1aXp4emdwcHFndHBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODU5MDMsImV4cCI6MjA5Mjg2MTkwM30.hpNlm2eUX_zAgYF7Lud9Ru2QSJuHvYaR4EB-Lf9a-4A',
+    org_id:          'yurbban_8738',
+    org_name:        'Yurbban Hospitality Group',
+    plan:            'professional',
+    userPlan:        'professional',
+    isSapioraAdmin:  false,
+    pipeline_config: {
+      currency: 'USD',
+      revpar_fee_pct: 7,
+      revpar_gop_pct: 40,
+      map_center: [25.77, -80.19],
+      map_zoom: 11,
+      outreach_language: 'es',
+      col_why_label: 'Por qué puede mejorarlo',
+      crm: 'none',
+    },
+  };
+  CFG.url   = session.supabase_url;
+  CFG.key   = session.supabase_key;
+  CFG.table = 'leads';
+  ORG_ID    = session.org_id;
+
+  // ── PLAN FEATURES ──────────────────────────────────────────
+  const plan = (session.plan || session.userPlan || 'enterprise').toLowerCase();
+  const PLANS = {
+    starter:     { aiScoring:false, ownerSearch:false, analytics:false, addLead:false, exportFull:false, hubspot:false, revpar:false, _plan:'starter'      },
+    growth:      { aiScoring:true,  ownerSearch:false, analytics:true,  addLead:true,  exportFull:true,  hubspot:false, revpar:true,  _plan:'growth'       },
+    professional:{ aiScoring:true,  ownerSearch:true,  analytics:true,  addLead:true,  exportFull:true,  hubspot:true,  revpar:true,  _plan:'professional' },
+    custom:      { aiScoring:true,  ownerSearch:true,  analytics:true,  addLead:true,  exportFull:true,  hubspot:true,  revpar:true,  _plan:'custom'       },
+    enterprise:  { aiScoring:true,  ownerSearch:true,  analytics:true,  addLead:true,  exportFull:true,  hubspot:true,  revpar:true,  _plan:'enterprise'   },
+  };
+  Object.assign(FEAT, PLANS[plan] || PLANS.enterprise);
+
+  // ── PIPELINE CONFIG from session ────────────────────────────
+  if (session.pipeline_config && typeof session.pipeline_config === 'object') {
+    Object.assign(CONFIG, session.pipeline_config);
+    if (typeof CONFIG.hubspot_stages === 'string')       try { CONFIG.hubspot_stages = JSON.parse(CONFIG.hubspot_stages); } catch(e){}
+    if (typeof CONFIG.map_center === 'string')           try { CONFIG.map_center = JSON.parse(CONFIG.map_center); } catch(e){}
+    if (typeof CONFIG.owner_search_regions === 'string') try { CONFIG.owner_search_regions = JSON.parse(CONFIG.owner_search_regions); } catch(e){}
+  }
+
+  // ── DYNAMIC LOGO ───────────────────────────────────────────
+  const logoEl = document.querySelector('.hdr-logo');
+  if (logoEl && session.org_name) logoEl.innerHTML = session.org_name.toUpperCase() + '<span>.</span>';
+
+  // ── HIDE BUTTONS BY PLAN ───────────────────────────────────
+  if (!FEAT.addLead)    document.querySelectorAll('[onclick="openAddLead()"]').forEach(b => b.style.display='none');
+  if (!FEAT.exportFull) document.querySelectorAll('[onclick="exportCSV()"]').forEach(b => b.style.display='none');
+  if (!FEAT.hubspot) { const hb = document.getElementById('btn-hubspot'); if(hb) hb.style.display='none'; }
+
+  // ── LABEL FROM CONFIG ──────────────────────────────────────
+  const whyLabel = document.getElementById('why-label');
+  if (whyLabel && CONFIG.col_why_label) whyLabel.textContent = CONFIG.col_why_label;
+
+  try { amLocal  = JSON.parse(localStorage.getItem('y_am_cache')||'{}'); } catch(e){}
   try { aiScores = JSON.parse(localStorage.getItem('y_ai_scores')||'{}'); } catch(e){}
   g('cu').value = CFG.url; g('ck').value = CFG.key; g('ctb').value = CFG.table;
   initMap();
@@ -622,7 +782,7 @@ window.onload = function() {
 
 // ── MAP ──────────────────────────────────────────────
 function initMap() {
-  map = L.map('map', { center:[25.77,-80.19], zoom:11 });
+  map = L.map('map', { center: CONFIG.map_center || [25.77,-80.19], zoom: CONFIG.map_zoom || 11 });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution:'&copy; OSM &copy; CARTO', maxZoom:19
   }).addTo(map);
@@ -638,7 +798,7 @@ async function loadLeads() {
   setSt('loading','Cargando…');
   show('map-loader'); g('ltxt').textContent = 'Conectando con Supabase…';
   try {
-    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&limit=10000`, {
+    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&org_id=eq.${ORG_ID}&limit=10000`, {
       headers:{ apikey:CFG.key, Authorization:'Bearer '+CFG.key, Prefer:'count=exact' }
     });
     if (!res.ok) throw new Error('HTTP '+res.status);
@@ -652,6 +812,7 @@ async function loadLeads() {
     geocode();
     startRealtime();
     toast('🏨 '+all.length+' leads cargados','Sincronizado correctamente');
+    checkNewLeads();
   } catch(e) {
     setSt('error','Error de conexión');
     g('ltxt').textContent = 'Error: '+e.message;
@@ -669,7 +830,8 @@ function normalize(row, i) {
     _i:i, _id:lid,
     _lat: isFinite(lat)?lat:null, _lng: isFinite(lng)?lng:null,
     _prio: row[c.prio]||autoPrio(row),
-    _score: aiScores[lid]?.score || null,
+    _score: row.ai_score ?? aiScores[lid]?.score ?? null,
+    _createdAt: row.created_at || null,
     name: String(rawName).trim() || ('Lead #'+(i+1)),
     addr, city:row[c.city]||'—', state:row[c.state]||'—',
     rooms:row[c.rooms]||'—', type:row[c.type]||'—',
@@ -679,6 +841,34 @@ function normalize(row, i) {
       name:row.am_name||'', email:row.am_email||'', phone:row.am_phone||'',
       status:row.am_status||'', date:row.am_date||'', prio:row.am_priority||'', notes:row.am_notes||''
     },
+    _aiSummary:   row.ai_summary||null,
+    _aiFlags:     row.ai_flags||null,
+    _aiAction:    row.ai_action||null,
+    _ownerName:   row.owner_name||null,
+    _ownerType:   row.owner_type||null,
+    _ownerFolio:  row.owner_folio||null,
+    _ownerOperator: row.owner_operator||null,
+    _ownerLinkedin: row.owner_linkedin||null,
+    _ownerContact:  row.owner_contact||null,
+    _ownerMessage:  row.owner_message||null,
+    _ownerStrategy: row.owner_strategy||null,
+    _ownerConfidence: row.owner_confidence||null,
+    _ownerFlags:    row.owner_flags||null,
+    _ownerSearchedAt: row.owner_searched_at||null,
+    _aiSummary:   row.ai_summary||null,
+    _aiFlags:     row.ai_flags||null,
+    _aiAction:    row.ai_action||null,
+    _ownerName:   row.owner_name||null,
+    _ownerType:   row.owner_type||null,
+    _ownerFolio:  row.owner_folio||null,
+    _ownerOperator: row.owner_operator||null,
+    _ownerLinkedin: row.owner_linkedin||null,
+    _ownerContact:  row.owner_contact||null,
+    _ownerMessage:  row.owner_message||null,
+    _ownerStrategy: row.owner_strategy||null,
+    _ownerConfidence: row.owner_confidence||null,
+    _ownerFlags:    row.owner_flags||null,
+    _ownerSearchedAt: row.owner_searched_at||null,
     fin:{
       adr:row.adr||'', occ:row.occupancy||'', price:row.acquisition_price||'',
       days:row.days_operative||365, gopPct:row.gop_pct||40
@@ -720,12 +910,14 @@ function applyF() {
     if(mapFilter==='hot'&&l._prio!=='hot') return false;
     if(mapFilter==='warm'&&l._prio!=='warm') return false;
     if(mapFilter==='nogeo'&&l._lat!==null) return false;
+    if(mapFilter==='new7'&&!isNew(l)) return false;
     if(cy&&l.city!==cy) return false;
     if(ty&&l.type!==ty) return false;
     if(op&&l.opp!==op) return false;
     if(s&&!(l.name+' '+l.addr+' '+l.city).toLowerCase().includes(s)) return false;
     return true;
   });
+  filtered = sortLeads(filtered);
   renderList(); renderMarkers();
   g('lcnt').textContent = filtered.length+' resultado'+(filtered.length!==1?'s':'');
   if(curView==='kanban') renderKanban();
@@ -756,7 +948,8 @@ function renderList() {
     const scoreHtml = l._score!=null ? `<span class="score-badge" style="background:${scoreColor(l._score)}22;color:${scoreColor(l._score)}">✦ ${l._score}</span>` : '';
     const d=document.createElement('div');
     d.className='lcard'+(l._i===activeId?' on':'');
-    d.innerHTML=`<div class="lcard-top"><div class="lcard-name">${esc(l.name)}</div><span class="badge ${bc(l._prio)}">${pl(l._prio)}</span></div><div class="lcard-addr">${esc(l.addr)}</div><div class="lcard-bot"><span class="lcard-type">${esc(l.type)}</span><span class="lcard-meta">${sc}${esc(l.rooms)} hab. ${scoreHtml}</span></div>`;
+    const newBadge = isNew(l) ? '<span class="badge bn" style="background:rgba(42,138,110,.15);color:#2a8a6e;font-size:8px">🆕 Nuevo</span>' : '';
+    d.innerHTML=`<div class="lcard-top"><div class="lcard-name">${esc(l.name)}</div><span class="badge ${bc(l._prio)}">${pl(l._prio)}</span>${newBadge}</div><div class="lcard-addr">${esc(l.addr)}</div><div class="lcard-bot"><span class="lcard-type">${esc(l.type)}</span><span class="lcard-meta">${sc}${esc(l.rooms)} hab. ${scoreHtml}</span></div>`;
     d.onclick=()=>pick(l);
     c.appendChild(d);
   });
@@ -842,20 +1035,70 @@ function showDP(l) {
   g('rv-days').value=fin.days||365;
   calcRevpar();
   hide('am-msg');
-  // AI scoring panel reset if no score yet
-  const aiData=aiScores[l._id];
-  if(aiData){ renderAIResult(aiData); } else {
+  // AI scoring — load from Supabase row or localStorage cache
+  const dbAi = (l._id && all.find(x=>x._i===l._i))?{
+    score:   l._score,
+    summary: l._aiSummary,
+    flags:   l._aiFlags,
+    action:  l._aiAction
+  }:null;
+  const aiData = aiScores[l._id] || (dbAi?.summary ? dbAi : null);
+  if(aiData && aiData.summary){ renderAIResult(aiData); } else {
     g('ai-score-content').innerHTML=`<div style="text-align:center;padding:30px;color:var(--muted)"><div style="font-size:28px;margin-bottom:8px">🤖</div><div style="font-size:12px;font-weight:600;margin-bottom:4px">AI Lead Scoring</div><div style="font-size:11px;color:var(--muted2);margin-bottom:16px">Análisis inteligente de este lead con Claude AI</div><button class="act-gold" onclick="runAIScoring()" style="margin:0 auto">✦ Generar Score AI</button></div>`;
   }
-  // Owner search reset
-  g('owner-result').className='hidden'; g('owner-result').innerHTML='';
-  // Open sheet
+  // Owner search — show saved data if exists, else show search button
+  g('owner-result').className='';
+  if(l._ownerName && l._ownerName.length > 3){
+    const street = (l.addr||'').split(',')[0].trim();
+    const sunbizUrl    = 'https://search.sunbiz.org/Inquiry/CorporationSearch/ByAddress?streetAddress='+encodeURIComponent(street);
+    const miamiDadeUrl = 'https://www.miamidade.gov/Apps/PA/PApublicServiceProxy/PaServicesProxy.ashx?Operation=GetPropertySearchByAddress&myAddress='+encodeURIComponent(street);
+    const confColor    = {'alta':'var(--new)','media':'var(--warm)','baja':'var(--hot)'}[(l._ownerConfidence||'').toLowerCase()]||'var(--muted)';
+    const folioBtn     = l._ownerFolio
+      ? `<a href="https://miamidadepropertysearch.us/?folio=${l._ownerFolio}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">🏠 Folio ${esc(l._ownerFolio)} ↗</button></a>`
+      : `<a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>`;
+    g('owner-result').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:10px;color:var(--muted)">💾 Guardado · ${l._ownerSearchedAt ? new Date(l._ownerSearchedAt).toLocaleDateString() : '—'}</span>
+        <button class="act-s" onclick="runOwnerSearch()" style="font-size:9px;padding:4px 10px">↺ Buscar de nuevo</button>
+      </div>
+      <div class="ai-box">
+        <div class="ai-hd">
+          <div class="ai-icon">👤</div>
+          <div>
+            <div class="ai-title">${esc(l._ownerName)}</div>
+            <div class="ai-sub">${esc(l._ownerType||'')} · <span style="color:${confColor};font-weight:700">Confianza ${esc(l._ownerConfidence||'—')}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="info-grid">
+        ${l._ownerFolio ? `<div class="ig full" style="background:rgba(196,163,90,.08);border-color:rgba(196,163,90,.25)"><div class="ig-l">📋 Folio Miami-Dade</div><div class="ig-v"><a href="https://miamidadepropertysearch.us/?folio=${l._ownerFolio}" target="_blank" style="color:var(--gold-d);font-weight:700;text-decoration:none">${esc(l._ownerFolio)} ↗</a></div></div>` : ''}
+        ${l._ownerOperator && l._ownerOperator !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">🏨 Operador actual</div><div class="ig-v" style="color:var(--hot);font-weight:600">${esc(l._ownerOperator)}</div></div>` : ''}
+        ${l._ownerLinkedin && l._ownerLinkedin !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v"><a href="${esc(l._ownerLinkedin)}" target="_blank" style="color:var(--cold);font-weight:700;text-decoration:none">🔗 ${esc(l._ownerName)} ↗</a></div></div>` : ''}
+        ${l._ownerContact && l._ownerContact !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Contacto</div><div class="ig-v" style="color:var(--new);font-weight:600">${esc(l._ownerContact)}</div></div>` : ''}
+        ${l._ownerStrategy && l._ownerStrategy !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Estrategia</div><div class="ig-v sm">${esc(l._ownerStrategy)}</div></div>` : ''}
+        ${l._ownerMessage && l._ownerMessage !== 'No encontrado' ? `<div class="ig full gold"><div class="ig-l">✉ Primer mensaje</div><div class="ig-v sm" style="font-style:italic">${esc(l._ownerMessage)}</div></div>` : ''}
+        ${l._ownerFlags && l._ownerFlags !== 'Ninguna' ? `<div class="ig full"><div class="ig-l">⚠ Red flags</div><div class="ig-v sm">${esc(l._ownerFlags)}</div></div>` : ''}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        ${folioBtn}
+        <a href="${sunbizUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Sunbiz ↗</button></a>
+        <button class="act-s" onclick="navigator.clipboard.writeText(${JSON.stringify(l._ownerMessage||'')}).then(()=>toast('✓ Copiado','Mensaje en portapapeles'))">Copiar mensaje</button>
+      </div>`;
+  } else {
+    g('owner-result').innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted)">
+      <div style="font-size:28px;margin-bottom:8px">👤</div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">Owner Search</div>
+      <div style="font-size:11px;color:var(--muted2);margin-bottom:16px">Busca el propietario real, LLC, LinkedIn y estrategia de contacto</div>
+      <button class="act-gold" onclick="runOwnerSearch()" style="margin:0 auto">🔍 Buscar propietario</button>
+    </div>`;
+  }
+
+    // Open sheet
   const ov=g('ov'),dp=g('dp');
   ov.classList.remove('hidden');
   requestAnimationFrame(()=>{ ov.classList.add('vis'); requestAnimationFrame(()=>dp.classList.add('open')); });
-  // Auto-trigger owner search when tab opens
   showTab('f', document.querySelector('.dp-tab'));
-  setTimeout(()=>runOwnerSearch(), 400);
+  // Owner already set above based on Supabase data
 }
 
 // ── ADD LEAD MANUALLY ────────────────────────────────
@@ -886,6 +1129,18 @@ function openAddLead(){
         <div class="am-field am-full"><label>Problema principal</label><input type="text" id="nl-prob" placeholder="ej: Baja ocupación, gestión deficiente"/></div>
         <div class="am-field am-full"><label>Por qué Yurbban</label><input type="text" id="nl-why" placeholder="ej: Potencial de rebranding y mejora operativa"/></div>
         <div class="am-field am-full"><label>URL fuente</label><input type="text" id="nl-src" placeholder="https://…"/></div>
+        <div class="am-field am-full" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:4px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">🔗 Importar desde Booking.com</div>
+          <div style="display:flex;gap:8px;margin-bottom:6px">
+            <input id="booking-url-input" type="url" placeholder="URL de Booking.com (opcional — busca por nombre si está vacío)" style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--text);outline:none;font-family:inherit"/>
+            <button onclick="scrapeBooking()" id="booking-btn" style="background:var(--clay);color:#fff;border:none;padding:7px 12px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">🔍 Buscar</button>
+          </div>
+          <div id="booking-status" style="font-size:10px;color:var(--muted);display:none;margin-bottom:6px"></div>
+          <div id="booking-result" style="display:none;border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+            <div id="booking-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px"></div>
+            <button onclick="fillFromBooking()" style="background:var(--text);color:var(--bg);border:none;padding:8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;width:100%;font-family:inherit">↓ Rellenar formulario con estos datos</button>
+          </div>
+        </div>
       </div>
       <div id="nl-msg" class="am-msg hidden"></div>
       <div style="display:flex;gap:8px;margin-top:16px">
@@ -918,7 +1173,7 @@ async function saveNewLead(){
   try {
     const r=await fetch(`${CFG.url}/rest/v1/${CFG.table}`,{
       method:'POST',
-      headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json',Prefer:'return=representation'},
+      headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json','Accept-Profile':'public','Content-Profile':'public',Prefer:'return=representation'},
       body:JSON.stringify(payload)
     });
     if(!r.ok){ const e=await r.json().catch(()=>({})); throw new Error(e.message||'HTTP '+r.status); }
@@ -966,26 +1221,30 @@ function cpLead(){
 
 // ── AI SCORING ───────────────────────────────────────
 async function runAIScoring() {
-  const l=all.find(x=>x._i===activeId);if(!l)return;
-  const btn=document.querySelector('#ai-score-content button');
-  if(btn){ btn.disabled=true; btn.textContent='Analizando…'; }
-  g('ai-score-content').innerHTML=`<div class="ai-loading"><div class="spin"></div>Claude AI está analizando este lead…</div>`;
+  if (!FEAT.aiScoring) { showUpgrade('AI Lead Scoring'); return; }
+  const l = all.find(x => x._i === activeId); if (!l) return;
+  const btn = document.querySelector('#ai-score-content button');
+  if (btn) { btn.disabled = true; btn.textContent = 'Analizando…'; }
+  g('ai-score-content').innerHTML = `<div class="ai-loading"><div class="spin"></div>Analizando con AI…</div>`;
 
-  const prompt=`Eres un analista de inversiones hoteleras especializado en el mercado de Miami para Yurbban Hospitality Group.
+  const prompt = `Eres un analista de inversiones hoteleras especializado trabajando para un cliente de Sapiora.
 
-Analiza este lead y devuelve un JSON con el siguiente formato exacto (sin markdown, solo JSON):
+Contexto del cliente: ${CONFIG.prompt_context}
+Mercado objetivo: ${CONFIG.target_market}
+
+Analiza este activo hotelero y devuelve un JSON con este formato exacto (sin markdown, solo JSON):
 {
   "score": <número 0-100>,
-  "summary": "<resumen ejecutivo de 2-3 frases>",
+  "summary": "<análisis ejecutivo de 2-3 frases>",
   "flags": [
-    {"type": "green|yellow|red", "text": "<observación breve>"},
-    {"type": "green|yellow|red", "text": "<observación breve>"},
-    {"type": "green|yellow|red", "text": "<observación breve>"}
+    {"type": "green", "text": "<señal positiva>"},
+    {"type": "yellow", "text": "<riesgo moderado>"},
+    {"type": "red", "text": "<red flag>"}
   ],
-  "action": "<recomendación de acción inmediata en 1 frase>"
+  "action": "<acción concreta esta semana>"
 }
 
-Datos del hotel:
+Datos del activo:
 - Nombre: ${l.name}
 - Dirección: ${l.addr}
 - Ciudad: ${l.city}, ${l.state}
@@ -994,81 +1253,136 @@ Datos del hotel:
 - Rating: ${l.rating}
 - Tipo de oportunidad: ${l.opp}
 - Problema principal: ${l.prob}
-- Por qué Yurbban: ${l.why}
+- Por qué puede mejorarlo: ${l.why}
 - Prioridad actual: ${l._prio}
 
-Criterios de scoring: tamaño (habitaciones), ubicación (Miami Beach/Brickell = premium), tipo de oportunidad (management contract = ideal), rating (bajo = oportunidad mejora, alto = difícil negociar), problema claramente articulado = mayor puntuación.`;
+Criterios de scoring específicos:
+${CONFIG.scoring_criteria}
+
+Escala:
+- 80-100: Oportunidad inmediata
+- 60-79: Oportunidad media
+- 40-59: Radar
+- 0-39: Descartable`;
+
+  // ── Plan-aware model selection ──────────────────────────────
+  const useClaude = true; // Yurbban: AI Scoring uses Claude Haiku
 
   try {
-    const res=await fetch('/api/ai',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        provider:'anthropic',
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:1000,
-        system:'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido, sin markdown ni texto adicional.',
-        prompt:prompt
-      })
-    });
-    if(!res.ok){ const err=await res.text(); throw new Error('API '+res.status+': '+err); }
-    const data=await res.json();
-    const text=(data.text||'').trim();
-    if(!text) throw new Error('Respuesta vacía de la API');
-    const clean=text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
-    const result=JSON.parse(clean);
-    result.score=Math.max(0,Math.min(100,result.score));
-    aiScores[l._id]=result;
-    try{localStorage.setItem('y_ai_scores',JSON.stringify(aiScores));}catch(e){}
-    l._score=result.score;
+    let result;
+
+    if (useClaude) {
+      // Business/Enterprise → Claude Haiku
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: 'anthropic',
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido, sin markdown ni texto adicional.',
+          prompt: prompt
+        })
+      });
+      if (!res.ok) { const e = await res.text(); throw new Error('Claude API ' + res.status + ': ' + e); }
+      const data = await res.json();
+      const text = (data.text || '').trim();
+      const clean = text.replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + 'json\\s*'), '').replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + '\\s*'), '').replace(new RegExp('\\s*' + String.fromCharCode(96).repeat(3) + '$'), '').trim();
+      result = JSON.parse(clean);
+    } else {
+      // Starter/Pro → GPT-4o mini (cheaper)
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + OPENAI_KEY
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini', // fallback not used
+          max_tokens: 1000,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.' },
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
+      if (!res.ok) { const e = await res.text(); throw new Error('OpenAI API ' + res.status + ': ' + e); }
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || '';
+      result = JSON.parse(text);
+    }
+
+    result.score = Math.max(0, Math.min(100, result.score));
+    aiScores[l._id] = result;
+    try { localStorage.setItem('y_ai_scores', JSON.stringify(aiScores)); } catch(e) {}
+    l._score = result.score;
+
+    // Save to Supabase
+    if (l._id && CFG.url && CFG.key) {
+      fetch(`${CFG.url}/rest/v1/${CFG.table}?id=eq.${l._id}`, {
+        method: 'PATCH',
+        headers: { apikey: CFG.key, Authorization: 'Bearer ' + CFG.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ ai_score: result.score, ai_summary: result.summary, ai_flags: result.flags, ai_action: result.action, ai_scored_at: new Date().toISOString() })
+      }).catch(() => {});
+    }
+
     renderAIResult(result);
-    // Update badge
-    g('dp-score-num').textContent=result.score;
-    g('dp-score-num').style.color=scoreColor(result.score);
-    g('dp-score-badge').style.display='flex';
-    renderList(); renderMarkers();
-    updateKPIs();
+    g('dp-score-num').textContent = result.score;
+    g('dp-score-num').style.color = scoreColor(result.score);
+    g('dp-score-badge').style.display = 'flex';
+    renderList(); renderMarkers(); updateKPIs();
+
   } catch(e) {
-    g('ai-score-content').innerHTML=`<div class="ai-error">Error al conectar con Claude AI: ${e.message}. Verifica la conexión e inténtalo de nuevo.</div><br><button class="act-gold" onclick="runAIScoring()">Reintentar</button>`;
+    g('ai-score-content').innerHTML = `<div class="ai-error">Error al conectar con AI: ${e.message}</div><br><button class="act-gold" onclick="runAIScoring()">Reintentar</button>`;
   }
 }
 
-function renderAIResult(r){
-  const col=scoreColor(r.score);
-  const flagsHtml=r.flags.map(f=>`<div class="flag ${f.type}">${f.type==='green'?'✓':f.type==='red'?'✕':'⚠'} ${esc(f.text)}</div>`).join('');
-  g('ai-score-content').innerHTML=`
-    <div class="score-meter">
-      <div class="score-circle" style="border-color:${col};color:${col}">${r.score}</div>
-      <div class="score-info">
-        <div class="score-title">Lead Score: ${r.score}/100</div>
-        <div class="score-desc">${esc(r.summary)}</div>
-        <div class="score-bar-wrap"><div class="score-bar" style="width:${r.score}%;background:${col}"></div></div>
-      </div>
-    </div>
-    <div class="ai-box">
-      <div class="ai-hd"><div class="ai-icon">⚡</div><div><div class="ai-title">Acción recomendada</div></div></div>
-      <div class="ai-content">${esc(r.action)}</div>
-    </div>
-    <div class="sec-label" style="margin-bottom:8px">Señales detectadas</div>
-    <div class="flag-list">${flagsHtml}</div>
-    <div style="margin-top:14px;text-align:center"><button class="act-s" onclick="runAIScoring()">↺ Recalcular</button></div>
-  `;
-}
 
-// ── OWNER SEARCH ─────────────────────────────────────
 async function runOwnerSearch() {
   const l=all.find(x=>x._i===activeId);if(!l)return;
   show('owner-result');
   g('owner-result').innerHTML=`<div class="ai-loading"><div class="spin"></div>Buscando en internet: Sunbiz, registros de propiedad, LinkedIn…</div>`;
 
-  const prompt=`Busca el propietario de este hotel. Usa SOLO la dirección para buscar en Sunbiz y Miami-Dade records. Umbral: si confianza <50% pon "No encontrado".
+  const prompt=`Eres un investigador experto en real estate hotelero trabajando para un cliente de Sapiora.
 
-Dirección: ${l.addr}
-Hotel: ${l.name}
-Problema: ${l.prob}
+Contexto del cliente: ${CONFIG.prompt_context}
+Mercado objetivo: ${CONFIG.target_market}
+Regiones de búsqueda: ${(CONFIG.owner_search_regions||[]).join(', ')}
 
-JSON sin markdown:
-{"owner_name":"<nombre/LLC o No encontrado>","owner_type":"<tipo o No encontrado>","registered_agent":"<agente Sunbiz o No encontrado>","linkedin_url":"<URL LinkedIn real o No encontrado>","linkedin_name":"<nombre LinkedIn o No encontrado>","contact_info":"<tel/email o No encontrado>","contact_strategy":"<2 pasos>","first_message":"<outreach corto>","confidence":"<alta/media/baja>","red_flags":"<alerta o Ninguna>"}`;
+Investiga este hotel y encuentra toda la información posible sobre su propietario real.
+
+HOTEL:
+- Nombre: ${l.name}
+- Dirección: ${l.addr}
+- Ciudad: ${l.city}
+- Problema: ${l.prob}
+
+BÚSQUEDAS (en este orden):
+1. "${l.name} ${l.city} owner LLC" — propietario
+2. "${l.name} folio property appraiser ${(CONFIG.owner_search_regions||[''])[0]}" — catastro
+3. "${l.addr} property owner" — por dirección
+4. "${l.name} hotel management company operator" — gestor actual
+5. "${l.name} hotel owner LinkedIn CEO" — contacto clave
+
+Contexto para el outreach: ${CONFIG.outreach_context}
+El mensaje de contacto debe estar en idioma: ${CONFIG.outreach_language || 'es'}
+
+Devuelve SOLO JSON válido, sin texto antes ni después:
+{
+  "owner_name": "<persona o LLC propietaria, o No encontrado>",
+  "owner_type": "<Individual / LLC / REIT / Family Office / Hotel Group / No encontrado>",
+  "folio_number": "<número catastral si encontrado, o null>",
+  "current_operator": "<empresa gestora actual, o No encontrado>",
+  "registered_agent": "<agente registrado, o No encontrado>",
+  "linkedin_url": "<URL LinkedIn real, o No encontrado>",
+  "linkedin_name": "<nombre perfil LinkedIn, o No encontrado>",
+  "contact_info": "<teléfono o email, o No encontrado>",
+  "contact_strategy": "<2 pasos concretos para llegar al propietario esta semana>",
+  "first_message": "<mensaje outreach personalizado, máx 3 frases, en ${CONFIG.outreach_language || 'es'}, mencionando el cliente y proponiendo reunión>",
+  "confidence": "<alta/media/baja>",
+  "red_flags": "<riesgos o barreras, o Ninguna>"
+}`;
 
   try {
     const res=await fetch('/api/ai',{
@@ -1077,9 +1391,9 @@ JSON sin markdown:
       body:JSON.stringify({
         provider:'anthropic',
         model:'claude-sonnet-4-6',
-        max_tokens:800,
+        max_tokens:1500,
         web_search:true,
-        system:'Investigador real estate Miami. Usa web_search máximo 3 veces. Solo JSON al final, sin texto extra.',
+        system:'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Busca en internet información real y actualizada. Responde SOLO con JSON al final, sin texto adicional.',
         prompt:prompt
       })
     });
@@ -1087,7 +1401,8 @@ JSON sin markdown:
     const data=await res.json();
     const text=(data.text||'').trim();
     if(!text) throw new Error('Sin respuesta de texto de la API');
-    const clean=text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    var bt=String.fromCharCode(96);
+    var clean=text.replace(new RegExp('^'+bt+bt+bt+'json\\s*'),'').replace(new RegExp('^'+bt+bt+bt+'\\s*'),'').replace(new RegExp('\\s*'+bt+bt+bt+'$'),'').trim();
 
     let r;
     try{ r=JSON.parse(clean); }
@@ -1102,6 +1417,29 @@ JSON sin markdown:
     const sunbizUrl='https://search.sunbiz.org/Inquiry/CorporationSearch/ByAddress?streetAddress='+encodeURIComponent(street);
     const miamiDadeUrl='https://www.miamidade.gov/Apps/PA/PApublicServiceProxy/PaServicesProxy.ashx?Operation=GetPropertySearchByAddress&myAddress='+encodeURIComponent(street);
 
+    // Save owner data to Supabase
+    if(l._id && CFG.url && CFG.key){
+      fetch(`${CFG.url}/rest/v1/${CFG.table}?id=eq.${l._id}`,{
+        method:'PATCH',
+        headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({
+          owner_name:       r.owner_name||null,
+          owner_type:       r.owner_type||null,
+          owner_folio:      r.folio_number||null,
+          owner_operator:   r.current_operator||null,
+          owner_linkedin:   r.linkedin_url||null,
+          owner_contact:    r.contact_info||null,
+          owner_message:    r.first_message||null,
+          owner_strategy:   r.contact_strategy||null,
+          owner_confidence: r.confidence||null,
+          owner_flags:      r.red_flags||null,
+          owner_searched_at: new Date().toISOString()
+        })
+      }).then(res=>{
+        if(res.ok) toast('💾 Owner guardado','Datos guardados en Supabase');
+      }).catch(()=>{});
+    }
+
     const confColor={'alta':'var(--new)','media':'var(--warm)','baja':'var(--hot)'}[r.confidence?.toLowerCase()]||'var(--muted)';
 
     g('owner-result').innerHTML=`
@@ -1115,6 +1453,7 @@ JSON sin markdown:
         </div>
       </div>
       <div class="info-grid">
+        ${r.folio_number?`<div class="ig full" style="background:rgba(196,163,90,.08);border-color:rgba(196,163,90,.25)"><div class="ig-l">📋 Folio Miami-Dade</div><div class="ig-v"><a href="https://miamidadepropertysearch.us/?folio=${r.folio_number}" target="_blank" style="color:var(--gold-d);font-weight:700;text-decoration:none">${esc(r.folio_number)} ↗</a></div></div>`:''}
         ${r.registered_agent&&r.registered_agent!=='No encontrado'?`<div class="ig full"><div class="ig-l">Agente registrado (Sunbiz)</div><div class="ig-v">${esc(r.registered_agent)}</div></div>`:''}
         ${r.linkedin_url&&r.linkedin_url!=='No encontrado'
           ?`<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v"><a href="${esc(r.linkedin_url)}" target="_blank" style="color:var(--cold);font-weight:700;text-decoration:none">🔗 ${esc(r.linkedin_name||r.linkedin_url)} ↗</a></div></div>`
@@ -1125,8 +1464,8 @@ JSON sin markdown:
         ${r.red_flags&&r.red_flags!=='Ninguna'?`<div class="ig full"><div class="ig-l">⚠ Red flags</div><div class="ig-v sm">${esc(r.red_flags)}</div></div>`:''}
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        <a href="${sunbizUrl}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">Sunbiz ↗</button></a>
-        <a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>
+        ${r.folio_number ? `<a href="https://miamidadepropertysearch.us/?folio=${r.folio_number}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">🏠 Miami-Dade Folio ${r.folio_number} ↗</button></a>` : `<a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>`}
+        <a href="${sunbizUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Sunbiz ↗</button></a>
         <button class="act-s" onclick="navigator.clipboard.writeText(${JSON.stringify(r.first_message||'')}).then(()=>toast('✓ Copiado','Mensaje en el portapapeles'))">Copiar mensaje</button>
       </div>
     `;
@@ -1145,8 +1484,8 @@ function calcRevpar(){
   const rooms=l?parseInt(l.rooms)||0:0;
   const revpar=adr*(occ/100);
   const totalRev=revpar*days*rooms;
-  const gop=totalRev*.4;
-  const fee=totalRev*.07;
+  const gop=totalRev*((CONFIG.revpar_gop_pct||40)/100);
+  const fee=totalRev*((CONFIG.revpar_fee_pct||7)/100);
   const priceUSD=price*1e6;
   const capRate=priceUSD>0?(gop/priceUSD)*100:0;
   const perRoom=rooms>0?totalRev/rooms:0;
@@ -1362,6 +1701,36 @@ function switchView(v,btn){
   }
 }
 
+function setSortMode(mode) {
+  sortMode = mode;
+  applyF();
+}
+
+function sortLeads(arr) {
+  const sorted = [...arr];
+  const prioOrder = { hot:0, warm:1, cold:2, new:3 };
+  if (sortMode === 'priority') {
+    sorted.sort((a,b) => (prioOrder[a._prio]??9) - (prioOrder[b._prio]??9));
+  } else if (sortMode === 'recent') {
+    sorted.sort((a,b) => {
+      const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
+      const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
+      return db - da;
+    });
+  } else if (sortMode === 'score') {
+    sorted.sort((a,b) => (b._score??-1) - (a._score??-1));
+  } else if (sortMode === 'rooms') {
+    sorted.sort((a,b) => (parseInt(b.rooms)||0) - (parseInt(a.rooms)||0));
+  }
+  return sorted;
+}
+
+function isNew(l) {
+  if (!l._createdAt) return false;
+  const d = new Date(l._createdAt);
+  return (Date.now() - d.getTime()) < 7 * 24 * 60 * 60 * 1000;
+}
+
 function setMapF(f,btn){
   mapFilter=f;
   document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
@@ -1474,6 +1843,420 @@ function toast(title,sub){
   setTimeout(()=>killToast(t),4500);
 }
 function killToast(t){if(!t)return;t.classList.remove('in');t.classList.add('out');setTimeout(()=>t.remove(),420);}
+
+// ═══════════════════════════
+// BOOKING.COM SCRAPER
+// ═══════════════════════════
+var bookingData = null;
+
+function scrapeBooking() {
+  var url = g('booking-url-input') ? g('booking-url-input').value.trim() : '';
+  var name = g('nl-name') ? g('nl-name').value.trim() : '';
+  var city = g('nl-city') ? g('nl-city').value.trim() : 'Miami';
+
+  if (!url && name) {
+    url = 'https://www.booking.com/searchresults.html?ss=' + encodeURIComponent(name + ' ' + city + ' hotel');
+    if (g('booking-url-input')) g('booking-url-input').value = url;
+  }
+  if (!url && !name) { toast('Introduce el nombre del hotel primero', 'err'); return; }
+
+  var btn = g('booking-btn');
+  var status = g('booking-status');
+  btn.disabled = true; btn.textContent = '⏳...';
+  status.style.display = 'block';
+  status.textContent = 'Claude buscando en Booking.com...';
+  g('booking-result').style.display = 'none';
+  bookingData = null;
+
+  if (!OPENAI_KEY) {
+    status.textContent = '⚠ No hay OpenAI API key configurada.';
+    btn.disabled = false; btn.innerHTML = '🔍 Buscar';
+    return;
+  }
+
+  var prompt = 'Search Booking.com for: "' + (name||'hotel') + '" in ' + city + '. URL hint: ' + url + '\nReturn ONLY valid JSON (no markdown, no explanation):\n{"name":"","stars":"1-5","rating":"8.5","reviews":"1234","address":"","city":"","rooms":"50","type":"Hotel","description":"brief","booking_url":""}\nNull for unknown fields.';
+
+  fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+    body: JSON.stringify({model:'gpt-4o',max_tokens:600,messages:[{role:'system',content:'Return ONLY valid JSON, no markdown, no explanation.'},{role:'user',content:prompt}]})
+  })
+  .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error&&e.error.message||'Error '+r.status);});return r.json();})
+  .then(function(data){
+    var text='';(data.choices||[]).forEach(function(b){text+=b.message?.content||'';});
+    var m=text.match(/\{[\s\S]*\}/);
+    if(m){try{bookingData=JSON.parse(m[0]);renderBookingResult(bookingData);status.textContent='✓ Datos encontrados';}
+    catch(e){status.textContent='Error parseando respuesta.';}}
+    else{status.textContent='Sin datos. '+text.slice(0,100);}
+  })
+  .catch(function(e){
+    status.textContent=e.message&&e.message.indexOf('fetch')>=0?'⚠ No disponible desde file://.':'Error: '+e.message;
+  })
+  .finally(function(){btn.disabled=false;btn.innerHTML='🔍 Buscar';});
+}
+
+function renderBookingResult(d) {
+  var items=[{l:'Nombre',v:d.name},{l:'Estrellas',v:d.stars?d.stars+'★':null},{l:'Rating Booking',v:d.rating},{l:'Reviews',v:d.reviews},{l:'Dirección',v:d.address},{l:'Ciudad',v:d.city},{l:'Habitaciones',v:d.rooms},{l:'Tipo',v:d.type}]
+    .filter(function(x){return x.v&&x.v!=='null'&&x.v!==null;});
+  g('booking-fields').innerHTML=items.map(function(x){
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:1px">'+x.l+'</div><div style="font-size:11px;font-weight:600;color:var(--text)">'+String(x.v)+'</div></div>';
+  }).join('')+(d.description?'<div style="grid-column:1/-1;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:1px">Descripción</div><div style="font-size:11px;color:var(--text2);line-height:1.5">'+d.description+'</div></div>':'');
+  g('booking-result').style.display='block';
+}
+
+function fillFromBooking() {
+  if (!bookingData) return;
+  var d = bookingData;
+  if (d.name    && g('nl-name'))   g('nl-name').value   = d.name;
+  if (d.address && g('nl-addr'))   g('nl-addr').value   = d.address;
+  if (d.city    && g('nl-city'))   g('nl-city').value   = d.city;
+  if (d.rooms   && g('nl-rooms'))  g('nl-rooms').value  = d.rooms;
+  if (d.rating  && g('nl-rating')) g('nl-rating').value = d.rating;
+  if (d.booking_url && g('nl-src')) g('nl-src').value   = d.booking_url;
+  if (d.type && g('nl-type')) {
+    var sel=g('nl-type');
+    for(var i=0;i<sel.options.length;i++){if(sel.options[i].text.toLowerCase().indexOf((d.type||'').toLowerCase().slice(0,5))>=0){sel.selectedIndex=i;break;}}
+  }
+  if (d.description && g('nl-why')) g('nl-why').value = d.description;
+  toast('Formulario rellenado desde Booking ✓','ok');
+}
+
+// ── CRM INTEGRATION ───────────────────────────────────────────
+// Unified dispatcher — reads CONFIG.crm to pick the right integration
+
+async function sendToCRM() {
+  const l = all.find(x => x._i === activeId);
+  if (!l) return;
+  const crm = (CONFIG.crm || 'hubspot').toLowerCase();
+  const btn = document.getElementById('btn-hubspot');
+
+  if (!FEAT.hubspot) { showUpgrade('Integración CRM'); return; }
+
+  if (crm === 'hubspot')    return sendToHubspot(l, btn);
+  if (crm === 'pipedrive')  return sendToPipedrive(l, btn);
+  if (crm === 'salesforce') return sendToSalesforce(l, btn);
+  if (crm === 'zoho')       return sendToZohoCRM(l, btn);
+  showMsg('err', 'CRM "' + crm + '" no configurado');
+}
+
+function crmBtnLoading(btn, text) {
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spin" style="width:12px;height:12px;border-width:2px;margin:0 4px"></div> ' + text;
+}
+function crmBtnDone(btn, label) {
+  if (!btn) return;
+  btn.disabled = false;
+  btn.innerHTML = '✓ ' + label;
+  btn.classList.add('hspot-ok');
+}
+function crmBtnError(btn, origHtml) {
+  if (!btn) return;
+  btn.disabled = false;
+  btn.innerHTML = origHtml;
+}
+
+function buildNoteBody(l) {
+  return [
+    '🏨 Hotel: ' + l.name,
+    l.addr             ? '📍 Dirección: '     + l.addr            : '',
+    l.type             ? '🏷 Tipo: '           + l.type            : '',
+    l.rooms            ? '🛏 Habitaciones: '   + l.rooms           : '',
+    l.rating           ? '⭐ Rating: '         + l.rating          : '',
+    l.prob             ? '❗ Problema: '        + l.prob            : '',
+    l.opp              ? '💡 Oportunidad: '    + l.opp             : '',
+    l._score != null   ? '🤖 AI Score: '       + l._score + '/100' : '',
+    l._aiSummary       ? '📊 Análisis: '       + l._aiSummary      : '',
+    l._aiAction        ? '⚡ Acción: '          + l._aiAction       : '',
+    l._ownerName && l._ownerName !== 'No encontrado' ? '👤 Propietario: ' + l._ownerName : '',
+    l._ownerOperator && l._ownerOperator !== 'No encontrado' ? '🏢 Operador: ' + l._ownerOperator : '',
+    l._ownerMessage && l._ownerMessage !== 'No encontrado'  ? '✉️ Mensaje: '  + l._ownerMessage  : '',
+    l._ownerFolio      ? '📋 Folio: https://miamidadepropertysearch.us/?folio=' + l._ownerFolio : '',
+    l.src              ? '🔗 Fuente: ' + l.src : '',
+  ].filter(Boolean).join('\n');
+}
+
+// ── HUBSPOT ────────────────────────────────────────────────────
+var HUBSPOT_KEY = "pat-eu1-3148f098-a865-4249-b7ad-3060ac20c4c6";
+
+async function sendToHubspot(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const key = CONFIG.crm_key || HUBSPOT_KEY;
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : '';
+  const ownerEmail = l._ownerContact && l._ownerContact.includes('@') ? l._ownerContact : '';
+  const nameParts = (ownerName || 'Owner').trim().split(' ');
+  const stageMap = CONFIG.hubspot_stages || { hot:'appointmentscheduled', warm:'presentationscheduled', cold:'appointmentscheduled', new:'appointmentscheduled' };
+  const authHeaders = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key };
+
+  try {
+    crmBtnLoading(btn, 'Creando contacto…');
+    let contactId = null;
+    if (ownerEmail) {
+      try {
+        const sr = await fetch('/hs/crm/v3/objects/contacts/search', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({filterGroups:[{filters:[{propertyName:'email',operator:'EQ',value:ownerEmail}]}],properties:['firstname','lastname']}) });
+        if (sr.ok) { const sd = await sr.json(); if (sd.results?.length) contactId = sd.results[0].id; }
+      } catch(e) {}
+    }
+    if (!contactId) {
+      const cr = await fetch('/hs/crm/v3/objects/contacts', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({ properties: { firstname:nameParts[0]||'Owner', lastname:nameParts.slice(1).join(' ')||l.name, email:ownerEmail||'', city:l.city||'', lifecyclestage:'lead', hs_lead_status:'NEW' } }) });
+      if (!cr.ok) { const e=await cr.json().catch(()=>({})); throw new Error('Contacto: '+(e.message||'HTTP '+cr.status)); }
+      contactId = (await cr.json()).id;
+    }
+    crmBtnLoading(btn, 'Creando deal…');
+    const dr = await fetch('/hs/crm/v3/objects/deals', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({ properties: { dealname:l.name+' — Acquisition Target', pipeline:CONFIG.hubspot_pipeline||'default', dealstage:stageMap[l._prio]||'appointmentscheduled', description:noteBody, closedate:new Date(Date.now()+90*24*60*60*1000).toISOString().split('T')[0], hs_priority:l._prio==='hot'?'high':l._prio==='warm'?'medium':'low' }, associations:[{to:{id:contactId},types:[{associationCategory:'HUBSPOT_DEFINED',associationTypeId:3}]}] }) });
+    if (!dr.ok) { const e=await dr.json().catch(()=>({})); throw new Error('Deal: '+(e.message||'HTTP '+dr.status)); }
+    const dealId = (await dr.json()).id;
+    await fetch('/hs/crm/v3/objects/notes', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({ properties:{hs_note_body:noteBody,hs_timestamp:new Date().toISOString()}, associations:[{to:{id:contactId},types:[{associationCategory:'HUBSPOT_DEFINED',associationTypeId:202}]},{to:{id:dealId},types:[{associationCategory:'HUBSPOT_DEFINED',associationTypeId:214}]}] }) }).catch(()=>{});
+    crmBtnDone(btn, 'En HubSpot');
+    toast('✅ HubSpot — Contacto + Deal creados', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error HubSpot', e.message||'Error desconocido');
+  }
+}
+
+// ── PIPEDRIVE ──────────────────────────────────────────────────
+async function sendToPipedrive(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const key = CONFIG.crm_key;
+  if (!key) { toast('❌ Pipedrive', 'Configura crm_key en pipeline_config'); return; }
+  const domain = CONFIG.pipedrive_domain || 'api.pipedrive.com';
+  const baseUrl = domain.includes('pipedrive.com') && !domain.startsWith('http')
+    ? 'https://' + domain + '/v1'
+    : domain + '/v1';
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : l.name + ' Owner';
+  const stageId = CONFIG.crm_stage_map?.[l._prio] || 1;
+
+  try {
+    crmBtnLoading(btn, 'Creando persona…');
+    // Create Person
+    const pr = await fetch(baseUrl + '/persons?api_token=' + key, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: ownerName, org_name: l.name })
+    });
+    if (!pr.ok) throw new Error('Persona: HTTP ' + pr.status);
+    const personId = (await pr.json()).data?.id;
+
+    crmBtnLoading(btn, 'Creando deal…');
+    // Create Deal
+    const dr = await fetch(baseUrl + '/deals?api_token=' + key, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title:       l.name + ' — Acquisition Target',
+        pipeline_id: CONFIG.pipedrive_pipeline || 1,
+        stage_id:    typeof stageId === 'number' ? stageId : 1,
+        person_id:   personId,
+        status:      'open',
+      })
+    });
+    if (!dr.ok) throw new Error('Deal: HTTP ' + dr.status);
+    const dealId = (await dr.json()).data?.id;
+
+    // Add note to deal
+    await fetch(baseUrl + '/notes?api_token=' + key, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: noteBody, deal_id: dealId })
+    }).catch(() => {});
+
+    crmBtnDone(btn, 'En Pipedrive');
+    toast('✅ Pipedrive — Deal creado', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error Pipedrive', e.message || 'Error desconocido');
+  }
+}
+
+// ── SALESFORCE ─────────────────────────────────────────────────
+async function sendToSalesforce(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const token = CONFIG.crm_key || CONFIG.salesforce_token;
+  const instance = CONFIG.salesforce_instance;
+  if (!token || !instance) { toast('❌ Salesforce', 'Configura salesforce_instance y crm_key'); return; }
+  const baseUrl = instance.startsWith('http') ? instance : 'https://' + instance;
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : '';
+  const nameParts = (ownerName || 'Owner').split(' ');
+  const stageMap = { hot:'Qualification', warm:'Value Proposition', cold:'Prospecting', new:'Prospecting' };
+
+  try {
+    crmBtnLoading(btn, 'Creando contacto…');
+    // Create Contact
+    const cr = await fetch(baseUrl + '/services/data/v57.0/sobjects/Contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        FirstName:   nameParts[0] || 'Owner',
+        LastName:    nameParts.slice(1).join(' ') || l.name,
+        Email:       l._ownerContact?.includes('@') ? l._ownerContact : null,
+        MobilePhone: !l._ownerContact?.includes('@') ? l._ownerContact : null,
+        Title:       'Property Owner',
+        LeadSource:  'Sapiora',
+      })
+    });
+    if (!cr.ok) throw new Error('Contacto: HTTP ' + cr.status);
+    const contactId = (await cr.json()).id;
+
+    crmBtnLoading(btn, 'Creando oportunidad…');
+    // Create Opportunity
+    const or2 = await fetch(baseUrl + '/services/data/v57.0/sobjects/Opportunity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        Name:        l.name + ' — Acquisition Target',
+        StageName:   stageMap[l._prio] || 'Prospecting',
+        CloseDate:   new Date(Date.now() + 90*24*60*60*1000).toISOString().split('T')[0],
+        Description: noteBody,
+        LeadSource:  'Sapiora',
+      })
+    });
+    if (!or2.ok) throw new Error('Oportunidad: HTTP ' + or2.status);
+    const oppId = (await or2.json()).id;
+
+    // Link contact to opportunity
+    await fetch(baseUrl + '/services/data/v57.0/sobjects/OpportunityContactRole', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ OpportunityId: oppId, ContactId: contactId, IsPrimary: true })
+    }).catch(() => {});
+
+    crmBtnDone(btn, 'En Salesforce');
+    toast('✅ Salesforce — Oportunidad creada', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error Salesforce', e.message || 'Error desconocido');
+  }
+}
+
+// ── ZOHO CRM ───────────────────────────────────────────────────
+async function sendToZohoCRM(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const token = CONFIG.crm_key;
+  if (!token) { toast('❌ Zoho CRM', 'Configura crm_key en pipeline_config'); return; }
+  // Zoho uses EU or US domain
+  const baseUrl = 'https://www.zohoapis.eu/crm/v2';
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : 'Owner';
+  const stageMap = { hot:'Qualification', warm:'Value Proposition', cold:'Prospecting', new:'Prospecting' };
+
+  try {
+    crmBtnLoading(btn, 'Creando contacto…');
+    // Create Contact
+    const cr = await fetch(baseUrl + '/Contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + token },
+      body: JSON.stringify({ data: [{ Last_Name: ownerName, Email: l._ownerContact?.includes('@') ? l._ownerContact : null, Lead_Source: 'Sapiora', Description: l.name + ' — ' + l.city }] })
+    });
+    if (!cr.ok) throw new Error('Contacto: HTTP ' + cr.status);
+    const contactId = (await cr.json()).data?.[0]?.details?.id;
+
+    crmBtnLoading(btn, 'Creando deal…');
+    // Create Deal
+    const dr = await fetch(baseUrl + '/Deals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + token },
+      body: JSON.stringify({ data: [{
+        Deal_Name:   l.name + ' — Acquisition Target',
+        Stage:       stageMap[l._prio] || 'Prospecting',
+        Closing_Date: new Date(Date.now() + 90*24*60*60*1000).toISOString().split('T')[0],
+        Description: noteBody,
+        Contact_Name: { id: contactId },
+        Lead_Source: 'Sapiora',
+      }] })
+    });
+    if (!dr.ok) throw new Error('Deal: HTTP ' + dr.status);
+    const dealId = (await dr.json()).data?.[0]?.details?.id;
+
+    // Add note
+    await fetch(baseUrl + '/Notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + token },
+      body: JSON.stringify({ data: [{ Note_Title: 'Sapiora — ' + l.name, Note_Content: noteBody, Parent_Id: dealId, se_module: 'Deals' }] })
+    }).catch(() => {});
+
+    crmBtnDone(btn, 'En Zoho CRM');
+    toast('✅ Zoho CRM — Deal creado', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error Zoho CRM', e.message || 'Error desconocido');
+  }
+}
+
+// ── BROWSER NOTIFICATIONS ────────────────────────────────────
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+function checkNewLeads() {
+  requestNotifPermission();
+  const stored = localStorage.getItem('y_last_visit');
+  const lastTs = stored ? parseInt(stored) : null;
+  localStorage.setItem('y_last_visit', Date.now().toString());
+  if (!lastTs) return; // first visit
+  const newLeads = all.filter(l => {
+    if (!l._createdAt) return false;
+    return new Date(l._createdAt).getTime() > lastTs;
+  });
+  if (newLeads.length > 0) {
+    const hot = newLeads.filter(l => l._prio === 'hot').length;
+    const msg = hot > 0
+      ? `${newLeads.length} nuevos leads — ${hot} Hot 🔴`
+      : `${newLeads.length} nuevo${newLeads.length>1?'s':''} lead${newLeads.length>1?'s':''}`;
+    showBrowserNotification(msg, newLeads);
+    toast('🆕 '+newLeads.length+' leads nuevos', hot > 0 ? hot+' son Hot — acción inmediata' : 'Desde tu última visita');
+    // Auto-switch to new7 filter
+    const newBtn = document.querySelector(".vb[onclick*='new7']");
+    if (newBtn) { setMapF('new7', newBtn); newBtn.classList.add('on'); }
+  }
+}
+
+function showBrowserNotification(msg, leads) {
+  if (Notification.permission !== 'granted') return;
+  const hot = leads.filter(l => l._prio === 'hot');
+  const notif = new Notification('Sapiora — Nuevos leads', {
+    body: msg + (hot.length > 0 ? '\n' + hot.map(l => '🔴 ' + l.name).join('\n') : ''),
+    icon: '/favicon.ico',
+    badge: '/favicon.ico',
+    tag: 'sapiora-new-leads',
+    requireInteraction: hot.length > 0,
+  });
+  notif.onclick = () => {
+    window.focus();
+    notif.close();
+  };
+}
+
+// ── EMAIL NOTIFICATIONS ───────────────────────────────────────
+async function sendEmailNotification(leads) {
+  const session = (() => { try { return JSON.parse(sessionStorage.getItem('sapiora_session')||'{}'); } catch(e) { return {}; } })();
+  const to = session.email;
+  if (!to) return;
+  try {
+    await fetch('https://sapiora.site/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'new_leads',
+        to,
+        leads: leads.map(l => ({ hotel_name: l.name, city: l.city, rooms: l.rooms, priority: l._prio })),
+        org_name: session.org_name || 'Sapiora',
+      })
+    });
+  } catch(e) {}
+}
+
+function doLogout() {
+  // sessionStorage.removeItem('sapiora_session'); // no login in standalone
+  window.location.reload();
+}
+
+function showUpgrade(feature) {
+  toast('🔒 ' + feature + ' — no disponible', 'Contacta con soporte');
+}
 </script>
 </body>
 </html>
