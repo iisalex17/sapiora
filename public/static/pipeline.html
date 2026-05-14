@@ -648,8 +648,8 @@ function scoreColor(s){
 }
 
 // ── CONFIG ───────────────────────────────────────────
-var ANTHROPIC_KEY = "";  // Key moved to Vercel env vars - handled by /api/ai
-var HUBSPOT_KEY = "pat-eu1-3148f098-a865-4249-b7ad-3060ac20c4c6";var OPENAI_KEY = "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";
+var ANTHROPIC_KEY = ""; // moved to Vercel env via /api/ai
+var HUBSPOT_KEY = "pat-eu1-3148f098-a865-4249-b7ad-3060ac20c4c6";var OPENAI_KEY = ""; // moved to Vercel env via /api/ai
 
 const CFG = { url:'', key:'', table:'leads' };
 const COL = {
@@ -1291,25 +1291,20 @@ Escala:
       result = JSON.parse(clean);
     } else {
       // Starter/Pro → GPT-4o mini (cheaper)
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      const res = await fetch('/api/ai', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + OPENAI_KEY
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gpt-4o-mini', // fallback not used
+          provider: 'openai',
+          model: 'gpt-4o-mini',
           max_tokens: 1000,
-          response_format: { type: 'json_object' },
-          messages: [
-            { role: 'system', content: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.' },
-            { role: 'user', content: prompt }
-          ]
+          system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.',
+          prompt: prompt
         })
       });
       if (!res.ok) { const e = await res.text(); throw new Error('OpenAI API ' + res.status + ': ' + e); }
       const data = await res.json();
-      const text = data.choices?.[0]?.message?.content || '';
+      const text = (data.text || data.choices?.[0]?.message?.content) || '';
       result = JSON.parse(text);
     }
 
@@ -1876,14 +1871,14 @@ function scrapeBooking() {
 
   var prompt = 'Search Booking.com for: "' + (name||'hotel') + '" in ' + city + '. URL hint: ' + url + '\nReturn ONLY valid JSON (no markdown, no explanation):\n{"name":"","stars":"1-5","rating":"8.5","reviews":"1234","address":"","city":"","rooms":"50","type":"Hotel","description":"brief","booking_url":""}\nNull for unknown fields.';
 
-  fetch('https://api.openai.com/v1/chat/completions', {
+  fetch('/api/ai', {
     method: 'POST',
-    headers: {'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
-    body: JSON.stringify({model:'gpt-4o',max_tokens:600,messages:[{role:'system',content:'Return ONLY valid JSON, no markdown, no explanation.'},{role:'user',content:prompt}]})
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({provider:'openai',model:'gpt-4o',max_tokens:600,system:'Return ONLY valid JSON, no markdown, no explanation.',prompt:prompt})
   })
   .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error&&e.error.message||'Error '+r.status);});return r.json();})
   .then(function(data){
-    var text='';(data.choices||[]).forEach(function(b){text+=b.message?.content||'';});
+    var text=data.text||'';(data.choices||[]).forEach(function(b){text+=b.message?.content||'';});
     var m=text.match(/\{[\s\S]*\}/);
     if(m){try{bookingData=JSON.parse(m[0]);renderBookingResult(bookingData);status.textContent='✓ Datos encontrados';}
     catch(e){status.textContent='Error parseando respuesta.';}}
