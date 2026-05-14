@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --font-family-montserrat: 'Montserrat', sans-serif;
+  --color-bg: #e5e5de;
+  --color-bg2: #f5f5f0;
+  --color-text: #000000;
+  --color-text2: #303234;
+  --color-muted: #5a6157;
+  --color-burg: #6b2737;
+  --color-burg-light: rgba(107,39,55,0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family-montserrat);
+}

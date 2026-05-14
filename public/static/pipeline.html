@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HLIE 2.0 — Yurbban Hospitality Group</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0ede8;--bg2:#fafaf7;--surface:#ffffff;
+  --text:#0a0a0a;--text2:#3a3a3a;--muted:#6b6b6b;--muted2:#a0a0a0;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);
+  --gold:#C4A35A;--gold-d:#A8873E;--gold-l:rgba(196,163,90,.12);
+  --hot:#9a3c42;--hot-l:rgba(154,60,66,.1);
+  --warm:#b5621a;--warm-l:rgba(181,98,26,.1);
+  --cold:#2f4a7a;--cold-l:rgba(47,74,122,.1);
+  --new:#2a8a6e;--new-l:rgba(42,138,110,.1);
+  --sh:0 1px 3px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.04);
+  --sh-lg:0 4px 16px rgba(0,0,0,.08),0 12px 32px rgba(0,0,0,.07);
+  --sh-xl:0 8px 32px rgba(0,0,0,.1),0 24px 64px rgba(0,0,0,.08);
+  --font:'Montserrat',sans-serif;
+  --r:6px;--r-lg:12px;--r-xl:18px;
+  --hdr-h:56px;--sb-w:300px;
+  --ease:cubic-bezier(.25,.46,.45,.94);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+}
+html,body{height:100%;font-family:var(--font);font-size:13px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:var(--font);border:none;outline:none}
+input,select,textarea{font-family:var(--font);outline:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:2px}
+.hidden{display:none!important}
+
+/* ── LAYOUT ── */
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#hdr{height:var(--hdr-h);background:#0a0a0a;display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06);z-index:200}
+#body{display:flex;flex:1;min-height:0}
+
+/* ── HEADER ── */
+.hdr-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-logo{font-size:13px;font-weight:900;color:#fff;letter-spacing:3px}
+.hdr-logo span{color:var(--gold)}
+.hdr-sep{width:1px;height:20px;background:rgba(255,255,255,.12)}
+.hdr-sub{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
+.hdr-nav{display:flex;gap:2px;margin-left:24px}
+.nav-btn{padding:6px 14px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);background:transparent;transition:all .2s}
+.nav-btn:hover{color:rgba(255,255,255,.75);background:rgba(255,255,255,.07)}
+.nav-btn.on{color:#fff;background:rgba(255,255,255,.12)}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.hpill{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.5px;border:1px solid;transition:all .2s}
+.hdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.hdot.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.hbtn{padding:7px 14px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)!important;color:rgba(255,255,255,.7);transition:all .2s}
+.hbtn:hover{background:rgba(255,255,255,.15);color:#fff}
+.hbtn.gold{background:var(--gold);color:#0a0a0a;border-color:var(--gold-d)!important}
+.hbtn.gold:hover{background:var(--gold-d)}
+
+/* ── SIDEBAR ── */
+#sb{width:var(--sb-w);flex-shrink:0;display:flex;flex-direction:column;background:var(--bg2);border-right:1px solid var(--border);overflow:hidden;transition:width .3s var(--ease)}
+#sb.collapsed{width:0}
+.sb-kpis{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px;border-bottom:1px solid var(--border)}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;transition:transform .2s var(--spring)}
+.kpi:hover{transform:translateY(-1px)}
+.kpi-l{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px}
+.kpi-v{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-1px;line-height:1}
+.kpi-s{font-size:10px;color:var(--muted2);margin-top:2px}
+.kpi-s.up{color:var(--new)}.kpi-s.dn{color:var(--hot)}
+.sb-filters{padding:10px 12px;border-bottom:1px solid var(--border)}
+.sec-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px}
+.frow{margin-bottom:6px}
+.frow label{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:3px;letter-spacing:.3px}
+.frow select,.frow input[type=text]{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--text);-webkit-appearance:none;transition:border-color .2s,box-shadow .2s}
+.frow select:focus,.frow input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-l)}
+.sb-leads{flex:1;overflow-y:auto;padding:10px 12px}
+.leads-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.lcnt{font-size:10px;color:var(--muted);font-weight:600}
+.lcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-bottom:6px;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s var(--spring),box-shadow .2s,border-color .2s}
+.lcard:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);border-color:rgba(0,0,0,.12)}
+.lcard.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-l),var(--sh)}
+.lcard.on::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--gold);border-radius:0 2px 2px 0}
+.lcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:3px}
+.lcard-name{font-size:12px;font-weight:700;color:var(--text);flex:1;letter-spacing:-.1px;line-height:1.3}
+.lcard-addr{font-size:10px;color:var(--muted);margin-bottom:4px;line-height:1.4}
+.lcard-bot{display:flex;justify-content:space-between;align-items:center}
+.lcard-type{font-size:10px;color:var(--gold-d);font-weight:600}
+.lcard-meta{font-size:10px;color:var(--muted2);display:flex;align-items:center;gap:4px}
+.score-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;letter-spacing:.3px}
+.badge{display:inline-flex;align-items:center;font-size:9px;font-weight:800;padding:2px 7px;border-radius:10px;white-space:nowrap;letter-spacing:.3px;text-transform:uppercase}
+.bh{background:var(--hot-l);color:var(--hot)}.bw{background:var(--warm-l);color:var(--warm)}.bc{background:var(--cold-l);color:var(--cold)}.bn{background:var(--new-l);color:var(--new)}.b0{background:rgba(0,0,0,.06);color:var(--muted)}
+
+/* ── MAIN AREA ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#view-bar{height:44px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+.vbar-title{font-size:13px;font-weight:700;letter-spacing:-.2px;flex:1}
+.vbar-sub{font-size:10px;color:var(--muted)}
+.vg{display:flex;gap:2px;background:rgba(0,0,0,.06);padding:2px;border-radius:10px}
+.vb{background:transparent;border:none!important;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 12px;border-radius:8px;transition:all .2s}
+.vb:hover{color:var(--text)}
+.vb.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* ── MAP VIEW ── */
+#map-view{flex:1;position:relative;display:flex;flex-direction:column}
+#map{position:absolute;inset:0}
+#map-loader{position:absolute;inset:0;z-index:700;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.spin{width:20px;height:20px;border-radius:50%;border:2px solid rgba(0,0,0,.08);border-top-color:var(--gold);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{font-size:11px;color:var(--muted);font-weight:600}
+.map-legend{position:absolute;bottom:16px;left:16px;z-index:500;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.6);box-shadow:var(--sh);border-radius:var(--r-lg);padding:10px 14px}
+.ml-row{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);font-weight:600;margin-bottom:5px;letter-spacing:.3px}
+.ml-row:last-child{margin-bottom:0}
+.ml-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+#mtt{position:absolute;z-index:600;pointer-events:none;background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.7);box-shadow:var(--sh-lg);border-radius:var(--r-xl);padding:12px 14px;min-width:200px;max-width:260px;display:none;backdrop-filter:blur(8px)}
+.mtt-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:7px;letter-spacing:-.2px}
+.mtt-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:2px;font-size:11px}
+.mtt-row span:first-child{color:var(--muted)}.mtt-row span:last-child{font-weight:600;color:var(--text2)}
+.mtt-score{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.mtt-score-val{font-size:18px;font-weight:800;color:var(--gold-d)}
+.mtt-score-lbl{font-size:10px;color:var(--muted);font-weight:600}
+.map-filter-btns{position:absolute;top:10px;right:10px;z-index:500;display:flex;flex-direction:column;gap:4px}
+.mfb{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.6)!important;box-shadow:var(--sh);border-radius:8px;padding:6px 12px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);transition:all .2s}
+.mfb:hover{color:var(--text);background:#fff}
+.mfb.on{background:var(--gold);color:#fff;border-color:var(--gold-d)!important}
+
+/* ── KANBAN VIEW ── */
+#kanban-view{flex:1;overflow-x:auto;padding:16px;display:none;gap:10px;background:var(--bg)}
+.kb-col{flex-shrink:0;width:220px;display:flex;flex-direction:column;gap:6px}
+.kb-hd{padding:10px 12px;border-radius:var(--r);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.kb-cnt{font-size:16px;font-weight:800}
+.kb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:grab;transition:all .2s var(--spring);position:relative}
+.kb-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.kb-card.dragging{opacity:.5;transform:scale(.96)}
+.kb-card.dragover{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-l)}
+.kb-card-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.3}
+.kb-card-city{font-size:10px;color:var(--muted);margin-bottom:6px}
+.kb-card-bot{display:flex;justify-content:space-between;align-items:center}
+.kb-score{font-size:11px;font-weight:800;color:var(--gold-d)}
+.kb-rooms{font-size:10px;color:var(--muted2)}
+.kb-empty{padding:16px;text-align:center;font-size:11px;color:var(--muted2);font-style:italic;border:2px dashed var(--border);border-radius:var(--r)}
+
+/* ── ANALYTICS VIEW ── */
+#analytics-view{flex:1;overflow-y:auto;padding:20px;display:none;gap:16px;flex-direction:column}
+.an-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px}
+.an-title{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+.an-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:4px}
+.an-kpi{background:var(--bg);border-radius:var(--r-lg);padding:16px}
+.an-kpi-l{font-size:9px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.an-kpi-v{font-size:28px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.an-kpi-s{font-size:10px;color:var(--muted2);margin-top:4px}
+.an-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.an-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.an-bar-lbl{font-size:10px;color:var(--text2);font-weight:600;width:100px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-bar-wrap{flex:1;background:var(--bg);border-radius:6px;height:20px;overflow:hidden}
+.an-bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;transition:width .6s var(--spring)}
+.an-bar-val{font-size:10px;font-weight:800;color:#fff;white-space:nowrap}
+.an-top-table{width:100%;border-collapse:collapse}
+.an-top-table th{padding:8px 12px;font-size:9px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;text-align:left;border-bottom:1px solid var(--border)}
+.an-top-table td{padding:10px 12px;font-size:12px;border-bottom:1px solid var(--border)}
+.an-top-table tr:last-child td{border-bottom:none}
+.an-top-table tr:hover td{background:var(--bg)}
+.funnel-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.funnel-bar{height:28px;border-radius:6px;display:flex;align-items:center;padding:0 12px;font-size:11px;font-weight:700;color:#fff;transition:width .6s var(--spring);min-width:60px}
+.funnel-lbl{font-size:10px;font-weight:600;color:var(--text2);width:100px;flex-shrink:0}
+.funnel-cnt{font-size:11px;color:var(--muted);font-weight:600;margin-left:4px}
+
+/* ── DETAIL PANEL (overlay) ── */
+#ov{position:absolute;inset:0;z-index:800;background:rgba(0,0,0,0);display:flex;align-items:flex-end;justify-content:center;transition:background .3s}
+#ov.vis{background:rgba(0,0,0,.4)}
+#ov.hidden{display:none}
+#dp{width:100%;max-width:960px;max-height:90vh;background:var(--bg2);border-radius:var(--r-xl) var(--r-xl) 0 0;display:flex;flex-direction:column;overflow:hidden;transform:translateY(100%);transition:transform .4s var(--spring);box-shadow:0 -8px 40px rgba(0,0,0,.15)}
+#dp.open{transform:translateY(0)}
+.dp-handle{width:40px;height:4px;background:rgba(0,0,0,.12);border-radius:2px;margin:10px auto 0;flex-shrink:0}
+.dp-strip{background:#0a0a0a;padding:18px 22px 16px;flex-shrink:0;position:relative}
+.dp-strip-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.dp-name{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1.2}
+.dp-close{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s var(--spring);flex-shrink:0}
+.dp-close:hover{background:rgba(255,255,255,.2);color:#fff;transform:scale(1.1)}
+.dp-addr{font-size:11px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px;margin-bottom:14px;cursor:pointer}
+.dp-addr:hover{color:rgba(255,255,255,.7)}
+.dp-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dp-tag{font-size:9px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);letter-spacing:.5px;text-transform:uppercase}
+.dp-tag.gold{background:rgba(196,163,90,.3);border-color:rgba(196,163,90,.5);color:var(--gold)}
+.dp-score-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:12px;background:rgba(196,163,90,.15);border:1px solid rgba(196,163,90,.3)}
+.dp-score-num{font-size:24px;font-weight:900;color:var(--gold);letter-spacing:-1px;line-height:1}
+.dp-score-lbl{font-size:9px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.dp-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface);padding:0 8px;overflow-x:auto}
+.dp-tab{padding:11px 16px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.dp-tab:hover{color:var(--text)}
+.dp-tab.on{color:var(--gold-d);border-bottom-color:var(--gold);font-weight:800}
+.dp-panels{flex:1;overflow-y:auto;padding:18px 22px}
+.dp-panel{display:none;animation:panelin .2s var(--ease)}
+.dp-panel.on{display:block}
+@keyframes panelin{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
+.ig{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.ig.full{grid-column:1/-1}
+.ig.gold{background:var(--gold-l);border-color:rgba(196,163,90,.25)}
+.ig-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:4px}
+.ig-v{font-size:13px;font-weight:600;color:var(--text)}
+.ig-v.lg{font-size:20px;font-weight:800;color:var(--gold-d)}
+.ig-v.sm{font-size:12px;font-weight:400;line-height:1.6;color:var(--text2)}
+/* AI sections */
+.ai-box{background:linear-gradient(135deg,rgba(196,163,90,.08),rgba(196,163,90,.02));border:1px solid rgba(196,163,90,.2);border-radius:var(--r-lg);padding:16px;margin-bottom:12px}
+.ai-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ai-icon{width:28px;height:28px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ai-title{font-size:11px;font-weight:800;color:var(--text);letter-spacing:.3px}
+.ai-sub{font-size:10px;color:var(--muted)}
+.ai-content{font-size:12px;color:var(--text2);line-height:1.7}
+.ai-loading{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-style:italic}
+.ai-error{font-size:11px;color:var(--hot);padding:8px;background:var(--hot-l);border-radius:var(--r)}
+.score-meter{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:var(--r-lg);margin-bottom:12px}
+.score-circle{width:64px;height:64px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;border:3px solid;transition:all .4s}
+.score-info{flex:1}
+.score-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.score-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.score-bar-wrap{margin-top:8px;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.score-bar{height:100%;border-radius:3px;transition:width .6s var(--spring)}
+.flag-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.flag{display:flex;align-items:flex-start;gap:8px;font-size:11px;padding:8px 10px;border-radius:var(--r);line-height:1.5}
+.flag.red{background:var(--hot-l);color:var(--hot)}.flag.green{background:var(--new-l);color:var(--new)}.flag.yellow{background:var(--warm-l);color:var(--warm)}
+/* Asset Manager */
+.am-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.am-full{grid-column:1/-1}
+.am-field label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:4px}
+.am-field input,.am-field select,.am-field textarea{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--text);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;resize:none}
+.am-field input:focus,.am-field select:focus,.am-field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-l)}
+.am-field textarea{min-height:70px;line-height:1.6}
+/* RevPAR */
+.rv-box{background:var(--gold-l);border:1px solid rgba(196,163,90,.25);border-radius:var(--r-lg);padding:14px;margin-bottom:12px}
+.rv-title{font-size:9px;font-weight:800;color:var(--gold-d);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.rv-results{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.rv-cell{background:rgba(255,255,255,.7);border-radius:var(--r);padding:10px;text-align:center}
+.rv-cell-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:3px}
+.rv-cell-v{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.rv-cell-v.hi{font-size:18px;color:var(--gold-d)}
+/* Owner Search */
+.owner-box{border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:12px}
+.owner-result{background:var(--bg);border-radius:var(--r);padding:12px;margin-top:10px}
+/* DP Actions */
+.dp-acts{display:flex;gap:8px;padding:12px 22px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);flex-wrap:wrap}
+.act-p{background:#0a0a0a;color:#fff;padding:9px 18px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;transition:all .2s var(--spring)}
+.act-p:hover{background:var(--text2);transform:translateY(-1px)}
+.act-s{background:var(--surface);border:1px solid var(--border2)!important;color:var(--text2);padding:9px 14px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;box-shadow:var(--sh);transition:all .2s}
+.act-s:hover{background:var(--bg);transform:translateY(-1px)}
+.act-gold{background:var(--gold);color:#fff;padding:9px 18px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;box-shadow:0 2px 8px rgba(196,163,90,.3);transition:all .2s var(--spring)}
+.act-gold:hover{background:var(--gold-d);transform:translateY(-1px)}
+.act-gold:disabled{opacity:.5;cursor:default;transform:none}
+.hspot-ok{background:#ff7a59!important;border-color:#ff5c35!important;}
+.hspot-ok:hover{background:#ff5c35!important;}
+
+/* Config Modal */
+#cfg-modal{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;padding:20px;transition:background .3s}
+#cfg-modal.vis{background:rgba(0,0,0,.5)}
+.cfg-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px;width:100%;max-width:440px;box-shadow:var(--sh-xl);transform:scale(.92) translateY(16px);opacity:0;transition:transform .32s var(--spring),opacity .22s}
+#cfg-modal.vis .cfg-box{transform:scale(1) translateY(0);opacity:1}
+.cfg-t{font-size:20px;font-weight:900;color:var(--text);margin-bottom:4px;letter-spacing:-.4px}
+.cfg-s{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.cfg-f{margin-bottom:12px}
+.cfg-f label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:4px}
+.cfg-f input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);transition:border-color .2s,box-shadow .2s}
+.cfg-f input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-l)}
+.cfg-f input::placeholder{color:var(--muted2)}
+.cfg-acts{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+/* Toasts */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:rgba(10,10,10,.96);border:1px solid rgba(255,255,255,.1);box-shadow:var(--sh-xl);border-radius:var(--r-xl);padding:14px 16px;min-width:280px;max-width:340px;pointer-events:all;transform:translateX(110%);opacity:0;transition:transform .4s var(--spring),opacity .3s}
+.toast.in{transform:translateX(0);opacity:1}
+.toast.out{transform:translateX(110%);opacity:0}
+.toast-hd{display:flex;align-items:center;gap:9px}
+.toast-ico{width:30px;height:30px;border-radius:9px;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.toast-title{font-size:12px;font-weight:700;color:#fff}
+.toast-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
+.toast-x{margin-left:auto;background:none;color:rgba(255,255,255,.3);font-size:18px;padding:0;line-height:1;transition:color .15s}
+.toast-x:hover{color:rgba(255,255,255,.7)}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:40px 16px;text-align:center;gap:8px}
+.empty-icon{font-size:32px;opacity:.12}
+.empty-title{font-size:13px;font-weight:700;color:var(--muted)}
+.empty-sub{font-size:11px;color:var(--muted2);line-height:1.6}
+
+.am-msg{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;padding:9px 12px;border-radius:8px;margin-top:4px}
+.am-msg.ok{background:var(--new-l);color:var(--new)}.am-msg.err{background:var(--hot-l);color:var(--hot)}
+
+.leaflet-container{background:#e8e0d4!important}
+.leaflet-control-zoom{border:none!important;box-shadow:var(--sh)!important}
+.leaflet-control-zoom a{background:rgba(255,255,255,.95)!important;color:var(--text2)!important;border:none!important;border-bottom:1px solid rgba(0,0,0,.06)!important;width:30px!important;height:30px!important;line-height:30px!important;font-size:15px!important}
+.leaflet-control-zoom a:last-child{border-bottom:none!important}
+.leaflet-control-attribution{background:rgba(255,255,255,.6)!important;font-size:9px!important;border-radius:8px 0 0 0!important}
+
+@media(max-width:768px){:root{--sb-w:260px}#sb{position:absolute;z-index:150;height:100%;transform:translateX(-100%);transition:transform .3s var(--ease)}#sb.mobile-open{transform:translateX(0)}#dp{max-height:95vh}}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- HEADER -->
+  <div id="hdr">
+    <div class="hdr-brand">
+      <div class="hdr-logo">SAPIORA<span>.</span></div>
+      <div class="hdr-sep"></div>
+      <div class="hdr-sub">Lead Intelligence 2.0 <span style="color:var(--gold);font-size:8px">v3.1</span></div>
+    </div>
+    <div class="hdr-nav">
+      <button class="nav-btn on" onclick="switchView('map',this)">Mapa</button>
+      <button class="nav-btn" onclick="switchView('kanban',this)">Kanban</button>
+      <button class="nav-btn" onclick="switchView('analytics',this)">Analytics</button>
+    </div>
+    <div class="hdr-r">
+      <div class="hpill" id="pill" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45)">
+        <div class="hdot pulse" id="dot" style="background:var(--gold)"></div>
+        <span id="stxt">Conectando…</span>
+      </div>
+      <button class="hbtn" onclick="openAddLead()">+ Lead</button>
+      <button class="hbtn" onclick="exportCSV()">↓ Export</button>
+      <button class="hbtn" onclick="openCfg()">⚙ Config</button>
+      <button class="hbtn" onclick="openHubspotInspector()" title="Ver campos HubSpot">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-right:4px;vertical-align:middle"><path d="M18.164 7.93V5.084a2.198 2.198 0 0 0 1.268-1.978V3.07a2.198 2.198 0 0 0-2.195-2.195h-.037a2.198 2.198 0 0 0-2.195 2.195v.037c0 .87.507 1.626 1.268 1.978V7.93a6.232 6.232 0 0 0-2.965 1.301L4.192 4.38a2.456 2.456 0 0 0 .09-.637 2.47 2.47 0 1 0-2.47 2.47c.444 0 .86-.12 1.217-.326l8.976 4.807a6.232 6.232 0 0 0-.048 6.158L9.03 18.77a2.095 2.095 0 0 0-.59-.085 2.11 2.11 0 1 0 2.11 2.11c0-.388-.106-.75-.29-1.06l2.897-1.87a6.254 6.254 0 1 0 4.007-10.935zm-.964 9.738a3.128 3.128 0 1 1 0-6.256 3.128 3.128 0 0 1 0 6.256z"/></svg>
+        Campos HS
+      </button>
+      <button class="hbtn gold" onclick="loadLeads()">↺ Sync</button>
+      <button class="hbtn" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div id="body">
+    <!-- SIDEBAR -->
+    <div id="sb">
+      <div class="sb-kpis">
+        <div class="kpi"><div class="kpi-l">Total</div><div class="kpi-v" id="kv-t">—</div><div class="kpi-s">leads</div></div>
+        <div class="kpi"><div class="kpi-l">Hot</div><div class="kpi-v" id="kv-h">—</div><div class="kpi-s up">alta prior.</div></div>
+        <div class="kpi"><div class="kpi-l">Ciudades</div><div class="kpi-v" id="kv-c">—</div><div class="kpi-s">únicas</div></div>
+        <div class="kpi"><div class="kpi-l">AI Scored</div><div class="kpi-v" id="kv-s">—</div><div class="kpi-s up" id="kv-ss">0%</div></div>
+      </div>
+      <div class="sb-filters">
+        <div class="sec-label">Filtros</div>
+        <div class="frow"><label>Buscar</label><input type="text" id="fs" placeholder="Nombre, dirección…" oninput="applyF()"/></div>
+        <div class="frow"><label>Ciudad</label><select id="fc" onchange="applyF()"><option value="">Todas</option></select></div>
+        <div class="frow"><label>Tipo</label><select id="ft" onchange="applyF()"><option value="">Todos</option></select></div>
+        <div class="frow"><label>Oportunidad</label><select id="fo" onchange="applyF()"><option value="">Todas</option></select></div>
+      </div>
+      <div class="sb-leads">
+        <div class="leads-hd"><div class="sec-label">Propiedades</div><div class="lcnt" id="lcnt">—</div></div>
+        <div id="ll">
+          <div class="empty-state"><div class="empty-icon">🏨</div><div class="empty-title">Sin leads</div><div class="empty-sub">Configura Supabase y pulsa Sync.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div id="main">
+      <div id="view-bar">
+        <div>
+          <div class="vbar-title" id="vbar-title">Mapa de oportunidades</div>
+          <div class="vbar-sub" id="vbar-sub">Conecta Supabase para comenzar</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="vg" id="map-vg">
+            <button class="vb on" onclick="setMapF('all',this)">Todos</button>
+            <button class="vb" onclick="setMapF('hot',this)">Hot</button>
+            <button class="vb" onclick="setMapF('warm',this)">Warm</button>
+            <button class="vb" onclick="setMapF('new7',this)">🆕 Esta semana</button>
+            <button class="vb" onclick="setMapF('nogeo',this)">Sin geo</button>
+          </div>
+          <select id="sort-sel" onchange="setSortMode(this.value)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.8px;text-transform:uppercase;cursor:pointer;font-family:var(--font);outline:none">
+            <option value="priority">↕ Prioridad</option>
+            <option value="recent">🕐 Más recientes</option>
+            <option value="score">✦ Mayor score</option>
+            <option value="rooms">🏨 Habitaciones</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- MAP -->
+      <div id="map-view">
+        <div id="map"></div>
+        <div id="map-loader"><div class="spin"></div><div class="ltxt" id="ltxt">Iniciando mapa…</div></div>
+        <div id="mtt">
+          <div class="mtt-name" id="mtt-n"></div>
+          <div class="mtt-row"><span>Dirección</span><span id="mtt-a"></span></div>
+          <div class="mtt-row"><span>Tipo</span><span id="mtt-t"></span></div>
+          <div class="mtt-row"><span>Habitaciones</span><span id="mtt-r"></span></div>
+          <div class="mtt-row"><span>Rating</span><span id="mtt-ra"></span></div>
+          <div class="mtt-score" id="mtt-sc" style="display:none">
+            <div class="mtt-score-val" id="mtt-sv"></div>
+            <div class="mtt-score-lbl">AI Score</div>
+          </div>
+        </div>
+        <div class="map-legend">
+          <div class="ml-row"><div class="ml-dot" style="background:var(--hot)"></div>Hot</div>
+          <div class="ml-row"><div class="ml-dot" style="background:var(--warm)"></div>Warm</div>
+          <div class="ml-row"><div class="ml-dot" style="background:var(--cold)"></div>Cold</div>
+          <div class="ml-row"><div class="ml-dot" style="background:var(--new)"></div>Nuevo</div>
+          <div class="ml-row"><div class="ml-dot" style="background:#bbb"></div>Sin geo</div>
+        </div>
+        <!-- Detail overlay inside map-view -->
+        <div id="ov" class="hidden" onclick="ovClick(event)">
+          <div id="dp">
+            <div class="dp-handle"></div>
+            <div class="dp-strip">
+              <div class="dp-strip-top">
+                <div class="dp-name" id="dp-n">—</div>
+                <button class="dp-close" onclick="closeDP()">×</button>
+              </div>
+              <div class="dp-addr" onclick="cpAddr()" title="Click para copiar">📍 <span id="dp-a">—</span><span id="addr-ok" style="font-size:9px;font-weight:700;color:#34c759;margin-left:6px;opacity:0;transition:opacity .2s">✓ Copiado</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div class="dp-tags" id="dp-tags"></div>
+                <div class="dp-score-badge" id="dp-score-badge" style="display:none">
+                  <div><div class="dp-score-num" id="dp-score-num">—</div><div class="dp-score-lbl">AI Score</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="dp-tabs">
+              <div class="dp-tab on" onclick="showTab('f',this)">Ficha</div>
+              <div class="dp-tab" onclick="showTab('ai',this)">AI Scoring</div>
+              <div class="dp-tab" onclick="showTab('owner',this)">Owner Search</div>
+              <div class="dp-tab" onclick="showTab('am',this)">Asset Manager</div>
+              <div class="dp-tab" onclick="showTab('src',this)">Fuente</div>
+            </div>
+            <div class="dp-panels">
+              <!-- FICHA -->
+              <div class="dp-panel on" id="tab-f">
+                <div class="info-grid">
+                  <div class="ig"><div class="ig-l">Tipo</div><div class="ig-v" id="d-ty">—</div></div>
+                  <div class="ig"><div class="ig-l">Rating</div><div class="ig-v" id="d-ra">—</div></div>
+                  <div class="ig"><div class="ig-l">Habitaciones</div><div class="ig-v lg" id="d-ro">—</div></div>
+                  <div class="ig"><div class="ig-l">Ciudad</div><div class="ig-v" id="d-ci">—</div></div>
+                  <div class="ig"><div class="ig-l">Estado</div><div class="ig-v" id="d-st">—</div></div>
+                  <div class="ig"><div class="ig-l">Prioridad</div><div class="ig-v" id="d-pr">—</div></div>
+                  <div class="ig full"><div class="ig-l">Dirección completa</div><div class="ig-v sm" id="d-fa">—</div></div>
+                  <div class="ig full gold"><div class="ig-l">Tipo de oportunidad</div><div class="ig-v" id="d-op">—</div></div>
+                  <div class="ig full"><div class="ig-l">Problema principal</div><div class="ig-v sm" id="d-pb">—</div></div>
+                  <div class="ig full"><div class="ig-l">Por qué Yurbban puede mejorarlo</div><div class="ig-v sm" id="d-wy">—</div></div>
+                </div>
+              </div>
+              <!-- AI SCORING -->
+              <div class="dp-panel" id="tab-ai">
+                <div id="ai-score-content">
+                  <div style="text-align:center;padding:30px;color:var(--muted)">
+                    <div style="font-size:28px;margin-bottom:8px">🤖</div>
+                    <div style="font-size:12px;font-weight:600;margin-bottom:4px">AI Lead Scoring</div>
+                    <div style="font-size:11px;color:var(--muted2);margin-bottom:16px">Análisis inteligente de este lead con Claude AI</div>
+                    <button class="act-gold" onclick="runAIScoring()" style="margin:0 auto">✦ Generar Score AI</button>
+                  </div>
+                </div>
+              </div>
+              <!-- OWNER SEARCH -->
+              <div class="dp-panel" id="tab-owner">
+                <div id="owner-content">
+                  <div id="owner-result"><div class="ai-loading"><div class="spin"></div>Buscando propietario…</div></div>
+                </div>
+              </div>
+              <!-- ASSET MANAGER -->
+              <div class="dp-panel" id="tab-am">
+                <div class="am-grid">
+                  <div class="am-field"><label>Responsable</label><input type="text" id="am-n" placeholder="Nombre del asset manager"/></div>
+                  <div class="am-field"><label>Email</label><input type="email" id="am-e" placeholder="email@yurbban.com"/></div>
+                  <div class="am-field"><label>Teléfono</label><input type="tel" id="am-p" placeholder="+1 305 555 0100"/></div>
+                  <div class="am-field"><label>Estado</label>
+                    <select id="am-s">
+                      <option value="">Sin contactar</option>
+                      <option value="contacted">Contactado</option>
+                      <option value="meeting">Reunión programada</option>
+                      <option value="proposal">Propuesta enviada</option>
+                      <option value="negotiation">En negociación</option>
+                      <option value="closed">Cerrado</option>
+                      <option value="discarded">Descartado</option>
+                    </select>
+                  </div>
+                  <div class="am-field"><label>Próximo seguimiento</label><input type="date" id="am-d"/></div>
+                  <div class="am-field"><label>Prioridad Yurbban</label>
+                    <select id="am-pr">
+                      <option value="">Sin asignar</option>
+                      <option value="A">A — Alta</option>
+                      <option value="B">B — Media</option>
+                      <option value="C">C — Baja</option>
+                    </select>
+                  </div>
+                  <div class="am-field am-full"><label>Notas internas</label><textarea id="am-no" placeholder="Observaciones, contexto del propietario…"></textarea></div>
+                </div>
+                <!-- RevPAR -->
+                <div class="rv-box">
+                  <div class="rv-title">▲ RevPAR Calculator</div>
+                  <div class="am-grid">
+                    <div class="am-field"><label>ADR ($/noche)</label><input type="number" id="rv-adr" placeholder="185" min="0" step="0.01" oninput="calcRevpar()"/></div>
+                    <div class="am-field"><label>Ocupación (%)</label><input type="number" id="rv-occ" placeholder="78" min="0" max="100" oninput="calcRevpar()"/></div>
+                    <div class="am-field"><label>Precio adq. ($M)</label><input type="number" id="rv-price" placeholder="4.5" min="0" step="0.01" oninput="calcRevpar()"/></div>
+                    <div class="am-field"><label>Días operativos</label><input type="number" id="rv-days" placeholder="365" min="1" max="365" value="365" oninput="calcRevpar()"/></div>
+                  </div>
+                  <div class="rv-results">
+                    <div class="rv-cell"><div class="rv-cell-l">RevPAR</div><div class="rv-cell-v hi" id="rv-revpar">—</div></div>
+                    <div class="rv-cell"><div class="rv-cell-l">Total Rev.</div><div class="rv-cell-v" id="rv-totalrev">—</div></div>
+                    <div class="rv-cell"><div class="rv-cell-l">Fee Yurbban (7%)</div><div class="rv-cell-v" id="rv-fee">—</div></div>
+                    <div class="rv-cell"><div class="rv-cell-l">GOP (40%)</div><div class="rv-cell-v" id="rv-gop">—</div></div>
+                    <div class="rv-cell"><div class="rv-cell-l">Cap Rate</div><div class="rv-cell-v" id="rv-cap">—</div></div>
+                    <div class="rv-cell"><div class="rv-cell-l">Rev/Hab/Año</div><div class="rv-cell-v" id="rv-prm">—</div></div>
+                  </div>
+                </div>
+                <div id="am-msg" class="am-msg hidden"></div>
+                <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;display:flex;gap:8px">
+                  <button class="act-gold" style="flex:1" onclick="saveAM()">💾 Guardar</button>
+                  <button class="act-s" onclick="doSunbiz()">Sunbiz ↗</button>
+                </div>
+              </div>
+              <!-- SOURCE -->
+              <div class="dp-panel" id="tab-src">
+                <div class="info-grid">
+                  <div class="ig full"><div class="ig-l">URL de origen</div><div class="ig-v sm" id="d-ur" style="word-break:break-all;font-size:11px">—</div></div>
+                  <div class="ig full"><div class="ig-l">Fuente</div><div class="ig-v" id="d-sr">—</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="dp-acts">
+              <button class="act-p" id="act-src" onclick="openSrc()">Ver fuente ↗</button>
+              <button class="act-s" onclick="cpLead()">Copiar datos</button>
+              <button class="act-gold" id="btn-hubspot" onclick="sendToCRM()" style="display:flex;align-items:center;gap:6px">
+                🔗 <span id="crm-btn-label">CRM</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KANBAN VIEW -->
+      <div id="kanban-view"></div>
+
+      <!-- ANALYTICS VIEW -->
+      <div id="analytics-view">
+        <div class="an-section">
+          <div class="an-title">KPIs del pipeline</div>
+          <div class="an-kpis" id="an-kpis"></div>
+        </div>
+        <div class="an-2col">
+          <div class="an-section">
+            <div class="an-title">Funnel de conversión</div>
+            <div id="an-funnel"></div>
+          </div>
+          <div class="an-section">
+            <div class="an-title">Distribución por prioridad</div>
+            <div id="an-prio"></div>
+          </div>
+        </div>
+        <div class="an-2col">
+          <div class="an-section">
+            <div class="an-title">Top ciudades por leads</div>
+            <div id="an-cities"></div>
+          </div>
+          <div class="an-section">
+            <div class="an-title">AI Score promedio por prioridad</div>
+            <div id="an-scores"></div>
+          </div>
+        </div>
+        <div class="an-section">
+          <div class="an-title">Top 10 leads por Revenue estimado</div>
+          <div id="an-table"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG MODAL -->
+<div id="cfg-modal" class="hidden">
+  <div class="cfg-box">
+    <div class="cfg-t">Configuración</div>
+    <div class="cfg-s">Supabase → Project Settings → API</div>
+    <div class="cfg-f"><label>Supabase URL</label><input type="text" id="cu" placeholder="https://xxxx.supabase.co"/></div>
+    <div class="cfg-f"><label>Anon Key</label><input type="text" id="ck" placeholder="eyJhbGciOiJIUzI1NiI…"/></div>
+    <div class="cfg-f"><label>Tabla</label><input type="text" id="ctb" value="leads"/></div>
+    <div class="cfg-acts">
+      <button class="act-s" onclick="closeCfg()">Cancelar</button>
+      <button class="act-gold" onclick="saveCfg()">Guardar y conectar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<!-- HUBSPOT INSPECTOR MODAL -->
+<div id="hs-modal" style="display:none;position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.5);padding:20px;overflow:auto">
+  <div style="background:var(--bg2);border-radius:var(--r-xl);max-width:900px;margin:0 auto;box-shadow:var(--sh-xl)">
+    <div style="background:#0a0a0a;padding:18px 22px;border-radius:var(--r-xl) var(--r-xl) 0 0;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff7a59" style="vertical-align:middle;margin-right:6px"><path d="M18.164 7.93V5.084a2.198 2.198 0 0 0 1.268-1.978V3.07a2.198 2.198 0 0 0-2.195-2.195h-.037a2.198 2.198 0 0 0-2.195 2.195v.037c0 .87.507 1.626 1.268 1.978V7.93a6.232 6.232 0 0 0-2.965 1.301L4.192 4.38a2.456 2.456 0 0 0 .09-.637 2.47 2.47 0 1 0-2.47 2.47c.444 0 .86-.12 1.217-.326l8.976 4.807a6.232 6.232 0 0 0-.048 6.158L9.03 18.77a2.095 2.095 0 0 0-.59-.085 2.11 2.11 0 1 0 2.11 2.11c0-.388-.106-.75-.29-1.06l2.897-1.87a6.254 6.254 0 1 0 4.007-10.935zm-.964 9.738a3.128 3.128 0 1 1 0-6.256 3.128 3.128 0 0 1 0 6.256z"/></svg>
+          HubSpot — Campos disponibles
+        </div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px">Propiedades de tu cuenta para mapear leads</div>
+      </div>
+      <button onclick="document.getElementById('hs-modal').style.display='none'" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+    </div>
+    <div style="padding:16px 22px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <div style="display:flex;gap:6px">
+        <button onclick="loadHSProps('contacts')" id="hs-btn-contacts" class="act-gold" style="font-size:10px;padding:7px 14px">Contacts</button>
+        <button onclick="loadHSProps('deals')" id="hs-btn-deals" class="act-s" style="font-size:10px;padding:7px 14px">Deals</button>
+        <button onclick="loadHSProps('companies')" id="hs-btn-companies" class="act-s" style="font-size:10px;padding:7px 14px">Companies</button>
+      </div>
+      <input id="hs-search" type="text" placeholder="Filtrar campos…" oninput="filterHSProps()" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--text);font-family:var(--font)"/>
+      <label style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer">
+        <input type="checkbox" id="hs-custom-only" onchange="filterHSProps()" style="width:auto"/>
+        Solo personalizados
+      </label>
+      <button onclick="copyHSTable()" class="act-s" style="font-size:10px;padding:7px 14px">↓ Copiar CSV</button>
+    </div>
+    <div id="hs-status" style="padding:40px;text-align:center;color:var(--muted);font-size:12px">
+      Selecciona un objeto para cargar sus propiedades
+    </div>
+    <div id="hs-table-wrap" style="display:none;max-height:60vh;overflow-y:auto">
+      <table id="hs-table" style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead style="position:sticky;top:0;background:var(--surface);z-index:1">
+          <tr>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border);cursor:pointer" onclick="sortHSTable(0)">Nombre interno ↕</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border);cursor:pointer" onclick="sortHSTable(1)">Label ↕</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)">Tipo</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)">Grupo</th>
+            <th style="padding:9px 14px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)">Custom</th>
+          </tr>
+        </thead>
+        <tbody id="hs-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <div id="hs-count" style="font-size:11px;color:var(--muted)"></div>
+      <button onclick="document.getElementById('hs-modal').style.display='none'" class="act-s" style="font-size:10px;padding:7px 14px">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── UTILS ────────────────────────────────────────────
+const g = id => document.getElementById(id);
+const show = id => g(id).classList.remove('hidden');
+const hide = id => g(id).classList.add('hidden');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const fmt = n => n > 0 ? '$' + Math.round(n).toLocaleString('en-US') : '—';
+const fmtd = n => n > 0 ? '$' + n.toFixed(2) : '—';
+
+function pl(p){ return ({hot:'Hot',warm:'Warm',cold:'Cold',new:'Nuevo'})[p]||p; }
+function bc(p){ return ({hot:'bh',warm:'bw',cold:'bc',new:'bn'})[p]||'b0'; }
+function scoreColor(s){
+  if(s>=75) return '#2a8a6e';
+  if(s>=50) return '#b5621a';
+  if(s>=25) return '#9a3c42';
+  return '#999';
+}
+
+// ── CONFIG ───────────────────────────────────────────
+const CFG = { url:'', key:'', table:'leads' };
+const COL = {
+  name:'hotel_name', city:'City', state:'state', rooms:'rooms',
+  type:'property_type', rating:'rating', prob:'main_problem',
+  why:'why_yurbban', opp:'opportunity_type', src:'source_url',
+  addr:'address', lat:'lat', lng:'lng', prio:'priority'
+};
+const PC = { hot:'#9a3c42', warm:'#b5621a', cold:'#2f4a7a', new:'#2a8a6e' };
+const STATUS_COLS = { contacted:'#2f4a7a', meeting:'#b5621a', proposal:'#8b5cf6', negotiation:'#9a3c42', closed:'#2a8a6e', discarded:'#999' };
+const STATUS_LABELS = { contacted:'Contactado', meeting:'Reunión', proposal:'Propuesta', negotiation:'Negociación', closed:'Cerrado', discarded:'Descartado' };
+const KANBAN_COLS = [
+  { id:'none',       label:'Sin contactar', color:'#e5e5e5', textColor:'#555' },
+  { id:'contacted',  label:'Contactado',    color:'#dbeafe', textColor:'#2f4a7a' },
+  { id:'meeting',    label:'Reunión',       color:'#fef3c7', textColor:'#b5621a' },
+  { id:'proposal',   label:'Propuesta',     color:'#ede9fe', textColor:'#7c3aed' },
+  { id:'negotiation',label:'Negociación',   color:'#fee2e2', textColor:'#9a3c42' },
+  { id:'closed',     label:'Cerrado',       color:'#dcfce7', textColor:'#2a8a6e' }
+];
+
+// ── STATE ────────────────────────────────────────────
+let map, markersLayer;
+let all = [], filtered = [], activeId = null, mapFilter = 'all';
+let sortMode = 'priority'; // priority | recent | score | rooms
+let lastVisit = null; // timestamp of last visit for new leads detection
+let curView = 'map', curSrc = '';
+let amLocal = {};
+let aiScores = {}; // {leadId: {score, summary, flags, action}}
+let draggedLead = null;
+let realtimeWs = null;
+
+// ── STANDALONE MODE ─────────────────────────────────────
+
+// ── PIPELINE CONFIG (from session) ───────────────────────────
+// Defaults — overridden by session.pipeline_config on load
+var CONFIG = {
+  prompt_context:       'Yurbban Hospitality Group (YHG), operador hotelero europeo.',
+  target_market:        'Miami Beach y Miami City, Florida, USA',
+  scoring_criteria:     'Tamaño 50-300 hab., ubicación prime Miami Beach, propietario independiente.',
+  outreach_language:    'es',
+  outreach_context:     'Somos un grupo hotelero europeo que busca activos para gestionar bajo management contract.',
+  // CRM config
+  crm:                  'hubspot',  // hubspot | pipedrive | salesforce | zoho | none
+  crm_key:              '',
+  hubspot_pipeline:     'default',
+  hubspot_stages:       { hot:'appointmentscheduled', warm:'presentationscheduled', cold:'appointmentscheduled', new:'appointmentscheduled' },
+  pipedrive_domain:     '',         // tu-empresa.pipedrive.com
+  pipedrive_pipeline:   1,
+  salesforce_instance:  '',         // tu-empresa.salesforce.com
+  salesforce_token:     '',
+  zoho_domain:          'zohocrm.com',
+  zoho_pipeline:        '',
+  crm_stage_map:        { hot:'qualified', warm:'contact_made', cold:'new', new:'new' },
+  currency:             'USD',
+  revpar_fee_pct:       7,
+  revpar_gop_pct:       40,
+  map_center:           [25.77, -80.19],
+  map_zoom:             11,
+  owner_search_regions: ['Miami-Dade County', 'Florida'],
+  col_why_label:        'Por qué puede mejorarlo',
+};
+
+var FEAT = { aiScoring:false, ownerSearch:false, analytics:false, addLead:false, exportFull:false };
+var ORG_ID = '';
+
+// ── INIT ─────────────────────────────────────────────
+window.onload = function() {
+  // ── CREDENTIALS: URL params (iframe) or sessionStorage ─────
+  let session = null;
+  const urlParams    = new URLSearchParams(window.location.search);
+  const urlParamUrl  = urlParams.get('url');
+  const urlParamKey  = urlParams.get('key');
+  const urlParamOrg  = urlParams.get('org');
+  const urlParamName = urlParams.get('org_name');
+  const urlParamPlan = urlParams.get('plan');
+  const urlParamCfg  = urlParams.get('pipeline_config');
+
+  if (urlParamUrl && urlParamKey) {
+    // Inside Next.js iframe — use URL params
+    CFG.url   = urlParamUrl;
+    CFG.key   = urlParamKey;
+    CFG.table = 'leads';
+    ORG_ID    = urlParamOrg || '';
+    session   = {
+      supabase_url: urlParamUrl, supabase_key: urlParamKey,
+      org_id: urlParamOrg || '', org_name: urlParamName || '',
+      plan: urlParamPlan || 'enterprise',
+      pipeline_config: urlParamCfg ? JSON.parse(decodeURIComponent(urlParamCfg)) : {},
+      userPlan: urlParamPlan || 'enterprise',
+      isSapioraAdmin: false,
+    };
+    // Try to inherit full session from parent window
+    try {
+      const ps = JSON.parse(window.parent.sessionStorage.getItem('sapiora_session') || '{}');
+      if (ps.supabase_url) Object.assign(session, ps);
+    } catch(e) {}
+  } else {
+    // Standalone — use sessionStorage
+    try { session = JSON.parse(sessionStorage.getItem('sapiora_session')); } catch(e){}
+    if (!session || !session.supabase_url || !session.supabase_key) {
+      window.top.location.href = '/login'; return;
+    }
+    CFG.url   = session.supabase_url;
+    CFG.key   = session.supabase_key;
+    CFG.table = 'leads';
+    ORG_ID    = session.org_id || '';
+  }
+
+  // ── PLAN FEATURES ──────────────────────────────────────────
+  const plan = (session.plan || session.userPlan || 'enterprise').toLowerCase();
+  const PLANS = {
+    starter:     { aiScoring:false, ownerSearch:false, analytics:false, addLead:false, exportFull:false, hubspot:false, revpar:false, _plan:'starter'      },
+    growth:      { aiScoring:true,  ownerSearch:false, analytics:true,  addLead:true,  exportFull:true,  hubspot:false, revpar:true,  _plan:'growth'       },
+    professional:{ aiScoring:true,  ownerSearch:true,  analytics:true,  addLead:true,  exportFull:true,  hubspot:true,  revpar:true,  _plan:'professional' },
+    custom:      { aiScoring:true,  ownerSearch:true,  analytics:true,  addLead:true,  exportFull:true,  hubspot:true,  revpar:true,  _plan:'custom'       },
+    enterprise:  { aiScoring:true,  ownerSearch:true,  analytics:true,  addLead:true,  exportFull:true,  hubspot:true,  revpar:true,  _plan:'enterprise'   },
+  };
+  Object.assign(FEAT, PLANS[plan] || PLANS.enterprise);
+
+  // ── PIPELINE CONFIG from session ────────────────────────────
+  if (session.pipeline_config && typeof session.pipeline_config === 'object') {
+    Object.assign(CONFIG, session.pipeline_config);
+    if (typeof CONFIG.hubspot_stages === 'string')       try { CONFIG.hubspot_stages = JSON.parse(CONFIG.hubspot_stages); } catch(e){}
+    if (typeof CONFIG.map_center === 'string')           try { CONFIG.map_center = JSON.parse(CONFIG.map_center); } catch(e){}
+    if (typeof CONFIG.owner_search_regions === 'string') try { CONFIG.owner_search_regions = JSON.parse(CONFIG.owner_search_regions); } catch(e){}
+  }
+
+  // ── DYNAMIC LOGO ───────────────────────────────────────────
+  const logoEl = document.querySelector('.hdr-logo');
+  if (logoEl && session.org_name) logoEl.innerHTML = session.org_name.toUpperCase() + '<span>.</span>';
+
+  // ── HIDE BUTTONS BY PLAN ───────────────────────────────────
+  if (!FEAT.addLead)    document.querySelectorAll('[onclick="openAddLead()"]').forEach(b => b.style.display='none');
+  if (!FEAT.exportFull) document.querySelectorAll('[onclick="exportCSV()"]').forEach(b => b.style.display='none');
+  if (!FEAT.hubspot) { const hb = document.getElementById('btn-hubspot'); if(hb) hb.style.display='none'; }
+
+  // ── LABEL FROM CONFIG ──────────────────────────────────────
+  const whyLabel = document.getElementById('why-label');
+  if (whyLabel && CONFIG.col_why_label) whyLabel.textContent = CONFIG.col_why_label;
+
+  try { amLocal  = JSON.parse(localStorage.getItem('y_am_cache')||'{}'); } catch(e){}
+  try { aiScores = JSON.parse(localStorage.getItem('y_ai_scores')||'{}'); } catch(e){}
+  g('cu').value = CFG.url; g('ck').value = CFG.key; g('ctb').value = CFG.table;
+  initMap();
+};
+
+// ── MAP ──────────────────────────────────────────────
+function initMap() {
+  map = L.map('map', { center: CONFIG.map_center || [25.77,-80.19], zoom: CONFIG.map_zoom || 11 });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution:'&copy; OSM &copy; CARTO', maxZoom:19
+  }).addTo(map);
+  markersLayer = L.layerGroup().addTo(map);
+  hide('map-loader');
+  setSt('idle','Sin configurar');
+  if (CFG.url && CFG.key) loadLeads();
+}
+
+// ── DATA ─────────────────────────────────────────────
+async function loadLeads() {
+  if (!CFG.url||!CFG.key){ openCfg(); return; }
+  setSt('loading','Cargando…');
+  show('map-loader'); g('ltxt').textContent = 'Conectando con Supabase…';
+  try {
+    const res = await fetch(`${CFG.url}/rest/v1/${CFG.table}?select=*&org_id=eq.${ORG_ID}&limit=10000`, {
+      headers:{ apikey:CFG.key, Authorization:'Bearer '+CFG.key, Prefer:'count=exact' }
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    all = data.map((row,i) => normalize(row,i));
+    applyF(); fillDrops(); updateKPIs();
+    hide('map-loader');
+    const geo = all.filter(l=>l._lat).length;
+    setSt('ok', all.length+' leads');
+    g('vbar-sub').textContent = all.length+' propiedades · '+geo+' geocodificadas';
+    geocode();
+    startRealtime();
+    toast('🏨 '+all.length+' leads cargados','Sincronizado correctamente');
+    checkNewLeads();
+  } catch(e) {
+    setSt('error','Error de conexión');
+    g('ltxt').textContent = 'Error: '+e.message;
+    setTimeout(()=>hide('map-loader'),3000);
+  }
+}
+
+function normalize(row, i) {
+  const c = COL;
+  const lat = parseFloat(row[c.lat]), lng = parseFloat(row[c.lng]);
+  const addr = row[c.addr] || ((row[c.city]||'')+', '+(row[c.state]||'')).replace(/^,\s*|,\s*$/g,'');
+  const rawName = row[c.name]||row['hotel_name']||row['Hotel Name']||row['name']||'';
+  const lid = row.id||null;
+  return {
+    _i:i, _id:lid,
+    _lat: isFinite(lat)?lat:null, _lng: isFinite(lng)?lng:null,
+    _prio: row[c.prio]||autoPrio(row),
+    _score: row.ai_score ?? aiScores[lid]?.score ?? null,
+    _createdAt: row.created_at || null,
+    name: String(rawName).trim() || ('Lead #'+(i+1)),
+    addr, city:row[c.city]||'—', state:row[c.state]||'—',
+    rooms:row[c.rooms]||'—', type:row[c.type]||'—',
+    rating:row[c.rating]||'—', prob:row[c.prob]||'—',
+    why:row[c.why]||'—', opp:row[c.opp]||'—', src:row[c.src]||'',
+    am:{
+      name:row.am_name||'', email:row.am_email||'', phone:row.am_phone||'',
+      status:row.am_status||'', date:row.am_date||'', prio:row.am_priority||'', notes:row.am_notes||''
+    },
+    _aiSummary:   row.ai_summary||null,
+    _aiFlags:     row.ai_flags||null,
+    _aiAction:    row.ai_action||null,
+    _ownerName:   row.owner_name||null,
+    _ownerType:   row.owner_type||null,
+    _ownerFolio:  row.owner_folio||null,
+    _ownerOperator: row.owner_operator||null,
+    _ownerLinkedin: row.owner_linkedin||null,
+    _ownerContact:  row.owner_contact||null,
+    _ownerMessage:  row.owner_message||null,
+    _ownerStrategy: row.owner_strategy||null,
+    _ownerConfidence: row.owner_confidence||null,
+    _ownerFlags:    row.owner_flags||null,
+    _ownerSearchedAt: row.owner_searched_at||null,
+    _aiSummary:   row.ai_summary||null,
+    _aiFlags:     row.ai_flags||null,
+    _aiAction:    row.ai_action||null,
+    _ownerName:   row.owner_name||null,
+    _ownerType:   row.owner_type||null,
+    _ownerFolio:  row.owner_folio||null,
+    _ownerOperator: row.owner_operator||null,
+    _ownerLinkedin: row.owner_linkedin||null,
+    _ownerContact:  row.owner_contact||null,
+    _ownerMessage:  row.owner_message||null,
+    _ownerStrategy: row.owner_strategy||null,
+    _ownerConfidence: row.owner_confidence||null,
+    _ownerFlags:    row.owner_flags||null,
+    _ownerSearchedAt: row.owner_searched_at||null,
+    fin:{
+      adr:row.adr||'', occ:row.occupancy||'', price:row.acquisition_price||'',
+      days:row.days_operative||365, gopPct:row.gop_pct||40
+    }
+  };
+}
+
+function autoPrio(row) {
+  const r = parseInt(row[COL.rooms])||0;
+  return r>=100?'hot':r>=50?'warm':r>=20?'cold':'new';
+}
+
+// ── GEOCODE ──────────────────────────────────────────
+async function geocode() {
+  const miss = all.filter(l=>!l._lat&&l.addr&&l.addr.length>3);
+  if (!miss.length) return;
+  let done=0;
+  for (const l of miss) {
+    try {
+      const q = l.addr+' Miami Florida';
+      const r = await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(q)+'&limit=1',{headers:{'Accept-Language':'en'}});
+      const d = await r.json();
+      if (d?.features?.[0]) {
+        const [lng,lat] = d.features[0].geometry.coordinates;
+        l._lat=lat; l._lng=lng; done++;
+        renderMarkers(); saveGeo(l);
+      }
+    } catch(e){}
+    await sleep(200);
+  }
+  if (done>0){ applyF(); updateKPIs(); }
+}
+
+// ── FILTERS ──────────────────────────────────────────
+function applyF() {
+  const s = g('fs').value.toLowerCase().trim();
+  const cy=g('fc').value, ty=g('ft').value, op=g('fo').value;
+  filtered = all.filter(l=>{
+    if(mapFilter==='hot'&&l._prio!=='hot') return false;
+    if(mapFilter==='warm'&&l._prio!=='warm') return false;
+    if(mapFilter==='nogeo'&&l._lat!==null) return false;
+    if(mapFilter==='new7'&&!isNew(l)) return false;
+    if(cy&&l.city!==cy) return false;
+    if(ty&&l.type!==ty) return false;
+    if(op&&l.opp!==op) return false;
+    if(s&&!(l.name+' '+l.addr+' '+l.city).toLowerCase().includes(s)) return false;
+    return true;
+  });
+  filtered = sortLeads(filtered);
+  renderList(); renderMarkers();
+  g('lcnt').textContent = filtered.length+' resultado'+(filtered.length!==1?'s':'');
+  if(curView==='kanban') renderKanban();
+  if(curView==='analytics') renderAnalytics();
+}
+
+function fillDrops() {
+  fillSel('fc',[...new Set(all.map(l=>l.city).filter(v=>v&&v!=='—'))].sort());
+  fillSel('ft',[...new Set(all.map(l=>l.type).filter(v=>v&&v!=='—'))].sort());
+  fillSel('fo',[...new Set(all.map(l=>l.opp ).filter(v=>v&&v!=='—'))].sort());
+}
+function fillSel(id,vals){
+  const s=g(id),f=s.options[0];s.innerHTML='';s.appendChild(f);
+  vals.forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;s.appendChild(o);});
+}
+
+// ── RENDER LIST ──────────────────────────────────────
+function renderList() {
+  const c=g('ll');
+  if(!filtered.length){
+    c.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Sin resultados</div><div class="empty-sub">Prueba otros filtros.</div></div>';
+    return;
+  }
+  c.innerHTML='';
+  filtered.forEach(l=>{
+    const am=l.am||{};
+    const sc=am.status?`<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${STATUS_COLS[am.status]||'#ccc'};margin-right:3px;vertical-align:middle"></span>`:'';
+    const scoreHtml = l._score!=null ? `<span class="score-badge" style="background:${scoreColor(l._score)}22;color:${scoreColor(l._score)}">✦ ${l._score}</span>` : '';
+    const d=document.createElement('div');
+    d.className='lcard'+(l._i===activeId?' on':'');
+    const newBadge = isNew(l) ? '<span class="badge bn" style="background:rgba(42,138,110,.15);color:#2a8a6e;font-size:8px">🆕 Nuevo</span>' : '';
+    d.innerHTML=`<div class="lcard-top"><div class="lcard-name">${esc(l.name)}</div><span class="badge ${bc(l._prio)}">${pl(l._prio)}</span>${newBadge}</div><div class="lcard-addr">${esc(l.addr)}</div><div class="lcard-bot"><span class="lcard-type">${esc(l.type)}</span><span class="lcard-meta">${sc}${esc(l.rooms)} hab. ${scoreHtml}</span></div>`;
+    d.onclick=()=>pick(l);
+    c.appendChild(d);
+  });
+}
+
+// ── RENDER MARKERS ───────────────────────────────────
+function renderMarkers() {
+  markersLayer.clearLayers();
+  const tt=g('mtt'), wr=g('map-view');
+  filtered.forEach(l=>{
+    if(!l._lat||!l._lng) return;
+    const col=PC[l._prio]||'#888';
+    const size=l._score!=null?Math.max(10,Math.min(18,10+l._score/12)):12;
+    const icon=L.divIcon({
+      className:'',
+      html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${col};border:2.5px solid #fff;box-shadow:0 2px 8px ${col}66;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1)" onmouseover="this.style.transform='scale(1.7)'" onmouseout="this.style.transform='scale(1)'"></div>`,
+      iconSize:[size,size],iconAnchor:[size/2,size/2]
+    });
+    const m=L.marker([l._lat,l._lng],{icon});
+    m.on('mousemove',e=>{
+      g('mtt-n').textContent=l.name;
+      g('mtt-a').textContent=l.addr;
+      g('mtt-t').textContent=l.type;
+      g('mtt-r').textContent=l.rooms+' hab.';
+      g('mtt-ra').textContent=l.rating;
+      if(l._score!=null){
+        g('mtt-sv').textContent=l._score;
+        g('mtt-sv').style.color=scoreColor(l._score);
+        g('mtt-sc').style.display='flex';
+      } else g('mtt-sc').style.display='none';
+      const rc=wr.getBoundingClientRect();
+      tt.style.left=(e.originalEvent.clientX-rc.left+14)+'px';
+      tt.style.top=(e.originalEvent.clientY-rc.top-10)+'px';
+      tt.style.display='block';
+    });
+    m.on('mouseout',()=>tt.style.display='none');
+    m.on('click',()=>pick(l));
+    markersLayer.addLayer(m);
+  });
+}
+
+// ── PICK / DETAIL ────────────────────────────────────
+function pick(l) {
+  activeId=l._i;
+  renderList();
+  if(l._lat&&l._lng) map.flyTo([l._lat,l._lng],15,{animate:true,duration:.7});
+  showDP(l);
+}
+
+function showDP(l) {
+  g('dp-n').textContent=l.name;
+  g('dp-a').textContent=l.addr||(l.city+', '+l.state);
+  g('addr-ok').style.opacity='0';
+  // Tags
+  const tg=g('dp-tags'); tg.innerHTML='';
+  [{t:pl(l._prio),gold:true},{t:l.type},{t:l.rooms+' hab.'},{t:l.city}]
+    .filter(x=>x.t&&x.t!=='—')
+    .forEach(x=>{const s=document.createElement('span');s.className='dp-tag'+(x.gold?' gold':'');s.textContent=x.t;tg.appendChild(s);});
+  // Score badge
+  if(l._score!=null){
+    g('dp-score-num').textContent=l._score;
+    g('dp-score-num').style.color=scoreColor(l._score);
+    g('dp-score-badge').style.display='flex';
+  } else g('dp-score-badge').style.display='none';
+  // Ficha
+  g('d-ty').textContent=l.type; g('d-ra').textContent=l.rating;
+  g('d-ro').textContent=l.rooms+' hab.'; g('d-ci').textContent=l.city;
+  g('d-st').textContent=l.state; g('d-fa').textContent=l.addr;
+  const pe=g('d-pr'); pe.innerHTML='';
+  const pb=document.createElement('span'); pb.className='badge '+bc(l._prio); pb.textContent=pl(l._prio); pe.appendChild(pb);
+  g('d-op').textContent=l.opp; g('d-pb').textContent=l.prob; g('d-wy').textContent=l.why;
+  // Source
+  g('d-ur').textContent=l.src||'Sin URL';
+  try{ g('d-sr').textContent=l.src?new URL(l.src).hostname.replace('www.',''):'—'; }catch(e){g('d-sr').textContent='—';}
+  curSrc=l.src; g('act-src').style.opacity=l.src?'1':'.4';
+  // AM
+  const am=l.am||{};
+  g('am-n').value=am.name||''; g('am-e').value=am.email||''; g('am-p').value=am.phone||'';
+  g('am-s').value=am.status||''; g('am-d').value=am.date||''; g('am-pr').value=am.prio||''; g('am-no').value=am.notes||'';
+  // Fin
+  const fin=l.fin||{};
+  g('rv-adr').value=fin.adr||''; g('rv-occ').value=fin.occ||''; g('rv-price').value=fin.price||'';
+  g('rv-days').value=fin.days||365;
+  calcRevpar();
+  hide('am-msg');
+  // AI scoring — load from Supabase row or localStorage cache
+  const dbAi = (l._id && all.find(x=>x._i===l._i))?{
+    score:   l._score,
+    summary: l._aiSummary,
+    flags:   l._aiFlags,
+    action:  l._aiAction
+  }:null;
+  const aiData = aiScores[l._id] || (dbAi?.summary ? dbAi : null);
+  if(aiData && aiData.summary){ renderAIResult(aiData); } else {
+    g('ai-score-content').innerHTML=`<div style="text-align:center;padding:30px;color:var(--muted)"><div style="font-size:28px;margin-bottom:8px">🤖</div><div style="font-size:12px;font-weight:600;margin-bottom:4px">AI Lead Scoring</div><div style="font-size:11px;color:var(--muted2);margin-bottom:16px">Análisis inteligente de este lead con Claude AI</div><button class="act-gold" onclick="runAIScoring()" style="margin:0 auto">✦ Generar Score AI</button></div>`;
+  }
+  // Owner search — show saved data if exists, else show search button
+  g('owner-result').className='';
+  if(l._ownerName && l._ownerName.length > 3){
+    const street = (l.addr||'').split(',')[0].trim();
+    const sunbizUrl    = 'https://search.sunbiz.org/Inquiry/CorporationSearch/ByAddress?streetAddress='+encodeURIComponent(street);
+    const miamiDadeUrl = 'https://www.miamidade.gov/Apps/PA/PApublicServiceProxy/PaServicesProxy.ashx?Operation=GetPropertySearchByAddress&myAddress='+encodeURIComponent(street);
+    const confColor    = {'alta':'var(--new)','media':'var(--warm)','baja':'var(--hot)'}[(l._ownerConfidence||'').toLowerCase()]||'var(--muted)';
+    const folioBtn     = l._ownerFolio
+      ? `<a href="https://miamidadepropertysearch.us/?folio=${l._ownerFolio}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">🏠 Folio ${esc(l._ownerFolio)} ↗</button></a>`
+      : `<a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>`;
+    g('owner-result').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:10px;color:var(--muted)">💾 Guardado · ${l._ownerSearchedAt ? new Date(l._ownerSearchedAt).toLocaleDateString() : '—'}</span>
+        <button class="act-s" onclick="runOwnerSearch()" style="font-size:9px;padding:4px 10px">↺ Buscar de nuevo</button>
+      </div>
+      <div class="ai-box">
+        <div class="ai-hd">
+          <div class="ai-icon">👤</div>
+          <div>
+            <div class="ai-title">${esc(l._ownerName)}</div>
+            <div class="ai-sub">${esc(l._ownerType||'')} · <span style="color:${confColor};font-weight:700">Confianza ${esc(l._ownerConfidence||'—')}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="info-grid">
+        ${l._ownerFolio ? `<div class="ig full" style="background:rgba(196,163,90,.08);border-color:rgba(196,163,90,.25)"><div class="ig-l">📋 Folio Miami-Dade</div><div class="ig-v"><a href="https://miamidadepropertysearch.us/?folio=${l._ownerFolio}" target="_blank" style="color:var(--gold-d);font-weight:700;text-decoration:none">${esc(l._ownerFolio)} ↗</a></div></div>` : ''}
+        ${l._ownerOperator && l._ownerOperator !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">🏨 Operador actual</div><div class="ig-v" style="color:var(--hot);font-weight:600">${esc(l._ownerOperator)}</div></div>` : ''}
+        ${l._ownerLinkedin && l._ownerLinkedin !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v"><a href="${esc(l._ownerLinkedin)}" target="_blank" style="color:var(--cold);font-weight:700;text-decoration:none">🔗 ${esc(l._ownerName)} ↗</a></div></div>` : ''}
+        ${l._ownerContact && l._ownerContact !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Contacto</div><div class="ig-v" style="color:var(--new);font-weight:600">${esc(l._ownerContact)}</div></div>` : ''}
+        ${l._ownerStrategy && l._ownerStrategy !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Estrategia</div><div class="ig-v sm">${esc(l._ownerStrategy)}</div></div>` : ''}
+        ${l._ownerMessage && l._ownerMessage !== 'No encontrado' ? `<div class="ig full gold"><div class="ig-l">✉ Primer mensaje</div><div class="ig-v sm" style="font-style:italic">${esc(l._ownerMessage)}</div></div>` : ''}
+        ${l._ownerFlags && l._ownerFlags !== 'Ninguna' ? `<div class="ig full"><div class="ig-l">⚠ Red flags</div><div class="ig-v sm">${esc(l._ownerFlags)}</div></div>` : ''}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        ${folioBtn}
+        <a href="${sunbizUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Sunbiz ↗</button></a>
+        <button class="act-s" onclick="navigator.clipboard.writeText(${JSON.stringify(l._ownerMessage||'')}).then(()=>toast('✓ Copiado','Mensaje en portapapeles'))">Copiar mensaje</button>
+      </div>`;
+  } else {
+    g('owner-result').innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted)">
+      <div style="font-size:28px;margin-bottom:8px">👤</div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">Owner Search</div>
+      <div style="font-size:11px;color:var(--muted2);margin-bottom:16px">Busca el propietario real, LLC, LinkedIn y estrategia de contacto</div>
+      <button class="act-gold" onclick="runOwnerSearch()" style="margin:0 auto">🔍 Buscar propietario</button>
+    </div>`;
+  }
+
+    // Open sheet
+  const ov=g('ov'),dp=g('dp');
+  ov.classList.remove('hidden');
+  requestAnimationFrame(()=>{ ov.classList.add('vis'); requestAnimationFrame(()=>dp.classList.add('open')); });
+  showTab('f', document.querySelector('.dp-tab'));
+  // Owner already set above based on Supabase data
+}
+
+// ── ADD LEAD MANUALLY ────────────────────────────────
+function openAddLead(){
+  const box=document.createElement('div');
+  box.id='add-lead-modal';
+  box.style.cssText='position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML=`
+    <div style="background:var(--bg2);border-radius:var(--r-xl);padding:28px;width:100%;max-width:480px;box-shadow:var(--sh-xl)">
+      <div style="font-size:18px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px">Añadir lead</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:20px">Se guardará en Supabase</div>
+      <div class="am-grid">
+        <div class="am-field am-full"><label>Nombre del hotel *</label><input type="text" id="nl-name" placeholder="ej: Ocean View Hotel"/></div>
+        <div class="am-field am-full"><label>Dirección *</label><input type="text" id="nl-addr" placeholder="ej: 123 Collins Ave, Miami Beach, FL 33139"/></div>
+        <div class="am-field"><label>Ciudad</label><input type="text" id="nl-city" value="Miami"/></div>
+        <div class="am-field"><label>Estado</label><input type="text" id="nl-state" value="Florida"/></div>
+        <div class="am-field"><label>Habitaciones</label><input type="number" id="nl-rooms" placeholder="50" min="1"/></div>
+        <div class="am-field"><label>Tipo</label>
+          <select id="nl-type">
+            <option>Motel</option><option>Boutique Hotel</option><option>Limited-Service Hotel</option>
+            <option>Full-Service Hotel</option><option>Extended Stay</option><option>Resort</option>
+          </select>
+        </div>
+        <div class="am-field"><label>Prioridad</label>
+          <select id="nl-prio"><option value="hot">Hot</option><option value="warm" selected>Warm</option><option value="cold">Cold</option><option value="new">Nuevo</option></select>
+        </div>
+        <div class="am-field"><label>Rating (1-5)</label><input type="number" id="nl-rating" placeholder="3.5" min="1" max="5" step="0.1"/></div>
+        <div class="am-field am-full"><label>Problema principal</label><input type="text" id="nl-prob" placeholder="ej: Baja ocupación, gestión deficiente"/></div>
+        <div class="am-field am-full"><label>Por qué Yurbban</label><input type="text" id="nl-why" placeholder="ej: Potencial de rebranding y mejora operativa"/></div>
+        <div class="am-field am-full"><label>URL fuente</label><input type="text" id="nl-src" placeholder="https://…"/></div>
+        <div class="am-field am-full" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:4px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">🔗 Importar desde Booking.com</div>
+          <div style="display:flex;gap:8px;margin-bottom:6px">
+            <input id="booking-url-input" type="url" placeholder="URL de Booking.com (opcional — busca por nombre si está vacío)" style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--text);outline:none;font-family:inherit"/>
+            <button onclick="scrapeBooking()" id="booking-btn" style="background:var(--clay);color:#fff;border:none;padding:7px 12px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">🔍 Buscar</button>
+          </div>
+          <div id="booking-status" style="font-size:10px;color:var(--muted);display:none;margin-bottom:6px"></div>
+          <div id="booking-result" style="display:none;border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+            <div id="booking-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px"></div>
+            <button onclick="fillFromBooking()" style="background:var(--text);color:var(--bg);border:none;padding:8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;width:100%;font-family:inherit">↓ Rellenar formulario con estos datos</button>
+          </div>
+        </div>
+      </div>
+      <div id="nl-msg" class="am-msg hidden"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="act-s" style="flex:1" onclick="document.getElementById('add-lead-modal').remove()">Cancelar</button>
+        <button class="act-gold" style="flex:2" onclick="saveNewLead()">Guardar lead</button>
+      </div>
+    </div>`;
+  document.body.appendChild(box);
+  box.onclick=e=>{ if(e.target===box) box.remove(); };
+}
+
+async function saveNewLead(){
+  const name=g('nl-name')?.value.trim(), addr=g('nl-addr')?.value.trim();
+  if(!name||!addr){ const m=g('nl-msg');m.className='am-msg err';m.textContent='⚠ Nombre y dirección son obligatorios';m.classList.remove('hidden');return; }
+  if(!CFG.url||!CFG.key){ alert('Configura Supabase primero');return; }
+  const payload={
+    [COL.name]:name, [COL.addr]:addr,
+    [COL.city]:g('nl-city')?.value||'Miami',
+    [COL.state]:g('nl-state')?.value||'Florida',
+    [COL.rooms]:parseInt(g('nl-rooms')?.value)||null,
+    [COL.type]:g('nl-type')?.value||null,
+    [COL.prio]:g('nl-prio')?.value||'warm',
+    [COL.rating]:g('nl-rating')?.value||null,
+    [COL.prob]:g('nl-prob')?.value||null,
+    [COL.why]:g('nl-why')?.value||null,
+    [COL.src]:g('nl-src')?.value||null,
+  };
+  const btn=document.querySelector('#add-lead-modal .act-gold');
+  btn.disabled=true; btn.textContent='Guardando…';
+  try {
+    const r=await fetch(`${CFG.url}/rest/v1/${CFG.table}`,{
+      method:'POST',
+      headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json','Accept-Profile':'public','Content-Profile':'public',Prefer:'return=representation'},
+      body:JSON.stringify(payload)
+    });
+    if(!r.ok){ const e=await r.json().catch(()=>({})); throw new Error(e.message||'HTTP '+r.status); }
+    const [newRow]=await r.json();
+    const newLead=normalize(newRow,all.length);
+    all.push(newLead);
+    applyF(); fillDrops(); updateKPIs();
+    document.getElementById('add-lead-modal')?.remove();
+    toast('✓ Lead añadido',name);
+    pick(newLead);
+  } catch(e){
+    const m=g('nl-msg');m.className='am-msg err';m.textContent='⚠ '+e.message;m.classList.remove('hidden');
+    btn.disabled=false; btn.textContent='Guardar lead';
+  }
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('.dp-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.dp-panel').forEach(p=>p.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  else { const tabs=document.querySelectorAll('.dp-tab');const idx=['f','ai','owner','am','src'].indexOf(id);if(tabs[idx])tabs[idx].classList.add('on'); }
+  const p=g('tab-'+id);if(p)p.classList.add('on');
+}
+
+function ovClick(e){ if(e.target===g('ov')) closeDP(); }
+function closeDP(){
+  const ov=g('ov'),dp=g('dp');
+  dp.classList.remove('open'); ov.classList.remove('vis');
+  setTimeout(()=>{ ov.classList.add('hidden'); activeId=null; renderList(); },420);
+}
+function openSrc(){ if(curSrc) window.open(curSrc,'_blank'); }
+function cpAddr(){
+  const l=all.find(x=>x._i===activeId);if(!l)return;
+  navigator.clipboard.writeText(l.addr).then(()=>{
+    const ok=g('addr-ok');ok.style.opacity='1';setTimeout(()=>ok.style.opacity='0',1800);
+  });
+}
+function cpLead(){
+  const l=all.find(x=>x._i===activeId);if(!l)return;
+  const am=l.am||{};
+  navigator.clipboard.writeText(`${l.name} | ${l.addr} | ${l.type} | ${l.rooms} hab. | Score: ${l._score??'N/A'} | ${l.src}`).then(()=>{
+    toast('✓ Copiado','Datos del lead en el portapapeles');
+  });
+}
+
+// ── AI SCORING ───────────────────────────────────────
+async function runAIScoring() {
+  if (!FEAT.aiScoring) { showUpgrade('AI Lead Scoring'); return; }
+  const l = all.find(x => x._i === activeId); if (!l) return;
+  const btn = document.querySelector('#ai-score-content button');
+  if (btn) { btn.disabled = true; btn.textContent = 'Analizando…'; }
+  g('ai-score-content').innerHTML = `<div class="ai-loading"><div class="spin"></div>Analizando con AI…</div>`;
+
+  const prompt = `Eres un analista de inversiones hoteleras especializado trabajando para un cliente de Sapiora.
+
+Contexto del cliente: ${CONFIG.prompt_context}
+Mercado objetivo: ${CONFIG.target_market}
+
+Analiza este activo hotelero y devuelve un JSON con este formato exacto (sin markdown, solo JSON):
+{
+  "score": <número 0-100>,
+  "summary": "<análisis ejecutivo de 2-3 frases>",
+  "flags": [
+    {"type": "green", "text": "<señal positiva>"},
+    {"type": "yellow", "text": "<riesgo moderado>"},
+    {"type": "red", "text": "<red flag>"}
+  ],
+  "action": "<acción concreta esta semana>"
+}
+
+Datos del activo:
+- Nombre: ${l.name}
+- Dirección: ${l.addr}
+- Ciudad: ${l.city}, ${l.state}
+- Tipo: ${l.type}
+- Habitaciones: ${l.rooms}
+- Rating: ${l.rating}
+- Tipo de oportunidad: ${l.opp}
+- Problema principal: ${l.prob}
+- Por qué puede mejorarlo: ${l.why}
+- Prioridad actual: ${l._prio}
+
+Criterios de scoring específicos:
+${CONFIG.scoring_criteria}
+
+Escala:
+- 80-100: Oportunidad inmediata
+- 60-79: Oportunidad media
+- 40-59: Radar
+- 0-39: Descartable`;
+
+  // ── Plan-aware model selection ──────────────────────────────
+  const useClaude = ['professional','custom','enterprise'].includes((FEAT._plan||'').toLowerCase());
+
+  try {
+    let result;
+
+    if (useClaude) {
+      // Business/Enterprise → Claude Haiku
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido, sin markdown ni texto adicional.',
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      if (!res.ok) { const e = await res.text(); throw new Error('Claude API ' + res.status + ': ' + e); }
+      const data = await res.json();
+      const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('').trim();
+      const clean = text.replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + 'json\\s*'), '').replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + '\\s*'), '').replace(new RegExp('\\s*' + String.fromCharCode(96).repeat(3) + '$'), '').trim();
+      result = JSON.parse(clean);
+    } else {
+      // Starter/Pro → GPT-4o mini (cheaper)
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          max_tokens: 1000,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.' },
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
+      if (!res.ok) { const e = await res.text(); throw new Error('OpenAI API ' + res.status + ': ' + e); }
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || '';
+      result = JSON.parse(text);
+    }
+
+    result.score = Math.max(0, Math.min(100, result.score));
+    aiScores[l._id] = result;
+    try { localStorage.setItem('y_ai_scores', JSON.stringify(aiScores)); } catch(e) {}
+    l._score = result.score;
+
+    // Save to Supabase
+    if (l._id && CFG.url && CFG.key) {
+      fetch(`${CFG.url}/rest/v1/${CFG.table}?id=eq.${l._id}`, {
+        method: 'PATCH',
+        headers: { apikey: CFG.key, Authorization: 'Bearer ' + CFG.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ ai_score: result.score, ai_summary: result.summary, ai_flags: result.flags, ai_action: result.action, ai_scored_at: new Date().toISOString() })
+      }).catch(() => {});
+    }
+
+    renderAIResult(result);
+    g('dp-score-num').textContent = result.score;
+    g('dp-score-num').style.color = scoreColor(result.score);
+    g('dp-score-badge').style.display = 'flex';
+    renderList(); renderMarkers(); updateKPIs();
+
+  } catch(e) {
+    g('ai-score-content').innerHTML = `<div class="ai-error">Error al conectar con AI: ${e.message}</div><br><button class="act-gold" onclick="runAIScoring()">Reintentar</button>`;
+  }
+}
+
+
+async function runOwnerSearch() {
+  const l=all.find(x=>x._i===activeId);if(!l)return;
+  show('owner-result');
+  g('owner-result').innerHTML=`<div class="ai-loading"><div class="spin"></div>Buscando en internet: Sunbiz, registros de propiedad, LinkedIn…</div>`;
+
+  const prompt=`Eres un investigador experto en real estate hotelero trabajando para un cliente de Sapiora.
+
+Contexto del cliente: ${CONFIG.prompt_context}
+Mercado objetivo: ${CONFIG.target_market}
+Regiones de búsqueda: ${(CONFIG.owner_search_regions||[]).join(', ')}
+
+Investiga este hotel y encuentra toda la información posible sobre su propietario real.
+
+HOTEL:
+- Nombre: ${l.name}
+- Dirección: ${l.addr}
+- Ciudad: ${l.city}
+- Problema: ${l.prob}
+
+BÚSQUEDAS (en este orden):
+1. "${l.name} ${l.city} owner LLC" — propietario
+2. "${l.name} folio property appraiser ${(CONFIG.owner_search_regions||[''])[0]}" — catastro
+3. "${l.addr} property owner" — por dirección
+4. "${l.name} hotel management company operator" — gestor actual
+5. "${l.name} hotel owner LinkedIn CEO" — contacto clave
+
+Contexto para el outreach: ${CONFIG.outreach_context}
+El mensaje de contacto debe estar en idioma: ${CONFIG.outreach_language || 'es'}
+
+Devuelve SOLO JSON válido, sin texto antes ni después:
+{
+  "owner_name": "<persona o LLC propietaria, o No encontrado>",
+  "owner_type": "<Individual / LLC / REIT / Family Office / Hotel Group / No encontrado>",
+  "folio_number": "<número catastral si encontrado, o null>",
+  "current_operator": "<empresa gestora actual, o No encontrado>",
+  "registered_agent": "<agente registrado, o No encontrado>",
+  "linkedin_url": "<URL LinkedIn real, o No encontrado>",
+  "linkedin_name": "<nombre perfil LinkedIn, o No encontrado>",
+  "contact_info": "<teléfono o email, o No encontrado>",
+  "contact_strategy": "<2 pasos concretos para llegar al propietario esta semana>",
+  "first_message": "<mensaje outreach personalizado, máx 3 frases, en ${CONFIG.outreach_language || 'es'}, mencionando el cliente y proponiendo reunión>",
+  "confidence": "<alta/media/baja>",
+  "red_flags": "<riesgos o barreras, o Ninguna>"
+}`;
+
+  try {
+const text = await callAI({
+  provider: 'anthropic',
+  model: 'claude-3-5-sonnet-latest',
+  max_tokens: 1500,
+  web_search: true,
+  system: 'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Responde SOLO con JSON válido.',
+  prompt
+});
+
+if (!text) throw new Error('Sin respuesta de texto de la API');
+
+const clean = cleanAIJson(text);
+
+let r;
+try {
+  r = JSON.parse(clean);
+} catch(e) {
+  const match = clean.match(/\{[\s\S]*\}/);
+  if (match) r = JSON.parse(match[0]);
+  else throw new Error('No se pudo parsear la respuesta');
+}
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1500,
+        tools:[{"type":"web_search_20250305","name":"web_search","max_uses":5}],
+        system:'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Busca en internet información real y actualizada. Responde SOLO con JSON al final, sin texto adicional.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok){ const err=await res.text(); throw new Error('API '+res.status+': '+err); }
+
+    // Mostrar búsquedas mientras procesa
+    const searchCalls=(data.content||[]).filter(c=>c.type==='tool_use'&&c.name==='web_search');
+    if(searchCalls.length>0){
+      const queries=searchCalls.map(c=>c.input?.query||'').filter(Boolean);
+      g('owner-result').innerHTML='<div class="ai-loading" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;align-items:center;gap:8px"><div class="spin"></div>Buscando con Claude…</div>'+queries.map(function(q){return '<div style="font-size:10px;color:var(--muted);padding-left:4px">🔍 "'+q+'"</div>';}).join('')+'</div>';
+    }
+
+    // Extraer texto final
+    if(!text) throw new Error('Sin respuesta de texto de la API');
+    var bt=String.fromCharCode(96);
+    var clean=text.replace(new RegExp('^'+bt+bt+bt+'json\\s*'),'').replace(new RegExp('^'+bt+bt+bt+'\\s*'),'').replace(new RegExp('\\s*'+bt+bt+bt+'$'),'').trim();
+
+    let r;
+    try{ r=JSON.parse(clean); }
+    catch(e){
+      // Si no es JSON puro, intentar extraer el JSON del texto
+      const match=clean.match(/\{[\s\S]*\}/);
+      if(match) r=JSON.parse(match[0]);
+      else throw new Error('No se pudo parsear la respuesta');
+    }
+
+    const street=l.addr.split(',')[0].trim();
+    const sunbizUrl='https://search.sunbiz.org/Inquiry/CorporationSearch/ByAddress?streetAddress='+encodeURIComponent(street);
+    const miamiDadeUrl='https://www.miamidade.gov/Apps/PA/PApublicServiceProxy/PaServicesProxy.ashx?Operation=GetPropertySearchByAddress&myAddress='+encodeURIComponent(street);
+
+    // Save owner data to Supabase
+    if(l._id && CFG.url && CFG.key){
+      fetch(`${CFG.url}/rest/v1/${CFG.table}?id=eq.${l._id}`,{
+        method:'PATCH',
+        headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({
+          owner_name:       r.owner_name||null,
+          owner_type:       r.owner_type||null,
+          owner_folio:      r.folio_number||null,
+          owner_operator:   r.current_operator||null,
+          owner_linkedin:   r.linkedin_url||null,
+          owner_contact:    r.contact_info||null,
+          owner_message:    r.first_message||null,
+          owner_strategy:   r.contact_strategy||null,
+          owner_confidence: r.confidence||null,
+          owner_flags:      r.red_flags||null,
+          owner_searched_at: new Date().toISOString()
+        })
+      }).then(res=>{
+        if(res.ok) toast('💾 Owner guardado','Datos guardados en Supabase');
+      }).catch(()=>{});
+    }
+
+    const confColor={'alta':'var(--new)','media':'var(--warm)','baja':'var(--hot)'}[r.confidence?.toLowerCase()]||'var(--muted)';
+
+    g('owner-result').innerHTML=`
+      <div class="ai-box" style="margin-top:12px">
+        <div class="ai-hd">
+          <div class="ai-icon">👤</div>
+          <div>
+            <div class="ai-title">${esc(r.owner_name||'Propietario no identificado')}</div>
+            <div class="ai-sub">${esc(r.owner_type||'')} · <span style="color:${confColor};font-weight:700">Confianza ${esc(r.confidence||'—')}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="info-grid">
+        ${r.folio_number?`<div class="ig full" style="background:rgba(196,163,90,.08);border-color:rgba(196,163,90,.25)"><div class="ig-l">📋 Folio Miami-Dade</div><div class="ig-v"><a href="https://miamidadepropertysearch.us/?folio=${r.folio_number}" target="_blank" style="color:var(--gold-d);font-weight:700;text-decoration:none">${esc(r.folio_number)} ↗</a></div></div>`:''}
+        ${r.registered_agent&&r.registered_agent!=='No encontrado'?`<div class="ig full"><div class="ig-l">Agente registrado (Sunbiz)</div><div class="ig-v">${esc(r.registered_agent)}</div></div>`:''}
+        ${r.linkedin_url&&r.linkedin_url!=='No encontrado'
+          ?`<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v"><a href="${esc(r.linkedin_url)}" target="_blank" style="color:var(--cold);font-weight:700;text-decoration:none">🔗 ${esc(r.linkedin_name||r.linkedin_url)} ↗</a></div></div>`
+          :`<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v" style="color:var(--muted2)">No encontrado</div></div>`}
+        ${r.contact_info&&r.contact_info!=='No encontrado'?`<div class="ig full"><div class="ig-l">Contacto directo</div><div class="ig-v" style="color:var(--new);font-weight:600">${esc(r.contact_info)}</div></div>`:''}
+        <div class="ig full"><div class="ig-l">Estrategia de contacto</div><div class="ig-v sm">${esc(r.contact_strategy||'—')}</div></div>
+        <div class="ig full gold"><div class="ig-l">✉ Primer mensaje sugerido</div><div class="ig-v sm" style="font-style:italic">${esc(r.first_message||'—')}</div></div>
+        ${r.red_flags&&r.red_flags!=='Ninguna'?`<div class="ig full"><div class="ig-l">⚠ Red flags</div><div class="ig-v sm">${esc(r.red_flags)}</div></div>`:''}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        ${r.folio_number ? `<a href="https://miamidadepropertysearch.us/?folio=${r.folio_number}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">🏠 Miami-Dade Folio ${r.folio_number} ↗</button></a>` : `<a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>`}
+        <a href="${sunbizUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Sunbiz ↗</button></a>
+        <button class="act-s" onclick="navigator.clipboard.writeText(${JSON.stringify(r.first_message||'')}).then(()=>toast('✓ Copiado','Mensaje en el portapapeles'))">Copiar mensaje</button>
+      </div>
+    `;
+  } catch(e) {
+    g('owner-result').innerHTML=`<div class="ai-error" style="margin-top:10px">Error: ${e.message}</div><br><button class="act-gold" onclick="runOwnerSearch()">Reintentar</button>`;
+  }
+}
+
+// ── ASSET MANAGER / REVPAR ───────────────────────────
+function calcRevpar(){
+  const l=all.find(x=>x._i===activeId);
+  const adr=parseFloat(g('rv-adr').value)||0;
+  const occ=parseFloat(g('rv-occ').value)||0;
+  const price=parseFloat(g('rv-price').value)||0;
+  const days=parseFloat(g('rv-days').value)||365;
+  const rooms=l?parseInt(l.rooms)||0:0;
+  const revpar=adr*(occ/100);
+  const totalRev=revpar*days*rooms;
+  const gop=totalRev*((CONFIG.revpar_gop_pct||40)/100);
+  const fee=totalRev*((CONFIG.revpar_fee_pct||7)/100);
+  const priceUSD=price*1e6;
+  const capRate=priceUSD>0?(gop/priceUSD)*100:0;
+  const perRoom=rooms>0?totalRev/rooms:0;
+  g('rv-revpar').textContent=fmtd(revpar);
+  g('rv-totalrev').textContent=fmt(totalRev);
+  g('rv-gop').textContent=fmt(gop);
+  g('rv-cap').textContent=capRate>0?capRate.toFixed(2)+'%':'—';
+  g('rv-prm').textContent=fmt(perRoom);
+  const feeEl=g('rv-fee');
+  feeEl.textContent=fee>0?fmt(fee):'—';
+  feeEl.style.color=fee>0?(gop>fee?'var(--new)':'var(--hot)'):'';
+}
+
+async function saveAM(){
+  const l=all.find(x=>x._i===activeId);if(!l)return;
+  if(!l._id){showAMMsg('err','⚠ Sin ID de registro');return;}
+  const payload={
+    am_name:g('am-n').value||null, am_email:g('am-e').value||null,
+    am_phone:g('am-p').value||null, am_status:g('am-s').value||null,
+    am_date:g('am-d').value||null, am_priority:g('am-pr').value||null,
+    am_notes:g('am-no').value||null,
+    adr:parseFloat(g('rv-adr').value)||null, occupancy:parseFloat(g('rv-occ').value)||null,
+    acquisition_price:parseFloat(g('rv-price').value)||null,
+    days_operative:parseFloat(g('rv-days').value)||365
+  };
+  try {
+    const r=await fetch(`${CFG.url}/rest/v1/${CFG.table}?id=eq.${l._id}`,{
+      method:'PATCH',
+      headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    l.am={name:payload.am_name||'',email:payload.am_email||'',phone:payload.am_phone||'',
+      status:payload.am_status||'',date:payload.am_date||'',prio:payload.am_priority||'',notes:payload.am_notes||''};
+    amLocal[l._id]=l.am;
+    try{localStorage.setItem('y_am_cache',JSON.stringify(amLocal));}catch(e){}
+    showAMMsg('ok','✓ Guardado en Supabase');
+    renderMarkers(); renderList();
+    if(curView==='kanban') renderKanban();
+  } catch(e){ showAMMsg('err','⚠ Error: '+e.message); }
+}
+function showAMMsg(type,txt){
+  const m=g('am-msg');m.className='am-msg '+type;m.textContent=txt;
+  show('am-msg');setTimeout(()=>hide('am-msg'),3000);
+}
+function doSunbiz(){
+  const l=all.find(x=>x._i===activeId);if(!l)return;
+  const street=l.addr.split(',')[0].trim();
+  window.open('https://search.sunbiz.org/Inquiry/CorporationSearch/ByAddress?streetAddress='+encodeURIComponent(street),'_blank');
+}
+
+// ── KANBAN ───────────────────────────────────────────
+function renderKanban(){
+  const kv=g('kanban-view');
+  kv.style.display='flex';
+  kv.innerHTML='';
+  KANBAN_COLS.forEach(col=>{
+    const leads=filtered.filter(l=>(l.am?.status||'none')===col.id);
+    const div=document.createElement('div');
+    div.className='kb-col';
+    div.dataset.status=col.id;
+    div.innerHTML=`<div class="kb-hd" style="background:${col.color};color:${col.textColor}"><span>${col.label}</span><span class="kb-cnt">${leads.length}</span></div>`;
+    if(!leads.length){
+      const emp=document.createElement('div');
+      emp.className='kb-empty';emp.textContent='Sin leads';
+      div.appendChild(emp);
+    }
+    leads.forEach(l=>{
+      const score=l._score;
+      const card=document.createElement('div');
+      card.className='kb-card';
+      card.draggable=true;
+      card.dataset.leadId=l._i;
+      card.innerHTML=`<div class="kb-card-name">${esc(l.name)}</div><div class="kb-card-city">${esc(l.city)} · ${esc(l.type)}</div><div class="kb-card-bot"><span class="badge ${bc(l._prio)}">${pl(l._prio)}</span><div style="display:flex;align-items:center;gap:6px"><span class="kb-rooms">${esc(l.rooms)} hab.</span>${score!=null?`<span class="kb-score" style="color:${scoreColor(score)}">✦${score}</span>`:''}</div></div>`;
+      card.onclick=()=>pick(l);
+      card.ondragstart=e=>{ draggedLead=l; card.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; };
+      card.ondragend=()=>card.classList.remove('dragging');
+      div.appendChild(card);
+    });
+    div.ondragover=e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; };
+    div.ondrop=async e=>{
+      e.preventDefault();
+      if(!draggedLead) return;
+      const newStatus=div.dataset.status==='none'?'':div.dataset.status;
+      draggedLead.am=draggedLead.am||{};
+      draggedLead.am.status=newStatus;
+      // Save to Supabase
+      if(draggedLead._id){
+        try{
+          await fetch(`${CFG.url}/rest/v1/${CFG.table}?id=eq.${draggedLead._id}`,{
+            method:'PATCH',
+            headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json',Prefer:'return=minimal'},
+            body:JSON.stringify({am_status:newStatus||null})
+          });
+        }catch(e){}
+      }
+      draggedLead=null;
+      renderKanban(); renderList();
+      toast('📋 Pipeline actualizado','Estado guardado en Supabase');
+    };
+    kv.appendChild(div);
+  });
+}
+
+// ── ANALYTICS ────────────────────────────────────────
+function renderAnalytics(){
+  // KPIs
+  const contacted=all.filter(l=>l.am?.status&&l.am.status!=='').length;
+  const closed=all.filter(l=>l.am?.status==='closed').length;
+  const scored=all.filter(l=>l._score!=null).length;
+  const avgScore=scored>0?Math.round(all.filter(l=>l._score!=null).reduce((s,l)=>s+l._score,0)/scored):0;
+  g('an-kpis').innerHTML=[
+    {l:'Total leads',v:all.length,s:'propiedades',c:'#C4A35A'},
+    {l:'Contactados',v:contacted,s:Math.round(contacted/Math.max(all.length,1)*100)+'% del total',c:'#2f4a7a'},
+    {l:'Cerrados',v:closed,s:'deals firmados',c:'#2a8a6e'},
+    {l:'AI Score Avg',v:scored>0?avgScore+'':' —',s:scored+' leads analizados',c:'#8b5cf6'}
+  ].map(k=>`<div class="an-kpi"><div class="an-kpi-l">${k.l}</div><div class="an-kpi-v" style="color:${k.c}">${k.v}</div><div class="an-kpi-s">${k.s}</div></div>`).join('');
+
+  // Funnel
+  const funnelSteps=[
+    {id:'',label:'Sin contactar',color:'#e0e0e0',textColor:'#555'},
+    {id:'contacted',label:'Contactado',color:'#2f4a7a',textColor:'#fff'},
+    {id:'meeting',label:'Reunión',color:'#b5621a',textColor:'#fff'},
+    {id:'proposal',label:'Propuesta',color:'#8b5cf6',textColor:'#fff'},
+    {id:'negotiation',label:'Negociación',color:'#9a3c42',textColor:'#fff'},
+    {id:'closed',label:'Cerrado',color:'#2a8a6e',textColor:'#fff'}
+  ];
+  const total=all.length;
+  g('an-funnel').innerHTML=funnelSteps.map(s=>{
+    const n=all.filter(l=>(l.am?.status||'')===s.id).length;
+    const pct=Math.round(n/Math.max(total,1)*100);
+    const w=Math.max(pct,8);
+    return `<div class="funnel-row"><div class="funnel-lbl">${s.label}</div><div class="funnel-bar" style="width:${w}%;background:${s.color};color:${s.textColor}">${n}</div><div class="funnel-cnt">${pct}%</div></div>`;
+  }).join('');
+
+  // Priority
+  const prioColor2={hot:'#9a3c42',warm:'#b5621a',cold:'#2f4a7a',new:'#2a8a6e'};
+  const prioLabels={hot:'Hot',warm:'Warm',cold:'Cold',new:'Nuevo'};
+  const prios={hot:0,warm:0,cold:0,new:0};
+  all.forEach(l=>{if(prios[l._prio]!==undefined)prios[l._prio]++;});
+  const maxP=Math.max(...Object.values(prios),1);
+  g('an-prio').innerHTML=Object.keys(prios).map(p=>{
+    const n=prios[p],pct=Math.round(n/total*100),w=Math.round(n/maxP*100);
+    return `<div class="an-bar-row"><div class="an-bar-lbl" style="color:${prioColor2[p]};font-weight:700">${prioLabels[p]}</div><div class="an-bar-wrap"><div class="an-bar-fill" style="width:${w}%;background:${prioColor2[p]}"><span class="an-bar-val">${n}</span></div></div><div style="font-size:10px;color:var(--muted);width:30px;text-align:right">${pct}%</div></div>`;
+  }).join('');
+
+  // Cities
+  const cities={};
+  all.forEach(l=>{if(l.city&&l.city!=='—')cities[l.city]=(cities[l.city]||0)+1;});
+  const sortedCities=Object.entries(cities).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxC=sortedCities[0]?sortedCities[0][1]:1;
+  const cityColors=['#C4A35A','#2f4a7a','#2a8a6e','#b5621a','#8b5cf6','#9a3c42'];
+  g('an-cities').innerHTML=sortedCities.map(([city,n],i)=>{
+    const w=Math.round(n/maxC*100);
+    return `<div class="an-bar-row"><div class="an-bar-lbl">${city}</div><div class="an-bar-wrap"><div class="an-bar-fill" style="width:${w}%;background:${cityColors[i]||'#888'}"><span class="an-bar-val">${n}</span></div></div></div>`;
+  }).join('');
+
+  // AI Scores by priority
+  const scoresByPrio={hot:[],warm:[],cold:[],new:[]};
+  all.forEach(l=>{ if(l._score!=null&&scoresByPrio[l._prio]) scoresByPrio[l._prio].push(l._score); });
+  const scoreAvgs=Object.keys(scoresByPrio).map(p=>{
+    const arr=scoresByPrio[p];
+    return {p,avg:arr.length>0?Math.round(arr.reduce((s,v)=>s+v,0)/arr.length):null,n:arr.length};
+  }).filter(x=>x.avg!=null);
+  if(scoreAvgs.length>0){
+    const maxS=Math.max(...scoreAvgs.map(x=>x.avg),1);
+    g('an-scores').innerHTML=scoreAvgs.map(x=>{
+      const col=scoreColor(x.avg);const w=Math.round(x.avg/maxS*100);
+      return `<div class="an-bar-row"><div class="an-bar-lbl" style="color:${prioColor2[x.p]};font-weight:700">${prioLabels[x.p]}</div><div class="an-bar-wrap"><div class="an-bar-fill" style="width:${w}%;background:${col}"><span class="an-bar-val">${x.avg}</span></div></div><div style="font-size:10px;color:var(--muted);width:40px;text-align:right">${x.n} leads</div></div>`;
+    }).join('');
+  } else g('an-scores').innerHTML='<div style="color:var(--muted2);font-size:11px;padding:20px;text-align:center">Sin datos de AI Score aún.<br>Genera scores desde la ficha de cada lead.</div>';
+
+  // Top 10 by revenue
+  const withRev=all.filter(l=>l.fin&&parseFloat(l.fin.adr)>0)
+    .map(l=>{ const f=l.fin,adr=parseFloat(f.adr)||0,occ=parseFloat(f.occ)||0,days=parseFloat(f.days)||365,rooms=parseInt(l.rooms)||0; return {l,rev:adr*(occ/100)*days*rooms}; })
+    .sort((a,b)=>b.rev-a.rev).slice(0,10);
+  if(withRev.length>0){
+    g('an-table').innerHTML=`<table class="an-top-table"><thead><tr><th>#</th><th>Hotel</th><th>Prioridad</th><th>Score AI</th><th style="text-align:right">RevPAR</th><th style="text-align:right">Total Rev. Est.</th><th>Estado AM</th></tr></thead><tbody>${
+      withRev.map(({l,rev},i)=>{
+        const f=l.fin||{},am=l.am||{};
+        const revpar=(parseFloat(f.adr)||0)*((parseFloat(f.occ)||0)/100);
+        const pc=prioColor2[l._prio]||'#888',sc=STATUS_COLS[am.status]||'#aaa';
+        const scoreHtml=l._score!=null?`<span style="font-weight:800;color:${scoreColor(l._score)}">${l._score}</span>`:'<span style="color:var(--muted2)">—</span>';
+        return `<tr><td style="color:var(--muted2)">${i+1}</td><td style="font-weight:700">${esc(l.name)}</td><td><span class="badge ${bc(l._prio)}">${pl(l._prio)}</span></td><td>${scoreHtml}</td><td style="text-align:right;font-weight:700;color:var(--gold-d)">$${revpar.toFixed(2)}</td><td style="text-align:right;font-weight:600">$${Math.round(rev).toLocaleString('en-US')}</td><td><span style="color:${sc};font-size:11px;font-weight:600">${STATUS_LABELS[am.status]||'Sin contactar'}</span></td></tr>`;
+      }).join('')
+    }</tbody></table>`;
+  } else g('an-table').innerHTML='<div style="color:var(--muted2);font-size:11px;padding:20px;text-align:center">Sin datos de RevPAR. Introduce ADR y ocupación en los leads.</div>';
+}
+
+// ── VIEW SWITCHING ────────────────────────────────────
+function switchView(v,btn){
+  curView=v;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  // Hide all views
+  g('map-view').style.display='none';
+  g('kanban-view').style.display='none';
+  g('analytics-view').style.display='none';
+  g('map-vg').style.display='none';
+  if(v==='map'){
+    g('map-view').style.display='block';
+    g('map-vg').style.display='flex';
+    g('vbar-title').textContent='Mapa de oportunidades';
+    map.invalidateSize();
+  } else if(v==='kanban'){
+    g('kanban-view').style.display='flex';
+    g('vbar-title').textContent='Pipeline Kanban';
+    renderKanban();
+  } else if(v==='analytics'){
+    g('analytics-view').style.display='flex';
+    g('vbar-title').textContent='Analytics Dashboard';
+    renderAnalytics();
+  }
+}
+
+function setSortMode(mode) {
+  sortMode = mode;
+  applyF();
+}
+
+function sortLeads(arr) {
+  const sorted = [...arr];
+  const prioOrder = { hot:0, warm:1, cold:2, new:3 };
+  if (sortMode === 'priority') {
+    sorted.sort((a,b) => (prioOrder[a._prio]??9) - (prioOrder[b._prio]??9));
+  } else if (sortMode === 'recent') {
+    sorted.sort((a,b) => {
+      const da = a._createdAt ? new Date(a._createdAt).getTime() : 0;
+      const db = b._createdAt ? new Date(b._createdAt).getTime() : 0;
+      return db - da;
+    });
+  } else if (sortMode === 'score') {
+    sorted.sort((a,b) => (b._score??-1) - (a._score??-1));
+  } else if (sortMode === 'rooms') {
+    sorted.sort((a,b) => (parseInt(b.rooms)||0) - (parseInt(a.rooms)||0));
+  }
+  return sorted;
+}
+
+function isNew(l) {
+  if (!l._createdAt) return false;
+  const d = new Date(l._createdAt);
+  return (Date.now() - d.getTime()) < 7 * 24 * 60 * 60 * 1000;
+}
+
+function setMapF(f,btn){
+  mapFilter=f;
+  document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  applyF();
+}
+
+// ── KPIS ─────────────────────────────────────────────
+function updateKPIs(){
+  g('kv-t').textContent=all.length;
+  g('kv-h').textContent=all.filter(l=>l._prio==='hot').length;
+  g('kv-c').textContent=new Set(all.map(l=>l.city).filter(Boolean)).size;
+  const s=all.filter(l=>l._score!=null).length;
+  g('kv-s').textContent=s;
+  g('kv-ss').textContent=Math.round(s/Math.max(all.length,1)*100)+'% analizados';
+}
+
+// ── STATUS ────────────────────────────────────────────
+function setSt(st,tx){
+  const dot=g('dot'),pill=g('pill'),lbl=g('stxt');
+  const S={
+    loading:{bg:'rgba(196,163,90,.15)',bc:'rgba(196,163,90,.4)',tc:'var(--gold-d)',dc:'var(--gold)'},
+    ok:{bg:'rgba(42,138,110,.12)',bc:'rgba(42,138,110,.35)',tc:'#2a8a6e',dc:'#2a8a6e'},
+    error:{bg:'rgba(154,60,66,.12)',bc:'rgba(154,60,66,.35)',tc:'#9a3c42',dc:'#9a3c42'},
+    idle:{bg:'rgba(255,255,255,.07)',bc:'rgba(255,255,255,.15)',tc:'rgba(255,255,255,.4)',dc:'var(--gold)'}
+  };
+  const s=S[st]||S.idle;
+  pill.style.background=s.bg;pill.style.borderColor=s.bc;pill.style.color=s.tc;dot.style.background=s.dc;
+  st==='loading'?dot.classList.add('pulse'):dot.classList.remove('pulse');
+  lbl.textContent=tx||'';
+}
+
+// ── CONFIG ────────────────────────────────────────────
+function openCfg(){
+  g('cu').value=CFG.url;g('ck').value=CFG.key;g('ctb').value=CFG.table;
+  const m=g('cfg-modal');m.classList.remove('hidden');requestAnimationFrame(()=>m.classList.add('vis'));
+}
+function closeCfg(){
+  const m=g('cfg-modal');m.classList.remove('vis');setTimeout(()=>m.classList.add('hidden'),280);
+}
+function saveCfg(){
+  const url=g('cu').value.trim().replace(/\/$/,''),key=g('ck').value.trim(),tbl=g('ctb').value.trim()||'leads';
+  if(!url||!key)return;
+  CFG.url=url;CFG.key=key;CFG.table=tbl;
+  try{localStorage.setItem('y_cfg',JSON.stringify(CFG));}catch(e){}
+  closeCfg();loadLeads();
+}
+
+// ── EXPORT ────────────────────────────────────────────
+function exportCSV(){
+  if(!all.length){alert('No hay leads cargados.');return;}
+  const leads=filtered.length?filtered:all;
+  const rows=[['#','Hotel','Dirección','Ciudad','Habitaciones','Tipo','Rating','Prioridad','AI Score','Oportunidad','AM','Estado','RevPAR est.','Total Rev.']];
+  leads.forEach((l,i)=>{
+    const f=l.fin||{},am=l.am||{};
+    const revpar=(parseFloat(f.adr)||0)*((parseFloat(f.occ)||0)/100);
+    const totalRev=revpar*(parseFloat(f.days)||365)*(parseInt(l.rooms)||0);
+    rows.push([i+1,l.name,l.addr,l.city,l.rooms,l.type,l.rating,l._prio,l._score??'',l.opp,am.name||'',am.status||'',revpar>0?'$'+revpar.toFixed(2):'',totalRev>0?'$'+Math.round(totalRev).toLocaleString('en-US'):'']);
+  });
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='HLIE_2.0_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// ── REALTIME ─────────────────────────────────────────
+function startRealtime(){
+  if(!CFG.url||!CFG.key||realtimeWs)return;
+  const wsUrl=CFG.url.replace('https://','wss://').replace('http://','ws://')+'/realtime/v1/websocket?apikey='+CFG.key+'&vsn=1.0.0';
+  try {
+    const ws=new WebSocket(wsUrl);
+    realtimeWs=ws;
+    ws.onopen=()=>{
+      ws.send(JSON.stringify({topic:'realtime:public:'+CFG.table,event:'phx_join',payload:{config:{postgres_changes:[{event:'*',schema:'public',table:CFG.table}]}},ref:'1'}));
+      setSt('ok',all.length+' leads · Live');
+    };
+    ws.onmessage=e=>{
+      try{
+        const msg=JSON.parse(e.data);
+        const d=(msg.payload?.data)||{};
+        if(d.type==='INSERT'){
+          const nl=normalize(d.record,all.length);all.push(nl);applyF();updateKPIs();
+          toast('🏨 Nuevo lead',''+nl.name);
+        } else if(d.type==='UPDATE'){
+          const idx=all.findIndex(l=>String(l._id)===String(d.record.id));
+          if(idx>=0){all[idx]=normalize(d.record,all[idx]._i);applyF();updateKPIs();}
+        } else if(d.type==='DELETE'){
+          all=all.filter(l=>String(l._id)!==String(d.old_record?.id));applyF();updateKPIs();
+        }
+      }catch(err){}
+    };
+    ws.onerror=()=>{realtimeWs=null;};
+    ws.onclose=()=>{realtimeWs=null;setTimeout(startRealtime,5000);};
+  }catch(e){}
+}
+
+async function saveGeo(l){
+  if(!l._id||!l._lat||!l._lng)return;
+  try{await fetch(CFG.url+'/rest/v1/'+CFG.table+'?id=eq.'+l._id,{method:'PATCH',headers:{apikey:CFG.key,Authorization:'Bearer '+CFG.key,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({lat:l._lat,lng:l._lng})});}catch(e){}
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function toast(title,sub){
+  const tc=g('toasts');
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=`<div class="toast-hd"><div class="toast-ico">✦</div><div><div class="toast-title">${esc(title)}</div><div class="toast-sub">${esc(sub)}</div></div><button class="toast-x" onclick="killToast(this.closest('.toast'))">×</button></div>`;
+  tc.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('in')));
+  setTimeout(()=>killToast(t),4500);
+}
+function killToast(t){if(!t)return;t.classList.remove('in');t.classList.add('out');setTimeout(()=>t.remove(),420);}
+
+// ═══════════════════════════
+// BOOKING.COM SCRAPER
+// ═══════════════════════════
+var bookingData = null;
+
+function scrapeBooking() {
+  var url = g('booking-url-input') ? g('booking-url-input').value.trim() : '';
+  var name = g('nl-name') ? g('nl-name').value.trim() : '';
+  var city = g('nl-city') ? g('nl-city').value.trim() : 'Miami';
+
+  if (!url && name) {
+    url = 'https://www.booking.com/searchresults.html?ss=' + encodeURIComponent(name + ' ' + city + ' hotel');
+    if (g('booking-url-input')) g('booking-url-input').value = url;
+  }
+  if (!url && !name) { toast('Introduce el nombre del hotel primero', 'err'); return; }
+
+  var btn = g('booking-btn');
+  var status = g('booking-status');
+  btn.disabled = true; btn.textContent = '⏳...';
+  status.style.display = 'block';
+  status.textContent = 'Claude buscando en Booking.com...';
+  g('booking-result').style.display = 'none';
+  bookingData = null;
+
+  var prompt = 'Search Booking.com for: "' + (name||'hotel') + '" in ' + city + '. URL hint: ' + url + '\nReturn ONLY valid JSON (no markdown, no explanation):\n{"name":"","stars":"1-5","rating":"8.5","reviews":"1234","address":"","city":"","rooms":"50","type":"Hotel","description":"brief","booking_url":""}\nNull for unknown fields.';
+
+  callAI({
+  provider: 'openai',
+  model: 'gpt-4o',
+  max_tokens: 600,
+  system: 'Return ONLY valid JSON, no markdown, no explanation.',
+  prompt
+})
+.then(function(text) {
+  var m = String(text || '').match(/\{[\s\S]*\}/);
+
+  if (m) {
+    try {
+      bookingData = JSON.parse(m[0]);
+      renderBookingResult(bookingData);
+      status.textContent = '✓ Datos encontrados';
+    } catch(e) {
+      status.textContent = 'Error parseando respuesta.';
+    }
+  } else {
+    status.textContent = 'Sin datos. ' + String(text || '').slice(0,100);
+  }
+})
+.catch(function(e) {
+  status.textContent = 'Error: ' + e.message;
+})
+.finally(function() {
+  btn.disabled = false;
+  btn.innerHTML = '🔍 Buscar';
+});
+  .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error&&e.error.message||'Error '+r.status);});return r.json();})
+  .then(function(data){
+    var text='';(data.choices||[]).forEach(function(b){text+=b.message?.content||'';});
+    var m=text.match(/\{[\s\S]*\}/);
+    if(m){try{bookingData=JSON.parse(m[0]);renderBookingResult(bookingData);status.textContent='✓ Datos encontrados';}
+    catch(e){status.textContent='Error parseando respuesta.';}}
+    else{status.textContent='Sin datos. '+text.slice(0,100);}
+  })
+  .catch(function(e){
+    status.textContent=e.message&&e.message.indexOf('fetch')>=0?'⚠ No disponible desde file://.':'Error: '+e.message;
+  })
+  .finally(function(){btn.disabled=false;btn.innerHTML='🔍 Buscar';});
+}
+
+function renderBookingResult(d) {
+  var items=[{l:'Nombre',v:d.name},{l:'Estrellas',v:d.stars?d.stars+'★':null},{l:'Rating Booking',v:d.rating},{l:'Reviews',v:d.reviews},{l:'Dirección',v:d.address},{l:'Ciudad',v:d.city},{l:'Habitaciones',v:d.rooms},{l:'Tipo',v:d.type}]
+    .filter(function(x){return x.v&&x.v!=='null'&&x.v!==null;});
+  g('booking-fields').innerHTML=items.map(function(x){
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:1px">'+x.l+'</div><div style="font-size:11px;font-weight:600;color:var(--text)">'+String(x.v)+'</div></div>';
+  }).join('')+(d.description?'<div style="grid-column:1/-1;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:1px">Descripción</div><div style="font-size:11px;color:var(--text2);line-height:1.5">'+d.description+'</div></div>':'');
+  g('booking-result').style.display='block';
+}
+
+function fillFromBooking() {
+  if (!bookingData) return;
+  var d = bookingData;
+  if (d.name    && g('nl-name'))   g('nl-name').value   = d.name;
+  if (d.address && g('nl-addr'))   g('nl-addr').value   = d.address;
+  if (d.city    && g('nl-city'))   g('nl-city').value   = d.city;
+  if (d.rooms   && g('nl-rooms'))  g('nl-rooms').value  = d.rooms;
+  if (d.rating  && g('nl-rating')) g('nl-rating').value = d.rating;
+  if (d.booking_url && g('nl-src')) g('nl-src').value   = d.booking_url;
+  if (d.type && g('nl-type')) {
+    var sel=g('nl-type');
+    for(var i=0;i<sel.options.length;i++){if(sel.options[i].text.toLowerCase().indexOf((d.type||'').toLowerCase().slice(0,5))>=0){sel.selectedIndex=i;break;}}
+  }
+  if (d.description && g('nl-why')) g('nl-why').value = d.description;
+  toast('Formulario rellenado desde Booking ✓','ok');
+}
+
+// ── CRM INTEGRATION ───────────────────────────────────────────
+// Unified dispatcher — reads CONFIG.crm to pick the right integration
+
+async function sendToCRM() {
+  const l = all.find(x => x._i === activeId);
+  if (!l) return;
+  const crm = (CONFIG.crm || 'hubspot').toLowerCase();
+  const btn = document.getElementById('btn-hubspot');
+
+  if (!FEAT.hubspot) { showUpgrade('Integración CRM'); return; }
+
+  if (crm === 'hubspot')    return sendToHubspot(l, btn);
+  if (crm === 'pipedrive')  return sendToPipedrive(l, btn);
+  if (crm === 'salesforce') return sendToSalesforce(l, btn);
+  if (crm === 'zoho')       return sendToZohoCRM(l, btn);
+  showMsg('err', 'CRM "' + crm + '" no configurado');
+}
+
+function crmBtnLoading(btn, text) {
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spin" style="width:12px;height:12px;border-width:2px;margin:0 4px"></div> ' + text;
+}
+function crmBtnDone(btn, label) {
+  if (!btn) return;
+  btn.disabled = false;
+  btn.innerHTML = '✓ ' + label;
+  btn.classList.add('hspot-ok');
+}
+function crmBtnError(btn, origHtml) {
+  if (!btn) return;
+  btn.disabled = false;
+  btn.innerHTML = origHtml;
+}
+
+function buildNoteBody(l) {
+  return [
+    '🏨 Hotel: ' + l.name,
+    l.addr             ? '📍 Dirección: '     + l.addr            : '',
+    l.type             ? '🏷 Tipo: '           + l.type            : '',
+    l.rooms            ? '🛏 Habitaciones: '   + l.rooms           : '',
+    l.rating           ? '⭐ Rating: '         + l.rating          : '',
+    l.prob             ? '❗ Problema: '        + l.prob            : '',
+    l.opp              ? '💡 Oportunidad: '    + l.opp             : '',
+    l._score != null   ? '🤖 AI Score: '       + l._score + '/100' : '',
+    l._aiSummary       ? '📊 Análisis: '       + l._aiSummary      : '',
+    l._aiAction        ? '⚡ Acción: '          + l._aiAction       : '',
+    l._ownerName && l._ownerName !== 'No encontrado' ? '👤 Propietario: ' + l._ownerName : '',
+    l._ownerOperator && l._ownerOperator !== 'No encontrado' ? '🏢 Operador: ' + l._ownerOperator : '',
+    l._ownerMessage && l._ownerMessage !== 'No encontrado'  ? '✉️ Mensaje: '  + l._ownerMessage  : '',
+    l._ownerFolio      ? '📋 Folio: https://miamidadepropertysearch.us/?folio=' + l._ownerFolio : '',
+    l.src              ? '🔗 Fuente: ' + l.src : '',
+  ].filter(Boolean).join('\n');
+}
+
+// ── HUBSPOT ────────────────────────────────────────────────────
+
+async function sendToHubspot(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const key = '';
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : '';
+  const ownerEmail = l._ownerContact && l._ownerContact.includes('@') ? l._ownerContact : '';
+  const nameParts = (ownerName || 'Owner').trim().split(' ');
+  const stageMap = CONFIG.hubspot_stages || { hot:'appointmentscheduled', warm:'presentationscheduled', cold:'appointmentscheduled', new:'appointmentscheduled' };
+  const authHeaders = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key };
+
+  try {
+    crmBtnLoading(btn, 'Creando contacto…');
+    let contactId = null;
+    if (ownerEmail) {
+      try {
+        const sr = await fetch('/api/hubspot/crm/v3/objects/contacts/search', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({filterGroups:[{filters:[{propertyName:'email',operator:'EQ',value:ownerEmail}]}],properties:['firstname','lastname']}) });
+        if (sr.ok) { const sd = await sr.json(); if (sd.results?.length) contactId = sd.results[0].id; }
+      } catch(e) {}
+    }
+    if (!contactId) {
+      const cr = await fetch('/hs/crm/v3/objects/contacts', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({ properties: { firstname:nameParts[0]||'Owner', lastname:nameParts.slice(1).join(' ')||l.name, email:ownerEmail||'', city:l.city||'', lifecyclestage:'lead', hs_lead_status:'NEW' } }) });
+      if (!cr.ok) { const e=await cr.json().catch(()=>({})); throw new Error('Contacto: '+(e.message||'HTTP '+cr.status)); }
+      contactId = (await cr.json()).id;
+    }
+    crmBtnLoading(btn, 'Creando deal…');
+    const dr = await fetch('/hs/crm/v3/objects/deals', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({ properties: { dealname:l.name+' — Acquisition Target', pipeline:CONFIG.hubspot_pipeline||'default', dealstage:stageMap[l._prio]||'appointmentscheduled', description:noteBody, closedate:new Date(Date.now()+90*24*60*60*1000).toISOString().split('T')[0], hs_priority:l._prio==='hot'?'high':l._prio==='warm'?'medium':'low' }, associations:[{to:{id:contactId},types:[{associationCategory:'HUBSPOT_DEFINED',associationTypeId:3}]}] }) });
+    if (!dr.ok) { const e=await dr.json().catch(()=>({})); throw new Error('Deal: '+(e.message||'HTTP '+dr.status)); }
+    const dealId = (await dr.json()).id;
+    await fetch('/hs/crm/v3/objects/notes', { method:'POST', headers:{'Content-Type':'application/json','X-Proxy':'1'}, body:JSON.stringify({ properties:{hs_note_body:noteBody,hs_timestamp:new Date().toISOString()}, associations:[{to:{id:contactId},types:[{associationCategory:'HUBSPOT_DEFINED',associationTypeId:202}]},{to:{id:dealId},types:[{associationCategory:'HUBSPOT_DEFINED',associationTypeId:214}]}] }) }).catch(()=>{});
+    crmBtnDone(btn, 'En HubSpot');
+    toast('✅ HubSpot — Contacto + Deal creados', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error HubSpot', e.message||'Error desconocido');
+  }
+}
+
+// ── PIPEDRIVE ──────────────────────────────────────────────────
+async function sendToPipedrive(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const key = CONFIG.crm_key;
+  if (!key) { toast('❌ Pipedrive', 'Configura crm_key en pipeline_config'); return; }
+  const domain = CONFIG.pipedrive_domain || 'api.pipedrive.com';
+  const baseUrl = domain.includes('pipedrive.com') && !domain.startsWith('http')
+    ? 'https://' + domain + '/v1'
+    : domain + '/v1';
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : l.name + ' Owner';
+  const stageId = CONFIG.crm_stage_map?.[l._prio] || 1;
+
+  try {
+    crmBtnLoading(btn, 'Creando persona…');
+    // Create Person
+    const pr = await fetch(baseUrl + '/persons?api_token=' + key, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: ownerName, org_name: l.name })
+    });
+    if (!pr.ok) throw new Error('Persona: HTTP ' + pr.status);
+    const personId = (await pr.json()).data?.id;
+
+    crmBtnLoading(btn, 'Creando deal…');
+    // Create Deal
+    const dr = await fetch(baseUrl + '/deals?api_token=' + key, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title:       l.name + ' — Acquisition Target',
+        pipeline_id: CONFIG.pipedrive_pipeline || 1,
+        stage_id:    typeof stageId === 'number' ? stageId : 1,
+        person_id:   personId,
+        status:      'open',
+      })
+    });
+    if (!dr.ok) throw new Error('Deal: HTTP ' + dr.status);
+    const dealId = (await dr.json()).data?.id;
+
+    // Add note to deal
+    await fetch(baseUrl + '/notes?api_token=' + key, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: noteBody, deal_id: dealId })
+    }).catch(() => {});
+
+    crmBtnDone(btn, 'En Pipedrive');
+    toast('✅ Pipedrive — Deal creado', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error Pipedrive', e.message || 'Error desconocido');
+  }
+}
+
+// ── SALESFORCE ─────────────────────────────────────────────────
+async function sendToSalesforce(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const token = CONFIG.crm_key || CONFIG.salesforce_token;
+  const instance = CONFIG.salesforce_instance;
+  if (!token || !instance) { toast('❌ Salesforce', 'Configura salesforce_instance y crm_key'); return; }
+  const baseUrl = instance.startsWith('http') ? instance : 'https://' + instance;
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : '';
+  const nameParts = (ownerName || 'Owner').split(' ');
+  const stageMap = { hot:'Qualification', warm:'Value Proposition', cold:'Prospecting', new:'Prospecting' };
+
+  try {
+    crmBtnLoading(btn, 'Creando contacto…');
+    // Create Contact
+    const cr = await fetch(baseUrl + '/services/data/v57.0/sobjects/Contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        FirstName:   nameParts[0] || 'Owner',
+        LastName:    nameParts.slice(1).join(' ') || l.name,
+        Email:       l._ownerContact?.includes('@') ? l._ownerContact : null,
+        MobilePhone: !l._ownerContact?.includes('@') ? l._ownerContact : null,
+        Title:       'Property Owner',
+        LeadSource:  'Sapiora',
+      })
+    });
+    if (!cr.ok) throw new Error('Contacto: HTTP ' + cr.status);
+    const contactId = (await cr.json()).id;
+
+    crmBtnLoading(btn, 'Creando oportunidad…');
+    // Create Opportunity
+    const or2 = await fetch(baseUrl + '/services/data/v57.0/sobjects/Opportunity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        Name:        l.name + ' — Acquisition Target',
+        StageName:   stageMap[l._prio] || 'Prospecting',
+        CloseDate:   new Date(Date.now() + 90*24*60*60*1000).toISOString().split('T')[0],
+        Description: noteBody,
+        LeadSource:  'Sapiora',
+      })
+    });
+    if (!or2.ok) throw new Error('Oportunidad: HTTP ' + or2.status);
+    const oppId = (await or2.json()).id;
+
+    // Link contact to opportunity
+    await fetch(baseUrl + '/services/data/v57.0/sobjects/OpportunityContactRole', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ OpportunityId: oppId, ContactId: contactId, IsPrimary: true })
+    }).catch(() => {});
+
+    crmBtnDone(btn, 'En Salesforce');
+    toast('✅ Salesforce — Oportunidad creada', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error Salesforce', e.message || 'Error desconocido');
+  }
+}
+
+// ── ZOHO CRM ───────────────────────────────────────────────────
+async function sendToZohoCRM(l, btn) {
+  const origHtml = btn ? btn.innerHTML : '';
+  const token = CONFIG.crm_key;
+  if (!token) { toast('❌ Zoho CRM', 'Configura crm_key en pipeline_config'); return; }
+  // Zoho uses EU or US domain
+  const baseUrl = 'https://www.zohoapis.eu/crm/v2';
+  const noteBody = buildNoteBody(l);
+  const ownerName = l._ownerName && l._ownerName !== 'No encontrado' ? l._ownerName : 'Owner';
+  const stageMap = { hot:'Qualification', warm:'Value Proposition', cold:'Prospecting', new:'Prospecting' };
+
+  try {
+    crmBtnLoading(btn, 'Creando contacto…');
+    // Create Contact
+    const cr = await fetch(baseUrl + '/Contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + token },
+      body: JSON.stringify({ data: [{ Last_Name: ownerName, Email: l._ownerContact?.includes('@') ? l._ownerContact : null, Lead_Source: 'Sapiora', Description: l.name + ' — ' + l.city }] })
+    });
+    if (!cr.ok) throw new Error('Contacto: HTTP ' + cr.status);
+    const contactId = (await cr.json()).data?.[0]?.details?.id;
+
+    crmBtnLoading(btn, 'Creando deal…');
+    // Create Deal
+    const dr = await fetch(baseUrl + '/Deals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + token },
+      body: JSON.stringify({ data: [{
+        Deal_Name:   l.name + ' — Acquisition Target',
+        Stage:       stageMap[l._prio] || 'Prospecting',
+        Closing_Date: new Date(Date.now() + 90*24*60*60*1000).toISOString().split('T')[0],
+        Description: noteBody,
+        Contact_Name: { id: contactId },
+        Lead_Source: 'Sapiora',
+      }] })
+    });
+    if (!dr.ok) throw new Error('Deal: HTTP ' + dr.status);
+    const dealId = (await dr.json()).data?.[0]?.details?.id;
+
+    // Add note
+    await fetch(baseUrl + '/Notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + token },
+      body: JSON.stringify({ data: [{ Note_Title: 'Sapiora — ' + l.name, Note_Content: noteBody, Parent_Id: dealId, se_module: 'Deals' }] })
+    }).catch(() => {});
+
+    crmBtnDone(btn, 'En Zoho CRM');
+    toast('✅ Zoho CRM — Deal creado', l.name);
+  } catch(e) {
+    crmBtnError(btn, origHtml);
+    toast('❌ Error Zoho CRM', e.message || 'Error desconocido');
+  }
+}
+
+// ── BROWSER NOTIFICATIONS ────────────────────────────────────
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+function checkNewLeads() {
+  requestNotifPermission();
+  const stored = localStorage.getItem('y_last_visit');
+  const lastTs = stored ? parseInt(stored) : null;
+  localStorage.setItem('y_last_visit', Date.now().toString());
+  if (!lastTs) return; // first visit
+  const newLeads = all.filter(l => {
+    if (!l._createdAt) return false;
+    return new Date(l._createdAt).getTime() > lastTs;
+  });
+  if (newLeads.length > 0) {
+    const hot = newLeads.filter(l => l._prio === 'hot').length;
+    const msg = hot > 0
+      ? `${newLeads.length} nuevos leads — ${hot} Hot 🔴`
+      : `${newLeads.length} nuevo${newLeads.length>1?'s':''} lead${newLeads.length>1?'s':''}`;
+    showBrowserNotification(msg, newLeads);
+    toast('🆕 '+newLeads.length+' leads nuevos', hot > 0 ? hot+' son Hot — acción inmediata' : 'Desde tu última visita');
+    // Auto-switch to new7 filter
+    const newBtn = document.querySelector(".vb[onclick*='new7']");
+    if (newBtn) { setMapF('new7', newBtn); newBtn.classList.add('on'); }
+  }
+}
+
+function showBrowserNotification(msg, leads) {
+  if (Notification.permission !== 'granted') return;
+  const hot = leads.filter(l => l._prio === 'hot');
+  const notif = new Notification('Sapiora — Nuevos leads', {
+    body: msg + (hot.length > 0 ? '\n' + hot.map(l => '🔴 ' + l.name).join('\n') : ''),
+    icon: '/favicon.ico',
+    badge: '/favicon.ico',
+    tag: 'sapiora-new-leads',
+    requireInteraction: hot.length > 0,
+  });
+  notif.onclick = () => {
+    window.focus();
+    notif.close();
+  };
+}
+
+// ── EMAIL NOTIFICATIONS ───────────────────────────────────────
+async function sendEmailNotification(leads) {
+  const session = (() => { try { return JSON.parse(sessionStorage.getItem('sapiora_session')||'{}'); } catch(e) { return {}; } })();
+  const to = session.email;
+  if (!to) return;
+  try {
+    await fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'new_leads',
+        to,
+        leads: leads.map(l => ({ hotel_name: l.name, city: l.city, rooms: l.rooms, priority: l._prio })),
+        org_name: session.org_name || 'Sapiora',
+      })
+    });
+  } catch(e) {}
+}
+
+function doLogout() {
+  sessionStorage.removeItem('sapiora_session');
+  window.top.location.href = '/login';
+}
+
+function showUpgrade(feature) {
+  toast('🔒 ' + feature + ' — no disponible', 'Contacta con soporte');
+}
+</script>
+</body>
+</html>
