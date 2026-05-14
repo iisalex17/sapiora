@@ -1,21 +1,56 @@
+cd C:\Users\Alex\Desktop\sapiora
+
 $ErrorActionPreference = "Stop"
 
-$htmlPath = "public/static/pipeline.html"
+$htmlPath = "public\static\pipeline.html"
+$root = (Get-Location).Path
 
-if (!(Test-Path -LiteralPath $htmlPath)) {
-  throw "No encuentro $htmlPath. Ejecuta esto desde la raíz del proyecto."
+if (!(Test-Path $htmlPath)) {
+  throw "No encuentro $htmlPath"
 }
 
-# ── API ROUTE: AI proxy server-side ─────────────────────────────
-[System.IO.Directory]::CreateDirectory("app/api/ai") | Out-Null
+$backup = "$htmlPath.bak.$(Get-Date -Format yyyyMMddHHmmss)"
+Copy-Item $htmlPath $backup
 
-@'
+$html = Get-Content -Path $htmlPath -Raw
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+
+# ------------------------------------------------------------
+# 1) Recrear API AI segura server-side
+# ------------------------------------------------------------
+$aiDir = Join-Path $root "app\api\ai"
+[System.IO.Directory]::CreateDirectory($aiDir) | Out-Null
+
+$routeAi = @'
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
-function error(message: string, status = 500) {
+function jsonError(message: string, status = 500) {
   return NextResponse.json({ error: message }, { status })
+}
+
+function normalizeAnthropicModel(input: string | undefined, webSearch: boolean) {
+  const raw = String(input || '').trim()
+
+  if (!raw) {
+    return webSearch ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001'
+  }
+
+  const badLatest =
+    raw.includes('latest') ||
+    raw === 'claude-3-5-sonnet-latest' ||
+    raw === 'claude-3-5-haiku-latest' ||
+    raw === 'claude-sonnet-4-5-latest'
+
+  if (badLatest) {
+    return webSearch ? 'claude-sonnet-4-6' : 'claude-haiku-4-5-20251001'
+  }
+
+  if (raw === 'claude-sonnet-4-5') return 'claude-sonnet-4-6'
+  if (raw === 'claude-haiku-4-5') return 'claude-haiku-4-5-20251001'
+
+  return raw
 }
 
 export async function POST(req: Request) {
@@ -30,14 +65,14 @@ export async function POST(req: Request) {
     } = await req.json()
 
     if (!prompt) {
-      return error('Prompt requerido', 400)
+      return jsonError('Prompt requerido', 400)
     }
 
     if (provider === 'openai') {
       const key = process.env.OPENAI_API_KEY
 
       if (!key) {
-        return error('OPENAI_API_KEY no configurada', 500)
+        return jsonError('OPENAI_API_KEY no configurada', 500)
       }
 
       const upstream = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -53,7 +88,7 @@ export async function POST(req: Request) {
           messages: [
             {
               role: 'system',
-              content: system || 'Responde solo con JSON válido.'
+              content: system || 'Responde solo JSON valido.'
             },
             {
               role: 'user',
@@ -63,10 +98,10 @@ export async function POST(req: Request) {
         })
       })
 
-      const data = await upstream.json().catch(() => ({}))
+      const data: any = await upstream.json().catch(() => ({}))
 
       if (!upstream.ok) {
-        return error(data?.error?.message || `OpenAI API ${upstream.status}`, upstream.status)
+        return jsonError(data?.error?.message || `OpenAI API ${upstream.status}`, upstream.status)
       }
 
       return NextResponse.json({
@@ -77,8 +112,15 @@ export async function POST(req: Request) {
     const key = process.env.ANTHROPIC_API_KEY
 
     if (!key) {
-      return error('ANTHROPIC_API_KEY no configurada', 500)
+      return jsonError('ANTHROPIC_API_KEY no configurada', 500)
     }
+
+    const selectedModel = normalizeAnthropicModel(
+      model ||
+        (web_search ? process.env.ANTHROPIC_OWNER_MODEL : process.env.ANTHROPIC_SCORING_MODEL) ||
+        process.env.ANTHROPIC_MODEL,
+      Boolean(web_search)
+    )
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -90,10 +132,10 @@ export async function POST(req: Request) {
       headers['anthropic-beta'] = 'web-search-2025-03-05'
     }
 
-    const payload: any = {
-      model: model || process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-latest',
+    const body: any = {
+      model: selectedModel,
       max_tokens,
-      system: system || 'Responde solo con JSON válido.',
+      system: system || 'Responde solo JSON valido.',
       messages: [
         {
           role: 'user',
@@ -103,7 +145,7 @@ export async function POST(req: Request) {
     }
 
     if (web_search) {
-      payload.tools = [
+      body.tools = [
         {
           type: 'web_search_20250305',
           name: 'web_search',
@@ -115,13 +157,13 @@ export async function POST(req: Request) {
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers,
-      body: JSON.stringify(payload)
+      body: JSON.stringify(body)
     })
 
-    const data = await upstream.json().catch(() => ({}))
+    const data: any = await upstream.json().catch(() => ({}))
 
     if (!upstream.ok) {
-      return error(data?.error?.message || `Anthropic API ${upstream.status}`, upstream.status)
+      return jsonError(data?.error?.message || `Anthropic API ${upstream.status}`, upstream.status)
     }
 
     const text = Array.isArray(data?.content)
@@ -133,21 +175,26 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ text })
   } catch (e: any) {
-    return error(e?.message || 'Error AI', 500)
+    return jsonError(e?.message || 'Error AI', 500)
   }
 }
-'@ | Set-Content -Encoding UTF8 -LiteralPath "app/api/ai/route.ts"
+'@
 
-# ── API ROUTE: HubSpot proxy server-side ────────────────────────
-[System.IO.Directory]::CreateDirectory("app/api/hubspot/[...path]") | Out-Null
+[System.IO.File]::WriteAllText((Join-Path $aiDir "route.ts"), $routeAi, $utf8)
 
-@'
+# ------------------------------------------------------------
+# 2) Recrear proxy HubSpot seguro server-side
+# ------------------------------------------------------------
+$hsDir = Join-Path $root "app\api\hubspot\[...path]"
+[System.IO.Directory]::CreateDirectory($hsDir) | Out-Null
+
+$routeHs = @'
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
 type Ctx = {
-  params: Promise<{ path: string[] }> | { path: string[] }
+  params: { path: string[] } | Promise<{ path: string[] }>
 }
 
 async function proxy(req: Request, ctx: Ctx) {
@@ -160,7 +207,7 @@ async function proxy(req: Request, ctx: Ctx) {
     )
   }
 
-  const params = await ctx.params
+  const params = await Promise.resolve(ctx.params)
   const path = params.path.join('/')
 
   const incomingUrl = new URL(req.url)
@@ -177,6 +224,7 @@ async function proxy(req: Request, ctx: Ctx) {
   if (accept) headers.set('Accept', accept)
 
   const method = req.method.toUpperCase()
+
   const body =
     method === 'GET' || method === 'HEAD'
       ? undefined
@@ -217,18 +265,75 @@ export async function PUT(req: Request, ctx: Ctx) {
 export async function DELETE(req: Request, ctx: Ctx) {
   return proxy(req, ctx)
 }
-'@ | Set-Content -Encoding UTF8 -LiteralPath "app/api/hubspot/[...path]/route.ts"
+'@
 
-# ── Patch HTML ─────────────────────────────────────────────────
-$html = Get-Content -LiteralPath $htmlPath -Raw
+[System.IO.File]::WriteAllText((Join-Path $hsDir "route.ts"), $routeHs, $utf8)
 
-# Remove hardcoded exposed keys and invalid top-level await
-$html = $html -replace '(?m)^\s*const result = await callAnthropic\(prompt\);\s*\r?\n?', ''
-$html = $html -replace '(?m)^\s*var HUBSPOT_KEY\s*=\s*"[^"]*";\s*var OPENAI_KEY\s*=\s*"[^"]*";\s*\r?\n?', ''
-$html = $html -replace '(?m)^\s*var HUBSPOT_KEY\s*=\s*"[^"]*";\s*\r?\n?', ''
+# ------------------------------------------------------------
+# 3) Parchear helpers en pipeline.html
+# ------------------------------------------------------------
+$utils = @'
+function fixMojibake(input) {
+  let s = String(input ?? '');
 
-# Add server-side AI helper after CFG
-$helper = @'
+  const map = {
+    'Ã¡':'á','Ã©':'é','Ã­':'í','Ã³':'ó','Ãº':'ú','Ã±':'ñ','Ã‘':'Ñ',
+    'ÃÁ':'Á','Ã‰':'É','ÃÍ':'Í','Ã“':'Ó','Ãš':'Ú',
+    'Â¿':'¿','Â¡':'¡','Â·':'·','Âº':'º','Âª':'ª','Â ':' ',
+    'â€”':'—','â€“':'–','â€˜':'‘','â€™':'’','â€œ':'“','â€�':'”',
+    'â€¦':'…','â†’':'→','â†‘':'↑','â†“':'↓','âœ“':'✓','âœ¦':'✦',
+    'âš ':'⚠','â˜…':'★'
+  };
+
+  Object.keys(map).forEach(k => {
+    s = s.split(k).join(map[k]);
+  });
+
+  return s.replace(/ðŸ[^ \n\r\t<]{0,10}/g, '').replace(/�/g, '');
+}
+
+function cleanText(input) {
+  return fixMojibake(input).trim();
+}
+
+const esc = s => fixMojibake(s)
+  .replace(/&/g,'&amp;')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;');
+
+function cleanVisibleText(root) {
+  try {
+    const walker = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n => {
+      const fixed = fixMojibake(n.nodeValue);
+      if (fixed !== n.nodeValue) n.nodeValue = fixed;
+    });
+  } catch(e) {}
+}
+
+function startTextCleaner() {
+  cleanVisibleText(document.body);
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(m => {
+      m.addedNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          node.nodeValue = fixMojibake(node.nodeValue);
+        } else if (node.nodeType === 1) {
+          cleanVisibleText(node);
+        }
+      });
+    });
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+}
+
 async function callAI({ provider = 'anthropic', prompt, system = '', model = '', max_tokens = 1000, web_search = false }) {
   const res = await fetch('/api/ai', {
     method: 'POST',
@@ -245,7 +350,7 @@ async function callAI({ provider = 'anthropic', prompt, system = '', model = '',
     })
   });
 
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
     throw new Error(data.error || 'Error AI');
@@ -273,16 +378,90 @@ function parseAIJson(text) {
     throw new Error('No se pudo parsear JSON de AI');
   }
 }
-'@
 
-if ($html -notmatch 'async function callAI\(') {
-  $needle = "const CFG = { url:'', key:'', table:'leads' };"
-  $rxNeedle = [System.Text.RegularExpressions.Regex]::new([System.Text.RegularExpressions.Regex]::Escape($needle))
-  $html = $rxNeedle.Replace($html, { param($m) $needle + "`r`n`r`n" + $helper }, 1)
+function renderAIResult(result) {
+  const score = Math.max(0, Math.min(100, Number(result.score) || 0));
+  const flags = Array.isArray(result.flags) ? result.flags : [];
+
+  const flagHtml = flags.length
+    ? flags.map(function(f) {
+        const type = ['green', 'yellow', 'red'].includes(f.type) ? f.type : 'yellow';
+        const icon = type === 'green' ? '✓' : type === 'red' ? '!' : '•';
+        return `<div class="flag ${type}"><strong>${icon}</strong><span>${esc(f.text || '')}</span></div>`;
+      }).join('')
+    : '<div class="flag yellow"><strong>•</strong><span>Sin señales disponibles.</span></div>';
+
+  g('ai-score-content').innerHTML = `
+    <div class="score-meter">
+      <div class="score-circle" style="border-color:${scoreColor(score)};color:${scoreColor(score)}">${score}</div>
+      <div class="score-info">
+        <div class="score-title">AI Lead Score</div>
+        <div class="score-desc">${esc(result.summary || 'Análisis generado correctamente.')}</div>
+        <div class="score-bar-wrap">
+          <div class="score-bar" style="width:${score}%;background:${scoreColor(score)}"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-box">
+      <div class="ai-hd">
+        <div class="ai-icon">AI</div>
+        <div>
+          <div class="ai-title">Resumen ejecutivo</div>
+          <div class="ai-sub">Análisis de oportunidad</div>
+        </div>
+      </div>
+      <div class="ai-content">${esc(result.summary || '—')}</div>
+    </div>
+
+    <div class="ai-box">
+      <div class="ai-hd">
+        <div class="ai-icon">!</div>
+        <div>
+          <div class="ai-title">Señales y riesgos</div>
+          <div class="ai-sub">Flags detectados</div>
+        </div>
+      </div>
+      <div class="flag-list">${flagHtml}</div>
+    </div>
+
+    <div class="ai-box">
+      <div class="ai-hd">
+        <div class="ai-icon">→</div>
+        <div>
+          <div class="ai-title">Acción recomendada</div>
+          <div class="ai-sub">Esta semana</div>
+        </div>
+      </div>
+      <div class="ai-content">${esc(result.action || 'Priorizar contacto y validación del activo.')}</div>
+    </div>
+  `;
 }
 
-# Replace runAIScoring
-$runAIScoring = @'
+window.addEventListener('load', () => {
+  setTimeout(startTextCleaner, 50);
+});
+'@
+
+$rxEsc = [System.Text.RegularExpressions.Regex]::new("const\s+esc\s*=\s*s\s*=>\s*String\(s\|\|''\)\.replace\(/&/g,'&amp;'\)\.replace\(/</g,'&lt;'\)\.replace\(/>/g,'&gt;'\);")
+
+if ($rxEsc.IsMatch($html)) {
+  $html = $rxEsc.Replace($html, $utils, 1)
+} elseif ($html -notmatch "function fixMojibake") {
+  $html = $html.Replace("const sleep = ms => new Promise(r => setTimeout(r, ms));", $utils + "`r`nconst sleep = ms => new Promise(r => setTimeout(r, ms));")
+}
+
+# Limpiar modelos antiguos en el HTML
+$html = $html.Replace("claude-3-5-sonnet-latest", "claude-sonnet-4-6")
+$html = $html.Replace("claude-3-5-haiku-latest", "claude-haiku-4-5-20251001")
+$html = $html.Replace("claude-sonnet-4-5", "claude-sonnet-4-6")
+$html = $html.Replace("claude-haiku-4-5',", "claude-haiku-4-5-20251001',")
+$html = $html.Replace("claude-haiku-4-5`"", "claude-haiku-4-5-20251001`"")
+
+# ------------------------------------------------------------
+# 4) Reemplazar runAIScoring + runOwnerSearch completos
+# ------------------------------------------------------------
+$aiFunctions = @'
 async function runAIScoring() {
   if (!FEAT.aiScoring) { showUpgrade('AI Lead Scoring'); return; }
 
@@ -292,10 +471,10 @@ async function runAIScoring() {
   const btn = document.querySelector('#ai-score-content button');
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Analizando…';
+    btn.textContent = 'Analizando...';
   }
 
-  g('ai-score-content').innerHTML = `<div class="ai-loading"><div class="spin"></div>Analizando con AI…</div>`;
+  g('ai-score-content').innerHTML = `<div class="ai-loading"><div class="spin"></div>Analizando con AI...</div>`;
 
   const prompt = `Eres un analista de inversiones hoteleras especializado trabajando para un cliente de Sapiora.
 
@@ -304,29 +483,29 @@ Mercado objetivo: ${CONFIG.target_market}
 
 Analiza este activo hotelero y devuelve un JSON con este formato exacto, sin markdown, solo JSON:
 {
-  "score": <número 0-100>,
-  "summary": "<análisis ejecutivo de 2-3 frases>",
+  "score": <numero 0-100>,
+  "summary": "<analisis ejecutivo de 2-3 frases>",
   "flags": [
-    {"type": "green", "text": "<señal positiva>"},
+    {"type": "green", "text": "<senal positiva>"},
     {"type": "yellow", "text": "<riesgo moderado>"},
     {"type": "red", "text": "<red flag>"}
   ],
-  "action": "<acción concreta esta semana>"
+  "action": "<accion concreta esta semana>"
 }
 
 Datos del activo:
 - Nombre: ${l.name}
-- Dirección: ${l.addr}
+- Direccion: ${l.addr}
 - Ciudad: ${l.city}, ${l.state}
 - Tipo: ${l.type}
 - Habitaciones: ${l.rooms}
 - Rating: ${l.rating}
 - Tipo de oportunidad: ${l.opp}
 - Problema principal: ${l.prob}
-- Por qué puede mejorarlo: ${l.why}
+- Por que puede mejorarlo: ${l.why}
 - Prioridad actual: ${l._prio}
 
-Criterios de scoring específicos:
+Criterios de scoring especificos:
 ${CONFIG.scoring_criteria}
 
 Escala:
@@ -338,33 +517,20 @@ Escala:
   const useClaude = ['professional', 'custom', 'enterprise'].includes((FEAT._plan || '').toLowerCase());
 
   try {
-    let result;
+    const text = await callAI({
+      provider: useClaude ? 'anthropic' : 'openai',
+      model: useClaude ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini',
+      max_tokens: 1000,
+      system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON valido, sin markdown ni texto adicional.',
+      prompt
+    });
 
-    if (useClaude) {
-      const text = await callAI({
-        provider: 'anthropic',
-        model: 'claude-3-5-haiku-latest',
-        max_tokens: 1000,
-        system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido, sin markdown ni texto adicional.',
-        prompt
-      });
-
-      result = parseAIJson(text);
-    } else {
-      const text = await callAI({
-        provider: 'openai',
-        model: 'gpt-4o-mini',
-        max_tokens: 1000,
-        system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.',
-        prompt
-      });
-
-      result = parseAIJson(text);
-    }
-
+    const result = parseAIJson(text);
     result.score = Math.max(0, Math.min(100, Number(result.score) || 0));
 
-    aiScores[l._id] = result;
+    if (l._id) {
+      aiScores[l._id] = result;
+    }
 
     try {
       localStorage.setItem('y_ai_scores', JSON.stringify(aiScores));
@@ -408,36 +574,29 @@ Escala:
     g('ai-score-content').innerHTML = `<div class="ai-error">Error al conectar con AI: ${esc(e.message)}</div><br><button class="act-gold" onclick="runAIScoring()">Reintentar</button>`;
   }
 }
-'@
 
-$rxScoring = [System.Text.RegularExpressions.Regex]::new('async function runAIScoring\(\) \{[\s\S]*?\r?\n\}\r?\n\r?\nasync function runOwnerSearch\(\) \{')
-$html = $rxScoring.Replace($html, { param($m) $runAIScoring + "`r`n`r`nasync function runOwnerSearch() {" }, 1)
-
-# Replace runOwnerSearch
-$runOwnerSearch = @'
 async function runOwnerSearch() {
   const l = all.find(x => x._i === activeId);
   if (!l) return;
 
   show('owner-result');
-
-  g('owner-result').innerHTML = `<div class="ai-loading"><div class="spin"></div>Buscando propietario con AI…</div>`;
+  g('owner-result').innerHTML = `<div class="ai-loading"><div class="spin"></div>Buscando propietario con AI...</div>`;
 
   const prompt = `Eres un investigador experto en real estate hotelero trabajando para un cliente de Sapiora.
 
 Contexto del cliente: ${CONFIG.prompt_context}
 Mercado objetivo: ${CONFIG.target_market}
-Regiones de búsqueda: ${(CONFIG.owner_search_regions || []).join(', ')}
+Regiones de busqueda: ${(CONFIG.owner_search_regions || []).join(', ')}
 
-Investiga este hotel y encuentra toda la información posible sobre su propietario real.
+Investiga este hotel y encuentra toda la informacion posible sobre su propietario real.
 
 HOTEL:
 - Nombre: ${l.name}
-- Dirección: ${l.addr}
+- Direccion: ${l.addr}
 - Ciudad: ${l.city}
 - Problema: ${l.prob}
 
-BÚSQUEDAS:
+BUSQUEDAS:
 1. "${l.name} ${l.city} owner LLC"
 2. "${l.name} folio property appraiser ${(CONFIG.owner_search_regions || [''])[0]}"
 3. "${l.addr} property owner"
@@ -447,18 +606,18 @@ BÚSQUEDAS:
 Contexto para el outreach: ${CONFIG.outreach_context}
 El mensaje de contacto debe estar en idioma: ${CONFIG.outreach_language || 'es'}
 
-Devuelve SOLO JSON válido, sin texto antes ni después:
+Devuelve SOLO JSON valido, sin texto antes ni despues:
 {
   "owner_name": "<persona o LLC propietaria, o No encontrado>",
   "owner_type": "<Individual / LLC / REIT / Family Office / Hotel Group / No encontrado>",
-  "folio_number": "<número catastral si encontrado, o null>",
+  "folio_number": "<numero catastral si encontrado, o null>",
   "current_operator": "<empresa gestora actual, o No encontrado>",
   "registered_agent": "<agente registrado, o No encontrado>",
   "linkedin_url": "<URL LinkedIn real, o No encontrado>",
   "linkedin_name": "<nombre perfil LinkedIn, o No encontrado>",
-  "contact_info": "<teléfono o email, o No encontrado>",
+  "contact_info": "<telefono o email, o No encontrado>",
   "contact_strategy": "<2 pasos concretos para llegar al propietario esta semana>",
-  "first_message": "<mensaje outreach personalizado, máx 3 frases, en ${CONFIG.outreach_language || 'es'}, mencionando el cliente y proponiendo reunión>",
+  "first_message": "<mensaje outreach personalizado, max 3 frases, en ${CONFIG.outreach_language || 'es'}, mencionando el cliente y proponiendo reunion>",
   "confidence": "<alta/media/baja>",
   "red_flags": "<riesgos o barreras, o Ninguna>"
 }`;
@@ -466,10 +625,10 @@ Devuelve SOLO JSON válido, sin texto antes ni después:
   try {
     const text = await callAI({
       provider: 'anthropic',
-      model: 'claude-3-5-sonnet-latest',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1500,
       web_search: true,
-      system: 'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Busca información real y actualizada. Responde SOLO con JSON válido, sin texto adicional.',
+      system: 'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Responde SOLO con JSON valido.',
       prompt
     });
 
@@ -514,7 +673,7 @@ Devuelve SOLO JSON válido, sin texto antes ni después:
           owner_searched_at: new Date().toISOString()
         })
       }).then(res => {
-        if (res.ok) toast('💾 Owner guardado', 'Datos guardados en Supabase');
+        if (res.ok) toast('Owner guardado', 'Datos guardados en Supabase');
       }).catch(() => {});
     }
 
@@ -527,7 +686,7 @@ Devuelve SOLO JSON válido, sin texto antes ni después:
     g('owner-result').innerHTML = `
       <div class="ai-box" style="margin-top:12px">
         <div class="ai-hd">
-          <div class="ai-icon">👤</div>
+          <div class="ai-icon">ID</div>
           <div>
             <div class="ai-title">${esc(r.owner_name || 'Propietario no identificado')}</div>
             <div class="ai-sub">${esc(r.owner_type || '')} · <span style="color:${confColor};font-weight:700">Confianza ${esc(r.confidence || '—')}</span></div>
@@ -536,40 +695,43 @@ Devuelve SOLO JSON válido, sin texto antes ni después:
       </div>
 
       <div class="info-grid">
-        ${r.folio_number ? `<div class="ig full" style="background:rgba(196,163,90,.08);border-color:rgba(196,163,90,.25)"><div class="ig-l">📋 Folio Miami-Dade</div><div class="ig-v"><a href="https://miamidadepropertysearch.us/?folio=${esc(r.folio_number)}" target="_blank" style="color:var(--gold-d);font-weight:700;text-decoration:none">${esc(r.folio_number)} ↗</a></div></div>` : ''}
+        ${r.folio_number ? `<div class="ig full" style="background:rgba(196,163,90,.08);border-color:rgba(196,163,90,.25)"><div class="ig-l">Folio Miami-Dade</div><div class="ig-v"><a href="https://miamidadepropertysearch.us/?folio=${esc(r.folio_number)}" target="_blank" style="color:var(--gold-d);font-weight:700;text-decoration:none">${esc(r.folio_number)} ↗</a></div></div>` : ''}
 
         ${r.registered_agent && r.registered_agent !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Agente registrado</div><div class="ig-v">${esc(r.registered_agent)}</div></div>` : ''}
 
         ${r.current_operator && r.current_operator !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Operador actual</div><div class="ig-v">${esc(r.current_operator)}</div></div>` : ''}
 
-        ${r.linkedin_url && r.linkedin_url !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v"><a href="${esc(r.linkedin_url)}" target="_blank" style="color:var(--cold);font-weight:700;text-decoration:none">🔗 ${esc(r.linkedin_name || r.linkedin_url)} ↗</a></div></div>` : `<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v" style="color:var(--muted2)">No encontrado</div></div>`}
+        ${r.linkedin_url && r.linkedin_url !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v"><a href="${esc(r.linkedin_url)}" target="_blank" style="color:var(--cold);font-weight:700;text-decoration:none">LinkedIn ↗</a></div></div>` : `<div class="ig full"><div class="ig-l">LinkedIn</div><div class="ig-v" style="color:var(--muted2)">No encontrado</div></div>`}
 
         ${r.contact_info && r.contact_info !== 'No encontrado' ? `<div class="ig full"><div class="ig-l">Contacto directo</div><div class="ig-v" style="color:var(--new);font-weight:600">${esc(r.contact_info)}</div></div>` : ''}
 
         <div class="ig full"><div class="ig-l">Estrategia de contacto</div><div class="ig-v sm">${esc(r.contact_strategy || '—')}</div></div>
 
-        <div class="ig full gold"><div class="ig-l">✉ Primer mensaje sugerido</div><div class="ig-v sm" style="font-style:italic">${esc(r.first_message || '—')}</div></div>
+        <div class="ig full gold"><div class="ig-l">Primer mensaje sugerido</div><div class="ig-v sm" style="font-style:italic">${esc(r.first_message || '—')}</div></div>
 
-        ${r.red_flags && r.red_flags !== 'Ninguna' ? `<div class="ig full"><div class="ig-l">⚠ Red flags</div><div class="ig-v sm">${esc(r.red_flags)}</div></div>` : ''}
+        ${r.red_flags && r.red_flags !== 'Ninguna' ? `<div class="ig full"><div class="ig-l">Red flags</div><div class="ig-v sm">${esc(r.red_flags)}</div></div>` : ''}
       </div>
 
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        ${r.folio_number ? `<a href="https://miamidadepropertysearch.us/?folio=${esc(r.folio_number)}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">🏠 Miami-Dade Folio ↗</button></a>` : `<a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>`}
+        ${r.folio_number ? `<a href="https://miamidadepropertysearch.us/?folio=${esc(r.folio_number)}" target="_blank" style="flex:1"><button class="act-gold" style="width:100%">Miami-Dade Folio ↗</button></a>` : `<a href="${miamiDadeUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Miami-Dade PA ↗</button></a>`}
         <a href="${sunbizUrl}" target="_blank" style="flex:1"><button class="act-s" style="width:100%">Sunbiz ↗</button></a>
-        <button class="act-s" onclick="navigator.clipboard.writeText(${JSON.stringify(r.first_message || '')}).then(()=>toast('✓ Copiado','Mensaje en el portapapeles'))">Copiar mensaje</button>
+        <button class="act-s" onclick="navigator.clipboard.writeText(${JSON.stringify(r.first_message || '')}).then(()=>toast('Copiado','Mensaje en el portapapeles'))">Copiar mensaje</button>
       </div>
     `;
   } catch(e) {
     g('owner-result').innerHTML = `<div class="ai-error" style="margin-top:10px">Error: ${esc(e.message)}</div><br><button class="act-gold" onclick="runOwnerSearch()">Reintentar</button>`;
   }
 }
+
 '@
 
-$rxOwner = [System.Text.RegularExpressions.Regex]::new('async function runOwnerSearch\(\) \{[\s\S]*?\r?\n\}\r?\n\r?\n// ── ASSET MANAGER / REVPAR')
-$html = $rxOwner.Replace($html, { param($m) $runOwnerSearch + "`r`n`r`n// ASSET MANAGER / REVPAR" }, 1)
+$rxAi = [System.Text.RegularExpressions.Regex]::new("async function runAIScoring\(\)\s*\{[\s\S]*?\r?\n// .{0,40}ASSET MANAGER / REVPAR[^\r\n]*")
+$html = $rxAi.Replace($html, $aiFunctions + "`r`n// ASSET MANAGER / REVPAR", 1)
 
-# Replace scrapeBooking
-$scrapeBooking = @'
+# ------------------------------------------------------------
+# 5) Reemplazar scrapeBooking roto
+# ------------------------------------------------------------
+$bookingFunction = @'
 function scrapeBooking() {
   var url = g('booking-url-input') ? g('booking-url-input').value.trim() : '';
   var name = g('nl-name') ? g('nl-name').value.trim() : '';
@@ -589,7 +751,7 @@ function scrapeBooking() {
   var status = g('booking-status');
 
   btn.disabled = true;
-  btn.textContent = '⏳...';
+  btn.textContent = '...';
 
   status.style.display = 'block';
   status.textContent = 'AI buscando datos de Booking.com...';
@@ -613,7 +775,7 @@ function scrapeBooking() {
       try {
         bookingData = JSON.parse(m[0]);
         renderBookingResult(bookingData);
-        status.textContent = '✓ Datos encontrados';
+        status.textContent = 'Datos encontrados';
       } catch(e) {
         status.textContent = 'Error parseando respuesta.';
       }
@@ -626,63 +788,79 @@ function scrapeBooking() {
   })
   .finally(function() {
     btn.disabled = false;
-    btn.innerHTML = '🔍 Buscar';
+    btn.innerHTML = 'Buscar';
   });
 }
+
 '@
 
-$rxBooking = [System.Text.RegularExpressions.Regex]::new('function scrapeBooking\(\) \{[\s\S]*?\r?\n\}\r?\n\r?\nfunction renderBookingResult\(d\) \{')
-$html = $rxBooking.Replace($html, { param($m) $scrapeBooking + "`r`n`r`nfunction renderBookingResult(d) {" }, 1)
+$rxBooking = [System.Text.RegularExpressions.Regex]::new("function scrapeBooking\(\)\s*\{[\s\S]*?\r?\nfunction renderBookingResult\(d\)\s*\{")
+$html = $rxBooking.Replace($html, $bookingFunction + "`r`nfunction renderBookingResult(d) {", 1)
 
-# HubSpot calls now go through Next API proxy
+# ------------------------------------------------------------
+# 6) Proxy HubSpot y limpieza de referencias a keys
+# ------------------------------------------------------------
 $html = $html.Replace("fetch('/hs/", "fetch('/api/hubspot/")
-
-# Remove secret fallback usage
+$html = $html -replace '(?m)^\s*var\s+HUBSPOT_KEY\s*=\s*"[^"]*";\s*$', ''
 $html = $html -replace 'const key = CONFIG\.crm_key \|\| HUBSPOT_KEY;', "const key = '';"
 
-Set-Content -Encoding UTF8 -LiteralPath $htmlPath -Value $html
-
-# ── .env.local placeholders ────────────────────────────────────
-if (!(Test-Path -LiteralPath ".env.local")) {
-  "" | Set-Content -Encoding UTF8 -LiteralPath ".env.local"
+# Corregir algunos mojibake en el propio fichero
+$repls = @{
+  'Ã¡'='á'; 'Ã©'='é'; 'Ã­'='í'; 'Ã³'='ó'; 'Ãº'='ú'; 'Ã±'='ñ'; 'Ã‘'='Ñ';
+  'Â¿'='¿'; 'Â¡'='¡'; 'Â·'='·'; 'Âº'='º';
+  'â€”'='—'; 'â€“'='–'; 'âœ“'='✓'; 'âœ¦'='✦'; 'â†’'='→'; 'â†“'='↓'
 }
 
-$envText = Get-Content -LiteralPath ".env.local" -Raw
+foreach ($k in $repls.Keys) {
+  $html = $html.Replace($k, $repls[$k])
+}
 
-foreach ($name in @("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "HUBSPOT_ACCESS_TOKEN")) {
-  if ($envText -notmatch ("(?m)^" + [regex]::Escape($name) + "=")) {
-    Add-Content -LiteralPath ".env.local" -Value "$name="
+[System.IO.File]::WriteAllText((Join-Path $root $htmlPath), $html, $utf8)
+
+# ------------------------------------------------------------
+# 7) .gitignore y .env.local
+# ------------------------------------------------------------
+if (!(Test-Path ".gitignore")) {
+  "" | Set-Content -Path ".gitignore" -Encoding UTF8
+}
+
+$gitignore = Get-Content -Path ".gitignore" -Raw
+
+if ($gitignore -notmatch "(?m)^\.env$") {
+  Add-Content -Path ".gitignore" -Value ".env"
+}
+
+if ($gitignore -notmatch "(?m)^\.env\.local$") {
+  Add-Content -Path ".gitignore" -Value ".env.local"
+}
+
+if (!(Test-Path ".env.local")) {
+  "" | Set-Content -Path ".env.local" -Encoding UTF8
+}
+
+$env = Get-Content -Path ".env.local" -Raw
+
+foreach ($k in @("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "HUBSPOT_ACCESS_TOKEN")) {
+  if ($env -notmatch "(?m)^$k=") {
+    Add-Content -Path ".env.local" -Value "$k="
   }
 }
 
-# ── .gitignore ─────────────────────────────────────────────────
-if (!(Test-Path -LiteralPath ".gitignore")) {
-  "" | Set-Content -Encoding UTF8 -LiteralPath ".gitignore"
-}
-
-$ignore = Get-Content -LiteralPath ".gitignore" -Raw
-
-foreach ($line in @(".env", ".env.local")) {
-  if ($ignore -notmatch ("(?m)^" + [regex]::Escape($line) + "$")) {
-    Add-Content -LiteralPath ".gitignore" -Value $line
-  }
-}
-
-# Verify no old key variable refs remain
-$patched = Get-Content -LiteralPath $htmlPath -Raw
-
 Write-Host ""
-Write-Host "✅ HTML parcheado: $htmlPath"
-Write-Host "✅ API creada: app/api/ai/route.ts"
-Write-Host "✅ HubSpot proxy creado: app/api/hubspot/[...path]/route.ts"
-Write-Host "✅ .env.local preparado"
+Write-Host "OK: pipeline.html reparado"
+Write-Host "Backup: $backup"
+Write-Host "OK: app/api/ai/route.ts reparado"
+Write-Host "OK: app/api/hubspot/[...path]/route.ts reparado"
 Write-Host ""
 
-if ($patched -match 'ANTHROPIC_KEY|OPENAI_KEY|HUBSPOT_KEY') {
-  Write-Warning "Quedan referencias a ANTHROPIC_KEY / OPENAI_KEY / HUBSPOT_KEY. Revísalas manualmente."
+$check = Select-String -Path $htmlPath -Pattern "ANTHROPIC_KEY|OPENAI_KEY|HUBSPOT_KEY|sk-ant|sk-proj|pat-eu1"
+
+if ($check) {
+  Write-Warning "Quedan referencias sospechosas:"
+  $check
 } else {
-  Write-Host "✅ Sin referencias a ANTHROPIC_KEY / OPENAI_KEY / HUBSPOT_KEY en el HTML"
+  Write-Host "OK: sin keys en pipeline.html"
 }
 
 Write-Host ""
-Write-Host "Ahora rellena .env.local con keys NUEVAS, reinicia Next.js y haz commit."
+Write-Host "Ahora ejecuta: npm run build"
