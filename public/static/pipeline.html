@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pipeline — Yurbban Hospitality Group</title>
+<title>HLIE 2.0 — Yurbban Hospitality Group</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -648,8 +648,8 @@ function scoreColor(s){
 }
 
 // ── CONFIG ───────────────────────────────────────────
-var ANTHROPIC_KEY = ""; // moved to Vercel env via /api/ai
-var HUBSPOT_KEY = "pat-eu1-3148f098-a865-4249-b7ad-3060ac20c4c6";var OPENAI_KEY = ""; // moved to Vercel env via /api/ai
+var ANTHROPIC_KEY = "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";
+var HUBSPOT_KEY = "pat-eu1-3148f098-a865-4249-b7ad-3060ac20c4c6";var OPENAI_KEY = "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";
 
 const CFG = { url:'', key:'', table:'leads' };
 const COL = {
@@ -717,30 +717,46 @@ var ORG_ID = '';
 
 // ── INIT ─────────────────────────────────────────────
 window.onload = function() {
-  // ── CREDENTIALS: Hardcoded for Yurbban Hospitality Group ────
-  const session = {
-    supabase_url:    'https://owdvtgwuizxzgppqgtps.supabase.co',
-    supabase_key:    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZHZ0Z3d1aXp4emdwcHFndHBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyODU5MDMsImV4cCI6MjA5Mjg2MTkwM30.hpNlm2eUX_zAgYF7Lud9Ru2QSJuHvYaR4EB-Lf9a-4A',
-    org_id:          'yurbban_8738',
-    org_name:        'Yurbban Hospitality Group',
-    plan:            'professional',
-    userPlan:        'professional',
-    isSapioraAdmin:  false,
-    pipeline_config: {
-      currency: 'USD',
-      revpar_fee_pct: 7,
-      revpar_gop_pct: 40,
-      map_center: [25.77, -80.19],
-      map_zoom: 11,
-      outreach_language: 'es',
-      col_why_label: 'Por qué puede mejorarlo',
-      crm: 'none',
-    },
-  };
-  CFG.url   = session.supabase_url;
-  CFG.key   = session.supabase_key;
-  CFG.table = 'leads';
-  ORG_ID    = session.org_id;
+  // ── CREDENTIALS: URL params (iframe) or sessionStorage ─────
+  let session = null;
+  const urlParams    = new URLSearchParams(window.location.search);
+  const urlParamUrl  = urlParams.get('url');
+  const urlParamKey  = urlParams.get('key');
+  const urlParamOrg  = urlParams.get('org');
+  const urlParamName = urlParams.get('org_name');
+  const urlParamPlan = urlParams.get('plan');
+  const urlParamCfg  = urlParams.get('pipeline_config');
+
+  if (urlParamUrl && urlParamKey) {
+    // Inside Next.js iframe — use URL params
+    CFG.url   = urlParamUrl;
+    CFG.key   = urlParamKey;
+    CFG.table = 'leads';
+    ORG_ID    = urlParamOrg || '';
+    session   = {
+      supabase_url: urlParamUrl, supabase_key: urlParamKey,
+      org_id: urlParamOrg || '', org_name: urlParamName || '',
+      plan: urlParamPlan || 'enterprise',
+      pipeline_config: urlParamCfg ? JSON.parse(decodeURIComponent(urlParamCfg)) : {},
+      userPlan: urlParamPlan || 'enterprise',
+      isSapioraAdmin: false,
+    };
+    // Try to inherit full session from parent window
+    try {
+      const ps = JSON.parse(window.parent.sessionStorage.getItem('sapiora_session') || '{}');
+      if (ps.supabase_url) Object.assign(session, ps);
+    } catch(e) {}
+  } else {
+    // Standalone — use sessionStorage
+    try { session = JSON.parse(sessionStorage.getItem('sapiora_session')); } catch(e){}
+    if (!session || !session.supabase_url || !session.supabase_key) {
+      window.top.location.href = '/login'; return;
+    }
+    CFG.url   = session.supabase_url;
+    CFG.key   = session.supabase_key;
+    CFG.table = 'leads';
+    ORG_ID    = session.org_id || '';
+  }
 
   // ── PLAN FEATURES ──────────────────────────────────────────
   const plan = (session.plan || session.userPlan || 'enterprise').toLowerCase();
@@ -1266,45 +1282,54 @@ Escala:
 - 0-39: Descartable`;
 
   // ── Plan-aware model selection ──────────────────────────────
-  const useClaude = true; // Yurbban: AI Scoring uses Claude Haiku
+  const useClaude = ['professional','custom','enterprise'].includes((FEAT._plan||'').toLowerCase());
 
   try {
     let result;
 
     if (useClaude) {
       // Business/Enterprise → Claude Haiku
-      const res = await fetch('/api/ai', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
         body: JSON.stringify({
-          provider: 'anthropic',
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 1000,
           system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido, sin markdown ni texto adicional.',
-          prompt: prompt
+          messages: [{ role: 'user', content: prompt }]
         })
       });
       if (!res.ok) { const e = await res.text(); throw new Error('Claude API ' + res.status + ': ' + e); }
       const data = await res.json();
-      const text = (data.text || '').trim();
+      const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('').trim();
       const clean = text.replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + 'json\\s*'), '').replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + '\\s*'), '').replace(new RegExp('\\s*' + String.fromCharCode(96).repeat(3) + '$'), '').trim();
       result = JSON.parse(clean);
     } else {
       // Starter/Pro → GPT-4o mini (cheaper)
-      const res = await fetch('/api/ai', {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + OPENAI_KEY
+        },
         body: JSON.stringify({
-          provider: 'openai',
           model: 'gpt-4o-mini',
           max_tokens: 1000,
-          system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.',
-          prompt: prompt
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.' },
+            { role: 'user', content: prompt }
+          ]
         })
       });
       if (!res.ok) { const e = await res.text(); throw new Error('OpenAI API ' + res.status + ': ' + e); }
       const data = await res.json();
-      const text = (data.text || data.choices?.[0]?.message?.content) || '';
+      const text = data.choices?.[0]?.message?.content || '';
       result = JSON.parse(text);
     }
 
@@ -1380,21 +1405,34 @@ Devuelve SOLO JSON válido, sin texto antes ni después:
 }`;
 
   try {
-    const res=await fetch('/api/ai',{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':ANTHROPIC_KEY,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({
-        provider:'anthropic',
         model:'claude-sonnet-4-6',
         max_tokens:1500,
-        web_search:true,
+        tools:[{"type":"web_search_20250305","name":"web_search","max_uses":5}],
         system:'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Busca en internet información real y actualizada. Responde SOLO con JSON al final, sin texto adicional.',
-        prompt:prompt
+        messages:[{role:'user',content:prompt}]
       })
     });
     if(!res.ok){ const err=await res.text(); throw new Error('API '+res.status+': '+err); }
     const data=await res.json();
-    const text=(data.text||'').trim();
+
+    // Mostrar búsquedas mientras procesa
+    const searchCalls=(data.content||[]).filter(c=>c.type==='tool_use'&&c.name==='web_search');
+    if(searchCalls.length>0){
+      const queries=searchCalls.map(c=>c.input?.query||'').filter(Boolean);
+      g('owner-result').innerHTML='<div class="ai-loading" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;align-items:center;gap:8px"><div class="spin"></div>Buscando con Claude…</div>'+queries.map(function(q){return '<div style="font-size:10px;color:var(--muted);padding-left:4px">🔍 "'+q+'"</div>';}).join('')+'</div>';
+    }
+
+    // Extraer texto final
+    const text=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('').trim();
     if(!text) throw new Error('Sin respuesta de texto de la API');
     var bt=String.fromCharCode(96);
     var clean=text.replace(new RegExp('^'+bt+bt+bt+'json\\s*'),'').replace(new RegExp('^'+bt+bt+bt+'\\s*'),'').replace(new RegExp('\\s*'+bt+bt+bt+'$'),'').trim();
@@ -1871,14 +1909,14 @@ function scrapeBooking() {
 
   var prompt = 'Search Booking.com for: "' + (name||'hotel') + '" in ' + city + '. URL hint: ' + url + '\nReturn ONLY valid JSON (no markdown, no explanation):\n{"name":"","stars":"1-5","rating":"8.5","reviews":"1234","address":"","city":"","rooms":"50","type":"Hotel","description":"brief","booking_url":""}\nNull for unknown fields.';
 
-  fetch('/api/ai', {
+  fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({provider:'openai',model:'gpt-4o',max_tokens:600,system:'Return ONLY valid JSON, no markdown, no explanation.',prompt:prompt})
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+    body: JSON.stringify({model:'gpt-4o',max_tokens:600,messages:[{role:'system',content:'Return ONLY valid JSON, no markdown, no explanation.'},{role:'user',content:prompt}]})
   })
   .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error&&e.error.message||'Error '+r.status);});return r.json();})
   .then(function(data){
-    var text=data.text||'';(data.choices||[]).forEach(function(b){text+=b.message?.content||'';});
+    var text='';(data.choices||[]).forEach(function(b){text+=b.message?.content||'';});
     var m=text.match(/\{[\s\S]*\}/);
     if(m){try{bookingData=JSON.parse(m[0]);renderBookingResult(bookingData);status.textContent='✓ Datos encontrados';}
     catch(e){status.textContent='Error parseando respuesta.';}}
@@ -2231,7 +2269,7 @@ async function sendEmailNotification(leads) {
   const to = session.email;
   if (!to) return;
   try {
-    await fetch('https://sapiora.site/api/notify', {
+    await fetch('/api/notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2245,8 +2283,8 @@ async function sendEmailNotification(leads) {
 }
 
 function doLogout() {
-  // sessionStorage.removeItem('sapiora_session'); // no login in standalone
-  window.location.reload();
+  sessionStorage.removeItem('sapiora_session');
+  window.top.location.href = '/login';
 }
 
 function showUpgrade(feature) {
