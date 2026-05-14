@@ -1,9 +1,9 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
 type Ctx = {
-  params: Promise<{ path: string[] }> | { path: string[] }
+  params: { path: string[] } | Promise<{ path: string[] }>
 }
 
 async function proxy(req: Request, ctx: Ctx) {
@@ -16,7 +16,7 @@ async function proxy(req: Request, ctx: Ctx) {
     )
   }
 
-  const params = await ctx.params
+  const params = await Promise.resolve(ctx.params)
   const path = params.path.join('/')
 
   const incomingUrl = new URL(req.url)
@@ -33,6 +33,7 @@ async function proxy(req: Request, ctx: Ctx) {
   if (accept) headers.set('Accept', accept)
 
   const method = req.method.toUpperCase()
+
   const body =
     method === 'GET' || method === 'HEAD'
       ? undefined

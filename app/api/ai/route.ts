@@ -1,8 +1,8 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
-function error(message: string, status = 500) {
+function jsonError(message: string, status = 500) {
   return NextResponse.json({ error: message }, { status })
 }
 
@@ -18,14 +18,14 @@ export async function POST(req: Request) {
     } = await req.json()
 
     if (!prompt) {
-      return error('Prompt requerido', 400)
+      return jsonError('Prompt requerido', 400)
     }
 
     if (provider === 'openai') {
       const key = process.env.OPENAI_API_KEY
 
       if (!key) {
-        return error('OPENAI_API_KEY no configurada', 500)
+        return jsonError('OPENAI_API_KEY no configurada', 500)
       }
 
       const upstream = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -35,13 +35,13 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${key}`
         },
         body: JSON.stringify({
-          model: model || process.env.OPENAI_MODEL || 'gpt-4o-mini',
+          model: model || 'gpt-4o-mini',
           max_tokens,
           response_format: { type: 'json_object' },
           messages: [
             {
               role: 'system',
-              content: system || 'Responde solo con JSON vÃ¡lido.'
+              content: system || 'Responde solo JSON valido.'
             },
             {
               role: 'user',
@@ -51,10 +51,10 @@ export async function POST(req: Request) {
         })
       })
 
-      const data = await upstream.json().catch(() => ({}))
+      const data: any = await upstream.json().catch(() => ({}))
 
       if (!upstream.ok) {
-        return error(data?.error?.message || `OpenAI API ${upstream.status}`, upstream.status)
+        return jsonError(data?.error?.message || `OpenAI API ${upstream.status}`, upstream.status)
       }
 
       return NextResponse.json({
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
     const key = process.env.ANTHROPIC_API_KEY
 
     if (!key) {
-      return error('ANTHROPIC_API_KEY no configurada', 500)
+      return jsonError('ANTHROPIC_API_KEY no configurada', 500)
     }
 
     const headers: Record<string, string> = {
@@ -78,10 +78,10 @@ export async function POST(req: Request) {
       headers['anthropic-beta'] = 'web-search-2025-03-05'
     }
 
-    const payload: any = {
-      model: model || process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-latest',
+    const body: any = {
+      model: model || 'claude-3-5-haiku-latest',
       max_tokens,
-      system: system || 'Responde solo con JSON vÃ¡lido.',
+      system: system || 'Responde solo JSON valido.',
       messages: [
         {
           role: 'user',
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
     }
 
     if (web_search) {
-      payload.tools = [
+      body.tools = [
         {
           type: 'web_search_20250305',
           name: 'web_search',
@@ -103,13 +103,13 @@ export async function POST(req: Request) {
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers,
-      body: JSON.stringify(payload)
+      body: JSON.stringify(body)
     })
 
-    const data = await upstream.json().catch(() => ({}))
+    const data: any = await upstream.json().catch(() => ({}))
 
     if (!upstream.ok) {
-      return error(data?.error?.message || `Anthropic API ${upstream.status}`, upstream.status)
+      return jsonError(data?.error?.message || `Anthropic API ${upstream.status}`, upstream.status)
     }
 
     const text = Array.isArray(data?.content)
@@ -121,6 +121,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ text })
   } catch (e: any) {
-    return error(e?.message || 'Error AI', 500)
+    return jsonError(e?.message || 'Error AI', 500)
   }
 }
