@@ -293,20 +293,6 @@ input,select,textarea{font-family:var(--font);outline:none}
 
 @media(max-width:768px){:root{--sb-w:260px}#sb{position:absolute;z-index:150;height:100%;transform:translateX(-100%);transition:transform .3s var(--ease)}#sb.mobile-open{transform:translateX(0)}#dp{max-height:95vh}}
 </style>
-<script>
-// Pre-load API keys synchronously before page renders
-(async function() {
-  try {
-    const r = await fetch('/api/keys');
-    if (r.ok) {
-      const d = await r.json();
-      window.ANTHROPIC_KEY = d.anthropic || '';
-      window.OPENAI_KEY    = d.openai    || '';
-      window.HUBSPOT_KEY   = window.HUBSPOT_KEY || '';
-    }
-  } catch(e) {}
-})();
-</script>
 </head>
 <body>
 <div id="app">
@@ -662,22 +648,11 @@ function scoreColor(s){
 }
 
 // ── CONFIG ───────────────────────────────────────────
-window.ANTHROPIC_KEY = '';
+window.ANTHROPIC_KEY = 'via-server'; // calls go through /api/ai
 window.HUBSPOT_KEY   = '';
 window.OPENAI_KEY    = '';
-window._keysReady    = false;
-window._keysPromise  = fetch('/api/keys')
-  .then(r => r.ok ? r.json() : {})
-  .then(d => {
-    if (d.anthropic) window.ANTHROPIC_KEY = d.anthropic;
-    if (d.openai)    window.OPENAI_KEY    = d.openai;
-    window._keysReady = true;
-  })
-  .catch(() => { window._keysReady = true; });
 
-async function ensureKeys() {
-  if (!window._keysReady) await window._keysPromise;
-}
+async function ensureKeys() { /* keys live server-side */ }
 
 const CFG = { url:'', key:'', table:'leads' };
 const COL = {
@@ -1318,50 +1293,19 @@ Escala:
   try {
     let result;
 
-    if (useClaude) {
-      // Business/Enterprise → Claude Haiku
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+    // All AI scoring via server proxy — no keys in browser
+    {
+      const res = await fetch('/api/ai', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': ANTHROPIC_KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1000,
-          system: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido, sin markdown ni texto adicional.',
-          messages: [{ role: 'user', content: prompt }]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'score', payload: { prompt } })
       });
       if (!res.ok) { const e = await res.text(); throw new Error('Claude API ' + res.status + ': ' + e); }
       const data = await res.json();
+      if (data.error) throw new Error('Claude: ' + (data.error.message || JSON.stringify(data.error)));
       const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('').trim();
-      const clean = text.replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + 'json\\s*'), '').replace(new RegExp('^' + String.fromCharCode(96).repeat(3) + '\\s*'), '').replace(new RegExp('\\s*' + String.fromCharCode(96).repeat(3) + '$'), '').trim();
+      const clean = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
       result = JSON.parse(clean);
-    } else {
-      // Starter/Pro → GPT-4o mini (cheaper)
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + OPENAI_KEY
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          max_tokens: 1000,
-          response_format: { type: 'json_object' },
-          messages: [
-            { role: 'system', content: 'Eres un analista de inversiones hoteleras. Responde SOLO con JSON válido.' },
-            { role: 'user', content: prompt }
-          ]
-        })
-      });
-      if (!res.ok) { const e = await res.text(); throw new Error('OpenAI API ' + res.status + ': ' + e); }
-      const data = await res.json();
-      const text = data.choices?.[0]?.message?.content || '';
-      result = JSON.parse(text);
     }
 
     result.score = Math.max(0, Math.min(100, result.score));
@@ -1437,24 +1381,14 @@ Devuelve SOLO JSON válido, sin texto antes ni después:
 }`;
 
   try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('/api/ai',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':ANTHROPIC_KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1500,
-        tools:[{"type":"web_search_20250305","name":"web_search","max_uses":5}],
-        system:'Eres un investigador experto en real estate hotelero de Miami y Miami Beach. Busca en internet información real y actualizada. Responde SOLO con JSON al final, sin texto adicional.',
-        messages:[{role:'user',content:prompt}]
-      })
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ type:'owner', payload:{ prompt } })
     });
     if(!res.ok){ const err=await res.text(); throw new Error('API '+res.status+': '+err); }
     const data=await res.json();
+    if(data.error) throw new Error('Claude API: '+JSON.stringify(data.error));
 
     // Mostrar búsquedas mientras procesa
     const searchCalls=(data.content||[]).filter(c=>c.type==='tool_use'&&c.name==='web_search');
