@@ -293,6 +293,20 @@ input,select,textarea{font-family:var(--font);outline:none}
 
 @media(max-width:768px){:root{--sb-w:260px}#sb{position:absolute;z-index:150;height:100%;transform:translateX(-100%);transition:transform .3s var(--ease)}#sb.mobile-open{transform:translateX(0)}#dp{max-height:95vh}}
 </style>
+<script>
+// Pre-load API keys synchronously before page renders
+(async function() {
+  try {
+    const r = await fetch('/api/keys');
+    if (r.ok) {
+      const d = await r.json();
+      window.ANTHROPIC_KEY = d.anthropic || '';
+      window.OPENAI_KEY    = d.openai    || '';
+      window.HUBSPOT_KEY   = window.HUBSPOT_KEY || '';
+    }
+  } catch(e) {}
+})();
+</script>
 </head>
 <body>
 <div id="app">
@@ -648,9 +662,22 @@ function scoreColor(s){
 }
 
 // ── CONFIG ───────────────────────────────────────────
-window.ANTHROPIC_KEY = "";
-window.HUBSPOT_KEY = "";
-window.OPENAI_KEY = "";
+window.ANTHROPIC_KEY = '';
+window.HUBSPOT_KEY   = '';
+window.OPENAI_KEY    = '';
+window._keysReady    = false;
+window._keysPromise  = fetch('/api/keys')
+  .then(r => r.ok ? r.json() : {})
+  .then(d => {
+    if (d.anthropic) window.ANTHROPIC_KEY = d.anthropic;
+    if (d.openai)    window.OPENAI_KEY    = d.openai;
+    window._keysReady = true;
+  })
+  .catch(() => { window._keysReady = true; });
+
+async function ensureKeys() {
+  if (!window._keysReady) await window._keysPromise;
+}
 
 const CFG = { url:'', key:'', table:'leads' };
 const COL = {
@@ -718,15 +745,7 @@ var ORG_ID = '';
 
 // ── INIT ─────────────────────────────────────────────
 window.onload = async function() {
-  // Load API keys from Vercel env (never hardcoded)
-  try {
-    const kr = await fetch('/api/keys');
-    if (kr.ok) {
-      const kd = await kr.json();
-      if (kd.anthropic) window.ANTHROPIC_KEY = kd.anthropic;
-      if (kd.openai)    window.OPENAI_KEY    = kd.openai;
-    }
-  } catch(e) { console.warn('Could not load API keys:', e); }
+  // API keys loaded in <head> before page render
 
   // ── CREDENTIALS: URL params (iframe) or sessionStorage ─────
   let session = null;
@@ -1248,6 +1267,7 @@ function cpLead(){
 
 // ── AI SCORING ───────────────────────────────────────
 async function runAIScoring() {
+  await ensureKeys();
   if (!FEAT.aiScoring) { showUpgrade('AI Lead Scoring'); return; }
   const l = all.find(x => x._i === activeId); if (!l) return;
   const btn = document.querySelector('#ai-score-content button');
@@ -1371,6 +1391,7 @@ Escala:
 
 
 async function runOwnerSearch() {
+  await ensureKeys();
   const l=all.find(x=>x._i===activeId);if(!l)return;
   show('owner-result');
   g('owner-result').innerHTML=`<div class="ai-loading"><div class="spin"></div>Buscando en internet: Sunbiz, registros de propiedad, LinkedIn…</div>`;
