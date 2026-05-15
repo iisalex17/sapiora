@@ -648,8 +648,9 @@ function scoreColor(s){
 }
 
 // ── CONFIG ───────────────────────────────────────────
-var ANTHROPIC_KEY = "";
-var HUBSPOT_KEY = "";var OPENAI_KEY = "";
+window.ANTHROPIC_KEY = "";
+window.HUBSPOT_KEY = "";
+window.OPENAI_KEY = "";
 
 const CFG = { url:'', key:'', table:'leads' };
 const COL = {
@@ -722,8 +723,8 @@ window.onload = async function() {
     const kr = await fetch('/api/keys');
     if (kr.ok) {
       const kd = await kr.json();
-      if (kd.anthropic) ANTHROPIC_KEY = kd.anthropic;
-      if (kd.openai)    OPENAI_KEY    = kd.openai;
+      if (kd.anthropic) window.ANTHROPIC_KEY = kd.anthropic;
+      if (kd.openai)    window.OPENAI_KEY    = kd.openai;
     }
   } catch(e) { console.warn('Could not load API keys:', e); }
 
@@ -2020,8 +2021,7 @@ function buildNoteBody(l) {
 }
 
 // ── HUBSPOT ────────────────────────────────────────────────────
-var HUBSPOT_KEY = "";
-
+// HUBSPOT_KEY already declared globally
 async function sendToHubspot(l, btn) {
   const origHtml = btn ? btn.innerHTML : '';
   const key = CONFIG.crm_key || HUBSPOT_KEY;
