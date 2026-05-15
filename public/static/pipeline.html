@@ -1241,6 +1241,42 @@ function cpLead(){
 }
 
 // ── AI SCORING ───────────────────────────────────────
+
+function renderAIResult(data) {
+  if (!data) return;
+  const score = data.score ?? null;
+  const summary = data.summary || '';
+  const flags = Array.isArray(data.flags) ? data.flags : [];
+  const action = data.action || '';
+  const col = scoreColor(score ?? 0);
+
+  g('ai-score-content').innerHTML = `
+    <div class="score-meter">
+      <div class="score-circle" style="border-color:${col};color:${col}">${score ?? '—'}</div>
+      <div class="score-info">
+        <div class="score-title">AI Lead Score</div>
+        <div class="score-desc">${esc(summary)}</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:${score ?? 0}%;background:${col}"></div></div>
+      </div>
+    </div>
+    ${flags.length ? `<div class="flag-list">${flags.map(f =>
+      `<div class="flag ${f.type === 'green' ? 'green' : f.type === 'red' ? 'red' : 'yellow'}">
+        <span>${f.type === 'green' ? '✓' : f.type === 'red' ? '✕' : '⚠'}</span>
+        <span>${esc(f.text || '')}</span>
+      </div>`
+    ).join('')}</div>` : ''}
+    ${action ? `<div class="ai-box" style="margin-top:12px">
+      <div class="ai-hd"><div class="ai-icon">⚡</div><div>
+        <div class="ai-title">Acción recomendada</div>
+        <div class="ai-content">${esc(action)}</div>
+      </div></div>
+    </div>` : ''}
+    <div style="margin-top:12px;text-align:right">
+      <button class="act-s" onclick="runAIScoring()" style="font-size:10px;padding:6px 12px">↺ Regenerar</button>
+    </div>
+  `;
+}
+
 async function runAIScoring() {
   await ensureKeys();
   if (!FEAT.aiScoring) { showUpgrade('AI Lead Scoring'); return; }
